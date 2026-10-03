@@ -17,10 +17,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.Objects;
 
 /**
- * Drives the input fields of one measurement. A simple unit such as kilograms is typed into a
- * single field; a compound unit such as feet and inches uses a whole field and a part field.
- *
- * <p>Weight and height each have an instance, so this logic is written once for both.
+ * The input fields of one measurement: a single field for a simple unit, or a whole and a part
+ * field for a compound unit such as feet and inches.
  */
 final class MeasurementFields {
 
@@ -32,12 +30,6 @@ final class MeasurementFields {
     private final TextInputLayout partLayout;
     private final EditText partInput;
 
-    /**
-     * @param singleLayout the field used by simple units
-     * @param compoundRow  the row holding the whole and part fields of the compound unit
-     * @param wholeLayout  the whole field, such as feet
-     * @param partLayout   the part field, such as inches
-     */
     MeasurementFields(TextInputLayout singleLayout, View compoundRow,
                       TextInputLayout wholeLayout, TextInputLayout partLayout) {
         this.singleLayout = singleLayout;
@@ -73,10 +65,8 @@ final class MeasurementFields {
     }
 
     /**
-     * Shows the fields that {@code unit} uses, with its accepted range and any errors.
-     *
-     * @param symbol the unit shown inside the single field; compound units show the symbols
-     *               fixed in the layout instead
+     * Shows the fields {@code unit} uses, with its range and errors. Only a simple unit shows
+     * {@code symbol}; compound fields have their symbols in the layout.
      */
     void render(MeasurementUnit unit, String symbol, String range,
                 @Nullable String primaryError, @Nullable String partError) {
@@ -107,20 +97,14 @@ final class MeasurementFields {
         return unit.isCompound() ? wholeInput : singleInput;
     }
 
-    /**
-     * Reports edits: {@code onPrimaryEdited} for the single or whole field, and
-     * {@code onPartEdited} for the part field.
-     */
+    /** Reports edits to the single or whole field, and to the part field. */
     void watchEdits(Runnable onPrimaryEdited, Runnable onPartEdited) {
         watch(singleInput, onPrimaryEdited);
         watch(wholeInput, onPrimaryEdited);
         watch(partInput, onPartEdited);
     }
 
-    /**
-     * Runs {@code action} when the keyboard's Done key, or a hardware keyboard's Enter key, is
-     * pressed in the last field of either unit type.
-     */
+    /** Runs {@code action} on Done or a hardware Enter key in the last field. */
     void setOnDone(Runnable action) {
         TextView.OnEditorActionListener listener = (view, actionId, event) -> {
             boolean doneKey = actionId == EditorInfo.IME_ACTION_DONE;
@@ -139,11 +123,8 @@ final class MeasurementFields {
     }
 
     /**
-     * Calls {@code onEdited} whenever the field's text changes.
-     *
-     * <p>The keyboard can report a change without altering the text, for example when it
-     * attaches to a newly focused field, so the text is compared with its previous value first.
-     * Otherwise focusing a field would clear the error the user still needs to read.
+     * Calls {@code onEdited} when the text changes. The keyboard also reports changes when a
+     * field gains focus, which must not clear an error the user still needs to read.
      */
     private static void watch(EditText field, Runnable onEdited) {
         field.addTextChangedListener(new TextWatcher() {

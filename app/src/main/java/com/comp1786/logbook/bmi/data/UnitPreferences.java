@@ -3,11 +3,7 @@ package com.comp1786.logbook.bmi.data;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
-/**
- * Remembers the units the user last selected, so the calculator opens in them next time.
- *
- * <p>An interface, so view model tests can use an in-memory fake instead of device storage.
- */
+/** The units the user last selected. An interface, so tests can use an in-memory fake. */
 public interface UnitPreferences {
 
     WeightUnit weightUnit();

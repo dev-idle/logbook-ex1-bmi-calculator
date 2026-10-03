@@ -7,13 +7,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Connects a group of unit buttons to a unit enum: it checks the button of the unit being shown
- * and reports the unit the user picks.
- *
- * <p>Button IDs are looked up in a map rather than a {@code switch}, because resource IDs are
- * not compile-time constants under Android Gradle Plugin 9.
- *
- * @param <U> the unit type, such as {@link com.comp1786.logbook.bmi.domain.WeightUnit}
+ * Links a group of unit buttons to a unit enum. Button IDs are mapped rather than switched on,
+ * because resource IDs are not constants under Android Gradle Plugin 9.
  */
 final class UnitToggle<U extends Enum<U>> {
 
@@ -21,9 +16,8 @@ final class UnitToggle<U extends Enum<U>> {
     private final Map<U, Integer> buttonIds;
 
     /**
-     * @param buttonIds  the button for every unit
-     * @param onSelected called with the unit whose button becomes checked, including when
-     *                   {@link #show} checks it, so the callback must ignore the current unit
+     * {@code onSelected} also runs when {@link #show} checks a button, so it must ignore the
+     * unit already shown.
      */
     UnitToggle(MaterialButtonToggleGroup group, Map<U, Integer> buttonIds,
                Consumer<U> onSelected) {

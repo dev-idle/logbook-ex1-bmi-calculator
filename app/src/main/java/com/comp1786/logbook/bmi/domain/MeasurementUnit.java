@@ -1,18 +1,13 @@
 package com.comp1786.logbook.bmi.domain;
 
 /**
- * A unit a weight or height can be entered in. Weight units convert to kilograms and height
- * units to meters, the units the BMI formula uses.
+ * A unit a weight or height can be entered in. Weight converts to kilograms and height to
+ * meters, the units of the BMI formula.
  *
- * <p>A compound unit, such as feet and inches, is entered as a whole number of its large unit
- * plus a part in its small unit. Its values are totals in the small unit, so 5 ft 10 in is 70.
- *
- * <p>Implementations only supply their {@link UnitScale}; conversion and range checks are
- * shared here so weight and height units behave identically.
+ * <p>A compound unit such as feet and inches holds totals in its small unit: 5 ft 10 in is 70.
  */
 public interface MeasurementUnit {
 
-    /** The conversion factor, accepted range and structure of this unit. */
     UnitScale scale();
 
     /** Converts a value in this unit to the base unit: kilograms or meters. */
@@ -50,10 +45,7 @@ public interface MeasurementUnit {
         return partsPerWhole() > 0;
     }
 
-    /**
-     * Combines the whole and part of a compound value into a total in the small unit, so
-     * 5 ft and 8.9 in become 68.9 in.
-     */
+    /** Combines a compound value into a total in the small unit: 5 ft 8.9 in is 68.9. */
     default double combine(double whole, double part) {
         return whole * partsPerWhole() + part;
     }

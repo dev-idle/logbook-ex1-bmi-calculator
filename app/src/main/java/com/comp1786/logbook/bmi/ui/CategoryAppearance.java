@@ -6,12 +6,7 @@ import androidx.annotation.StringRes;
 import com.comp1786.logbook.bmi.R;
 import com.comp1786.logbook.bmi.domain.BmiCategory;
 
-/**
- * How each BMI category is presented: its label and its color.
- *
- * <p>Kept out of {@link BmiCategory} so the domain model stays free of Android resources and can
- * be tested on the JVM.
- */
+/** The label and color of each category, kept out of the domain so it has no Android resources. */
 final class CategoryAppearance {
 
     private CategoryAppearance() {

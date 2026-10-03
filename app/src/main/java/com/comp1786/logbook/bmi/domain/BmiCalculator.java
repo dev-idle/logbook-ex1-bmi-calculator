@@ -8,10 +8,7 @@ package com.comp1786.logbook.bmi.domain;
  */
 public final class BmiCalculator {
 
-    /**
-     * The highest BMI shown as healthy. BMI is displayed to one decimal place, and the healthy
-     * category ends just below 25.0.
-     */
+    /** Healthy weight ends below 25.0, so 24.9 is its highest value at one decimal place. */
     private static final double HIGHEST_HEALTHY_BMI = 24.9;
 
     private BmiCalculator() {
@@ -20,12 +17,9 @@ public final class BmiCalculator {
     /**
      * Calculates the BMI, its category and the healthy weight range for the height.
      *
-     * <p>The BMI is rounded to one decimal place before it is classified, so the category
-     * always matches the value the user sees: 24.96 is shown as 25.0 and classified as
-     * {@link BmiCategory#OVERWEIGHT}.
+     * <p>The BMI is rounded before it is classified, so the category matches the value shown:
+     * 24.96 is shown as 25.0 and classified as {@link BmiCategory#OVERWEIGHT}.
      *
-     * @param weightKilograms weight in kilograms; must be positive and finite
-     * @param heightMeters    height in meters; must be positive and finite
      * @throws IllegalArgumentException if either value is not positive and finite
      */
     public static BmiResult calculate(double weightKilograms, double heightMeters) {

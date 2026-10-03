@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Decimal rounding for values shown to the user.
- *
- * <p>{@link BigDecimal#valueOf(double)} rounds the shortest decimal representation of the
- * double, so a value such as 24.95 rounds as written instead of as its binary approximation.
+ * Decimal rounding for displayed values. {@link BigDecimal#valueOf(double)} rounds 24.95 as
+ * written, not as its binary approximation.
  */
 final class Rounding {
 

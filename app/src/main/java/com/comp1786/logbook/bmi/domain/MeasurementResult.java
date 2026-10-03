@@ -3,8 +3,8 @@ package com.comp1786.logbook.bmi.domain;
 import androidx.annotation.Nullable;
 
 /**
- * The outcome of checking a measurement's input fields. A compound unit spans two fields, the
- * whole and the part, so each can carry its own error.
+ * The outcome of validating a measurement. A compound unit has two fields, each with its own
+ * error.
  *
  * @param value        the measurement in its unit, or {@link Double#NaN} when invalid
  * @param primaryError the error for the single field or the whole field, or {@code null}

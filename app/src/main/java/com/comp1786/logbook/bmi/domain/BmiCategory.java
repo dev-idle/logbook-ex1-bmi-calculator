@@ -1,12 +1,8 @@
 package com.comp1786.logbook.bmi.domain;
 
 /**
- * Adult BMI categories, with the boundaries published by the U.S. Centers for Disease Control
- * and Prevention (CDC), which match the World Health Organization classification.
- *
- * <p>Each category runs from its lower bound (inclusive) up to the next category's lower bound
- * (exclusive): "18.5 to less than 25" is {@link #HEALTHY_WEIGHT}. The categories apply to
- * adults aged 20 and over.
+ * Adult BMI categories (age 20 and over) as published by the CDC. Each runs from its lower
+ * bound, inclusive, to the next category's lower bound, exclusive.
  *
  * @see <a href="https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html">
  *     CDC: Adult BMI Categories</a>
@@ -20,7 +16,7 @@ public enum BmiCategory {
     OBESITY_CLASS_2(35.0),
     OBESITY_CLASS_3(40.0);
 
-    // values() returns a new array on every call, so a single copy is kept for lookups.
+    // values() copies the array on every call.
     private static final BmiCategory[] ALL = values();
 
     private final double lowerBound;
@@ -34,10 +30,7 @@ public enum BmiCategory {
         return lowerBound;
     }
 
-    /**
-     * The BMI at which the next category starts (exclusive), or
-     * {@link Double#POSITIVE_INFINITY} for the highest category.
-     */
+    /** Where the next category starts (exclusive), or infinity for the highest category. */
     public double upperBound() {
         int next = ordinal() + 1;
         return next < ALL.length ? ALL[next].lowerBound : Double.POSITIVE_INFINITY;

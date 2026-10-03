@@ -4,11 +4,8 @@ import java.util.OptionalDouble;
 import java.util.regex.Pattern;
 
 /**
- * Parses numbers typed by the user.
- *
- * <p>Either "." or "," is accepted as the decimal separator, because the soft keyboard offers
- * the separator used by the device's language. Signs, exponents, "NaN" and "Infinity", which
- * {@link Double#parseDouble(String)} would otherwise accept, are rejected.
+ * Parses numbers typed by the user. Both "." and "," are decimal separators, since the keyboard
+ * offers the one of the device language; signs, exponents, NaN and Infinity are rejected.
  */
 public final class NumberInput {
 
@@ -23,11 +20,7 @@ public final class NumberInput {
         return text == null || text.trim().isEmpty();
     }
 
-    /**
-     * Parses a non-negative decimal number.
-     *
-     * @return the value, or an empty result if {@code text} is not a plain decimal number
-     */
+    /** Returns the non-negative decimal in {@code text}, or empty if it is not one. */
     public static OptionalDouble parse(String text) {
         if (text == null) {
             return OptionalDouble.empty();

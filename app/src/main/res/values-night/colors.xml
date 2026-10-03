@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-        Lighter tones of the same hues for the dark theme, paired with dark text so the contrast
-        stays above the WCAG 2.2 AA minimum on a dark background.
-    -->
+    <!-- Lighter tones with dark text, keeping WCAG 2.2 AA contrast in the dark theme. -->
     <color name="bmi_underweight">#93C5FD</color>
     <color name="bmi_healthy_weight">#86EFAC</color>
     <color name="bmi_overweight">#FCD34D</color>

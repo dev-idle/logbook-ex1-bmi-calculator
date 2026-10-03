@@ -4,11 +4,7 @@ import androidx.annotation.StringRes;
 
 import com.comp1786.logbook.bmi.R;
 
-/**
- * The two measurements the calculator collects, with the validation messages that name them.
- * Each measurement has one compound unit (stones and pounds, or feet and inches), so its
- * messages can name that unit's fields.
- */
+/** Weight or height, with the validation messages that name it and its compound unit. */
 enum MeasurementKind {
 
     WEIGHT(

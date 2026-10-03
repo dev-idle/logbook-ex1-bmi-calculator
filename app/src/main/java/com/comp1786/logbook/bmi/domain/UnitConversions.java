@@ -1,12 +1,6 @@
 package com.comp1786.logbook.bmi.domain;
 
-/**
- * Conversion factors between metric and imperial units.
- *
- * <p>The pound and inch factors are exact: they were fixed by the 1959 international yard and
- * pound agreement, so no precision is lost by hard-coding them. A stone is defined as exactly
- * 14 pounds.
- */
+/** Exact conversion factors; the pound and inch were fixed by the 1959 international agreement. */
 final class UnitConversions {
 
     static final double KILOGRAMS_PER_POUND = 0.45359237;

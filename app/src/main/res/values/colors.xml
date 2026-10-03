@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-        BMI category colors for the light theme. Each has a contrast ratio of at least 5:1 with
-        bmi_on_category, above the WCAG 2.2 AA minimum of 4.5:1 for text. Colors move from blue
-        through green to red as health risk increases, and every color is shown next to its
-        label, so the result never depends on color alone.
+        Category colors, each at least 5:1 against bmi_on_category (WCAG 2.2 AA needs 4.5:1).
+        Every color is shown with its label, so meaning never depends on color alone.
     -->
     <color name="bmi_underweight">#1D4ED8</color>
     <color name="bmi_healthy_weight">#15803D</color>

@@ -5,13 +5,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 
 /**
- * Rewrites values the user has already typed when they switch units, so that 70 kg becomes
- * 154.3 lb instead of being read as 70 lb.
- *
- * <p>Converted values are rounded to the target unit's {@link MeasurementUnit#fractionDigits()}
- * and written with "." as the decimal separator, which {@link NumberInput} accepts in every
- * language. Text that is not a number is left for the user to correct, so no conversion is
- * returned for it.
+ * Converts typed values when the user switches units, so 70 kg becomes 154.3 lb instead of
+ * being read as 70 lb.
  */
 public final class MeasurementConverter {
 
@@ -19,10 +14,10 @@ public final class MeasurementConverter {
     }
 
     /**
-     * Converts typed input from one unit to another of the same kind. The type parameter keeps
-     * weight and height units from being mixed.
+     * Converts {@code input} between two units of the same kind; the type bound stops weight
+     * and height units being mixed.
      *
-     * @return the input to show in the new unit, or empty when the typed value cannot be read
+     * @return the converted input, or empty if the typed text is not a number
      */
     public static <U extends Enum<U> & MeasurementUnit> Optional<MeasurementInput> convert(
             MeasurementInput input, U from, U to) {
@@ -56,8 +51,8 @@ public final class MeasurementConverter {
     }
 
     /**
-     * Formats a value to at most {@code fractionDigits} decimal places without trailing zeros,
-     * so 70.0 becomes "70".
+     * Rounds to {@code fractionDigits} places without trailing zeros, so 70.0 becomes "70". The
+     * "." separator is always used, as {@link NumberInput} reads it in every locale.
      */
     private static String format(double value, int fractionDigits) {
         return BigDecimal.valueOf(Rounding.halfUp(value, fractionDigits))

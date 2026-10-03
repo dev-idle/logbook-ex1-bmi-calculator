@@ -4,10 +4,7 @@ import androidx.annotation.Nullable;
 
 import java.util.OptionalDouble;
 
-/**
- * Checks typed weight and height values. Each field reports only its first problem: empty, not a
- * number, or out of range.
- */
+/** Validates typed weights and heights. Each field reports only its first problem. */
 public final class MeasurementValidator {
 
     private MeasurementValidator() {

@@ -11,24 +11,18 @@ import com.comp1786.logbook.bmi.domain.WeightUnit;
 import java.util.Locale;
 
 /**
- * Stores the selected units in {@link SharedPreferences}.
+ * Stores the selected units in {@link SharedPreferences}. Until the user chooses, units follow
+ * the locale: stones and feet in the UK, pounds and feet in the US, metric elsewhere.
  *
- * <p>Android's documentation recommends DataStore over SharedPreferences, but DataStore is built
- * on Kotlin coroutines and Flow and is only usable from Java through its optional RxJava
- * artifacts. Two small values read once at startup do not justify that extra dependency, so
- * SharedPreferences is used here, behind the {@link UnitPreferences} interface so the storage
- * can be replaced without touching the rest of the app.
+ * <p>DataStore is recommended instead, but from Java it needs its RxJava artifacts, which two
+ * values read at startup do not justify.
  *
  * @see <a href="https://developer.android.com/topic/libraries/architecture/datastore">
  *     DataStore</a>
- *
- * <p>Before the user picks anything, the units follow the measurement system of the device's
- * locale: stones and feet in the UK, pounds and feet in the US, and kilograms and centimeters
- * elsewhere.
  */
 public final class SharedPreferencesUnitPreferences implements UnitPreferences {
 
-    /** Also named in res/xml/data_extraction_rules.xml, which backs the file up. */
+    /** Also named in res/xml/data_extraction_rules.xml. */
     private static final String FILE_NAME = "unit_preferences";
     private static final String KEY_WEIGHT_UNIT = "weight_unit";
     private static final String KEY_HEIGHT_UNIT = "height_unit";
@@ -72,10 +66,7 @@ public final class SharedPreferencesUnitPreferences implements UnitPreferences {
         preferences.edit().putString(KEY_HEIGHT_UNIT, unit.name()).apply();
     }
 
-    /**
-     * Reads a stored enum constant, falling back to {@code defaultValue} when nothing is
-     * stored or the stored name no longer exists, for example after a constant is renamed.
-     */
+    /** Reads a stored enum, or {@code defaultValue} if none is stored or the name is unknown. */
     private <E extends Enum<E>> E read(String key, Class<E> type, E defaultValue) {
         String name = preferences.getString(key, null);
         if (name == null) {

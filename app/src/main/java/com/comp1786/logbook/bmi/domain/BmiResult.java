@@ -14,18 +14,12 @@ public record BmiResult(
         double healthyWeightMinimumKilograms,
         double healthyWeightMaximumKilograms) {
 
-    /**
-     * The lowest healthy weight for the height in {@code unit}, rounded up to one decimal
-     * place so that it is still within the healthy category.
-     */
+    /** The lowest healthy weight in {@code unit}, rounded up so it stays healthy. */
     public double healthyWeightMinimum(WeightUnit unit) {
         return Rounding.up(unit.fromBaseUnit(healthyWeightMinimumKilograms), 1);
     }
 
-    /**
-     * The highest healthy weight for the height in {@code unit}, rounded down to one decimal
-     * place so that it is still within the healthy category.
-     */
+    /** The highest healthy weight in {@code unit}, rounded down so it stays healthy. */
     public double healthyWeightMaximum(WeightUnit unit) {
         return Rounding.down(unit.fromBaseUnit(healthyWeightMaximumKilograms), 1);
     }

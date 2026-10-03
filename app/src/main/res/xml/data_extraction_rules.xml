@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Backup and device-transfer rules for Android 12 and later, which covers every version the
-    app supports. The only stored data is the selected units, a preference worth keeping when
-    the user restores or moves to a new device.
+    Backup and device-transfer rules (Android 12+). Only the selected units are stored.
     See https://developer.android.com/identity/data/autobackup
 -->
 <data-extraction-rules>
