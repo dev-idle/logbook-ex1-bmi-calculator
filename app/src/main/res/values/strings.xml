@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">BMI Calculator</string>
-    <string name="app_scope">For adults aged 20 and over</string>
+    <string name="app_scope">For adults aged 18 and over</string>
 
     <!-- Unit labels shown on the toggle buttons and as field suffixes. -->
     <string name="unit_kilograms">kg</string>
@@ -75,14 +75,14 @@
     <string name="category_row_current_description">%1$s: BMI %2$s. This is your category.</string>
     <!-- %1$s and %2$s are weights with their unit, e.g. "56.7 kg" and "76.2 kg". -->
     <string name="healthy_weight_range">For your height, a healthy weight is %1$s to %2$s.</string>
-    <string name="adult_note">BMI categories apply to adults aged 20 and over. BMI is a screening measure, not a diagnosis.</string>
+    <string name="adult_note">BMI categories apply to adults aged 18 and over. BMI is a screening measure, not a diagnosis.</string>
 
     <!-- About dialog -->
     <string name="menu_about">About BMI</string>
     <string name="about_title">About BMI</string>
-    <string name="about_message">Body mass index (BMI) is your weight in kilograms divided by the square of your height in meters.\n\nIt is a quick screening measure for adults aged 20 and over, not a diagnosis of health. Children and teens are still growing, so their BMI is compared with others of the same age and sex on growth charts instead of these categories.\n\nThe categories follow the adult BMI categories published by the U.S. Centers for Disease Control and Prevention (CDC), which match the World Health Organization classification.</string>
-    <string name="about_open_source">Open CDC page</string>
-    <string name="about_source_url" translatable="false">https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html</string>
+    <string name="about_message">Body mass index (BMI) is your weight in kilograms divided by the square of your height in meters.\n\nIt is a quick screening measure for adults aged 18 and over, not a diagnosis of health. It cannot tell muscle from fat, and it is not suitable during pregnancy or for people with an eating disorder. Children and teens are still growing, so their BMI is compared with others of the same age and sex on growth charts instead of these categories.\n\nThe categories use the cut-offs that the World Health Organization, the NHS in the UK and the CDC in the US share.</string>
+    <string name="about_open_source">Open NHS page</string>
+    <string name="about_source_url" translatable="false">https://www.nhs.uk/health-assessment-tools/calculate-your-body-mass-index/calculate-bmi-for-adults</string>
     <string name="error_no_browser">No app on this device can open web pages</string>
     <string name="ok">OK</string>
 

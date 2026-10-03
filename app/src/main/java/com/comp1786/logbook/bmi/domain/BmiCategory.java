@@ -1,11 +1,14 @@
 package com.comp1786.logbook.bmi.domain;
 
 /**
- * Adult BMI categories (age 20 and over) as published by the CDC. Each runs from its lower
- * bound, inclusive, to the next category's lower bound, exclusive.
+ * Adult BMI categories, with the cut-offs that the WHO, the NHS and the CDC share and the CDC's
+ * three obesity classes. The app applies them from age 18, as the NHS does. Each runs from its
+ * lower bound, inclusive, to the next category's lower bound, exclusive.
  *
  * @see <a href="https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html">
  *     CDC: Adult BMI Categories</a>
+ * @see <a href="https://www.nhs.uk/health-assessment-tools/calculate-your-body-mass-index/calculate-bmi-for-adults">
+ *     NHS: Calculate your BMI for adults</a>
  */
 public enum BmiCategory {
 
