@@ -13,6 +13,15 @@ import java.util.Locale;
 /**
  * Stores the selected units in {@link SharedPreferences}.
  *
+ * <p>Android's documentation recommends DataStore over SharedPreferences, but DataStore is built
+ * on Kotlin coroutines and Flow and is only usable from Java through its optional RxJava
+ * artifacts. Two small values read once at startup do not justify that extra dependency, so
+ * SharedPreferences is used here, behind the {@link UnitPreferences} interface so the storage
+ * can be replaced without touching the rest of the app.
+ *
+ * @see <a href="https://developer.android.com/topic/libraries/architecture/datastore">
+ *     DataStore</a>
+ *
  * <p>Before the user picks anything, the units follow the measurement system of the device's
  * locale: stones and feet in the UK, pounds and feet in the US, and kilograms and centimeters
  * elsewhere.
