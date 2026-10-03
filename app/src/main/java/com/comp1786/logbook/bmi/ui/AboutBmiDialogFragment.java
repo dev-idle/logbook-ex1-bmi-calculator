@@ -14,15 +14,10 @@ import androidx.fragment.app.DialogFragment;
 import com.comp1786.logbook.bmi.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-/**
- * Explains what BMI is and cites the source of the categories, with a link to it.
- *
- * <p>A {@link DialogFragment} is used rather than a plain dialog so that it is restored, not
- * lost, when the screen rotates.
- */
+/** Explains BMI and links to the source of the categories. A fragment survives rotation. */
 public class AboutBmiDialogFragment extends DialogFragment {
 
-    public static final String TAG = "about_bmi";
+    static final String TAG = "about_bmi";
 
     @NonNull
     @Override

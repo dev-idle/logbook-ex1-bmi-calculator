@@ -32,11 +32,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The calculator screen: weight and height inputs with unit selection, and the result.
- *
- * <p>The activity only draws {@link BmiUiState} and forwards user actions to
- * {@link BmiViewModel}. The one thing it changes itself is the text of the input fields: a unit
- * switch converts what the user has already typed, and Clear empties them.
+ * The calculator screen. It draws {@link BmiUiState} and forwards actions to
+ * {@link BmiViewModel}; it only changes the typed text itself, on a unit switch or Clear.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -96,18 +93,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Watchers are added only after the framework has restored the fields' text, so that a
-        // restore after rotation is not mistaken for an edit that clears the result.
+        // Added after the fields' text is restored, so a restore does not count as an edit.
         weightFields.watchEdits(viewModel::onWeightEdited, viewModel::onWeightPartEdited);
         heightFields.watchEdits(viewModel::onHeightEdited, viewModel::onHeightPartEdited);
     }
 
     // --- Setup ---------------------------------------------------------------
 
-    /**
-     * Pads content away from the system bars, display cutouts and keyboard, since the window is
-     * drawn edge to edge. The app bar handles the status bar itself (fitsSystemWindows).
-     */
+    /** Keeps content clear of the system bars, cutouts and keyboard in the edge-to-edge window. */
     private void applyWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar, (view, insets) -> {
             Insets bars = insets.getInsets(SYSTEM_BARS_AND_CUTOUT);
@@ -155,10 +148,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Rewrites what the user typed in the new unit, so a switch from kilograms to pounds turns
-     * 70 into 154.3 instead of reading it as 70 lb. Text that cannot be read is cleared.
-     */
+    /** Converts the typed value into the new unit, clearing text that is not a number. */
     private static <U extends Enum<U> & MeasurementUnit> void convertTypedValue(
             MeasurementFields fields, U from, U to) {
         fields.setInput(to, MeasurementConverter.convert(fields.input(from), from, to)
@@ -174,8 +164,7 @@ public class MainActivity extends AppCompatActivity {
         BmiUiState next = viewModel.currentState();
         if (next.result() != null) {
             hideKeyboard();
-            // The result is the last item, so scrolling to the end reveals all of it, including
-            // the bottom padding that keeps it clear of the navigation bar.
+            // The result card is last, so this shows all of it above the navigation bar.
             binding.scrollView.post(() -> binding.scrollView.smoothScrollTo(
                     0, binding.scrollView.getChildAt(0).getHeight()));
         } else if (next.weightErrors().any()) {
@@ -195,21 +184,20 @@ public class MainActivity extends AppCompatActivity {
     // --- Rendering -----------------------------------------------------------
 
     private void render(BmiUiState state) {
-        WeightUnit weightUnit = state.weightUnit();
-        weightToggle.show(weightUnit);
-        weightFields.render(weightUnit, text.symbol(weightUnit), text.range(weightUnit),
-                text.primaryError(MeasurementKind.WEIGHT, weightUnit,
-                        state.weightErrors().primary()),
-                text.partError(MeasurementKind.WEIGHT, state.weightErrors().part()));
+        weightToggle.show(state.weightUnit());
+        heightToggle.show(state.heightUnit());
+        renderFields(weightFields, MeasurementKind.WEIGHT, state.weightUnit(),
+                state.weightErrors());
+        renderFields(heightFields, MeasurementKind.HEIGHT, state.heightUnit(),
+                state.heightErrors());
+        renderResult(state.result(), state.weightUnit());
+    }
 
-        HeightUnit heightUnit = state.heightUnit();
-        heightToggle.show(heightUnit);
-        heightFields.render(heightUnit, text.symbol(heightUnit), text.range(heightUnit),
-                text.primaryError(MeasurementKind.HEIGHT, heightUnit,
-                        state.heightErrors().primary()),
-                text.partError(MeasurementKind.HEIGHT, state.heightErrors().part()));
-
-        renderResult(state.result(), weightUnit);
+    private void renderFields(MeasurementFields fields, MeasurementKind kind,
+                              MeasurementUnit unit, FieldErrors errors) {
+        fields.render(unit, text.symbol(unit), text.range(unit),
+                text.primaryError(kind, unit, errors.primary()),
+                text.partError(kind, errors.part()));
     }
 
     private void renderResult(@Nullable BmiResult result, WeightUnit weightUnit) {
@@ -235,10 +223,7 @@ public class MainActivity extends AppCompatActivity {
         highlightCategory(category);
     }
 
-    /**
-     * Adds one row per category to the scale in the result card. The rows never change, so
-     * they are created once; {@link #highlightCategory} marks the user's row.
-     */
+    /** Builds the category rows once; {@link #highlightCategory} marks the user's row. */
     private void buildCategoryScale() {
         for (BmiCategory category : BmiCategory.values()) {
             ItemBmiCategoryBinding row = ItemBmiCategoryBinding.inflate(

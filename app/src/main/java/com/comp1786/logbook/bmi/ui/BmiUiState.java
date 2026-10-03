@@ -7,19 +7,11 @@ import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
 /**
- * Everything the calculator screen displays apart from the text being typed, which the input
- * fields keep themselves.
+ * An immutable snapshot of what the screen shows, apart from typed text, which the fields keep.
  *
- * <p>The state is immutable: each change produces a new instance, so the screen is always
- * drawn from one consistent snapshot.
- *
- * @param weightUnit   the selected weight unit
- * @param heightUnit   the selected height unit
- * @param weightErrors the problems with the weight fields
- * @param heightErrors the problems with the height fields
- * @param result       the latest result, or {@code null} when none is shown
+ * @param result the latest result, or {@code null} when none is shown
  */
-public record BmiUiState(
+record BmiUiState(
         WeightUnit weightUnit,
         HeightUnit heightUnit,
         FieldErrors weightErrors,
@@ -30,27 +22,27 @@ public record BmiUiState(
         return new BmiUiState(weightUnit, heightUnit, FieldErrors.NONE, FieldErrors.NONE, null);
     }
 
-    /** Switches the weight unit. The weight errors and the result no longer apply. */
+    /** Switches the weight unit, dropping the weight errors and the result. */
     BmiUiState withWeightUnit(WeightUnit unit) {
         return new BmiUiState(unit, heightUnit, FieldErrors.NONE, heightErrors, null);
     }
 
-    /** Switches the height unit. The height errors and the result no longer apply. */
+    /** Switches the height unit, dropping the height errors and the result. */
     BmiUiState withHeightUnit(HeightUnit unit) {
         return new BmiUiState(weightUnit, unit, weightErrors, FieldErrors.NONE, null);
     }
 
-    /** Replaces the weight errors after an edit, which also makes the result out of date. */
+    /** Replaces the weight errors after an edit, which also drops the result. */
     BmiUiState withWeightErrors(FieldErrors errors) {
         return new BmiUiState(weightUnit, heightUnit, errors, heightErrors, null);
     }
 
-    /** Replaces the height errors after an edit, which also makes the result out of date. */
+    /** Replaces the height errors after an edit, which also drops the result. */
     BmiUiState withHeightErrors(FieldErrors errors) {
         return new BmiUiState(weightUnit, heightUnit, weightErrors, errors, null);
     }
 
-    /** Reports validation problems; no result is shown while any field is invalid. */
+    /** Shows validation errors; there is no result while any field is invalid. */
     BmiUiState withErrors(FieldErrors weight, FieldErrors height) {
         return new BmiUiState(weightUnit, heightUnit, weight, height, null);
     }
@@ -60,7 +52,7 @@ public record BmiUiState(
                 weightUnit, heightUnit, FieldErrors.NONE, FieldErrors.NONE, newResult);
     }
 
-    /** Removes all errors and the result while keeping the selected units. */
+    /** Drops all errors and the result, keeping the selected units. */
     BmiUiState cleared() {
         return initial(weightUnit, heightUnit);
     }

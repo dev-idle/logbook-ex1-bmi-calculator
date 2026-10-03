@@ -16,10 +16,7 @@ import com.comp1786.logbook.bmi.domain.WeightUnit;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-/**
- * Builds the text the calculator screen shows: unit symbols, accepted ranges, error messages and
- * numbers formatted for the user's locale.
- */
+/** Builds the screen's locale-aware text: unit symbols, ranges, values and error messages. */
 final class MeasurementText {
 
     private final Resources resources;
@@ -34,14 +31,13 @@ final class MeasurementText {
         numberFormat.setMinimumFractionDigits(0);
         numberFormat.setMaximumFractionDigits(1);
 
-        // Calculated values always show one decimal place, so "25.0" and "125.0 to 168.1"
-        // read consistently.
+        // Calculated values always show one decimal place: "25.0", "125.0 to 168.1".
         oneDecimalFormat = NumberFormat.getNumberInstance(locale);
         oneDecimalFormat.setMinimumFractionDigits(1);
         oneDecimalFormat.setMaximumFractionDigits(1);
     }
 
-    String number(double value) {
+    private String number(double value) {
         return numberFormat.format(value);
     }
 
@@ -101,10 +97,8 @@ final class MeasurementText {
     }
 
     /**
-     * The BMI values a category covers, e.g. "Below 18.5", "18.5 to 24.9" or "40.0 and above".
-     *
-     * <p>A category ends just below the next one, and BMI is shown to one decimal place, so
-     * the highest value shown is 0.1 below the next category's lower bound.
+     * The BMI values a category covers, such as "18.5 to 24.9": at one decimal place, a
+     * category's highest value is 0.1 below the next category's lower bound.
      */
     String categoryRange(BmiCategory category) {
         if (category == BmiCategory.UNDERWEIGHT) {
@@ -146,7 +140,7 @@ final class MeasurementText {
         throw new IllegalArgumentException("Unknown unit: " + unit);
     }
 
-    /** The symbol of the part of a compound unit: "in" for feet and inches, "lb" for stones. */
+    /** The symbol of a compound unit's part: "in" or "lb". */
     @StringRes
     private static int partSymbolRes(MeasurementUnit unit) {
         if (unit == HeightUnit.FEET_AND_INCHES) {

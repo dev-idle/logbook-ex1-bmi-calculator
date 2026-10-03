@@ -11,9 +11,9 @@ import com.comp1786.logbook.bmi.domain.MeasurementResult;
  * @param primary the error for the single field, or the whole field of a compound unit
  * @param part    the error for the part field of a compound unit
  */
-public record FieldErrors(@Nullable InputError primary, @Nullable InputError part) {
+record FieldErrors(@Nullable InputError primary, @Nullable InputError part) {
 
-    public static final FieldErrors NONE = new FieldErrors(null, null);
+    static final FieldErrors NONE = new FieldErrors(null, null);
 
     static FieldErrors of(MeasurementResult result) {
         return new FieldErrors(result.primaryError(), result.partError());
