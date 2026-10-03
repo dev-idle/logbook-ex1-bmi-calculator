@@ -23,20 +23,34 @@ public class BmiViewModelTest {
     @Rule
     public final InstantTaskExecutorRule instantTaskExecutor = new InstantTaskExecutorRule();
 
+    private FakeUnitPreferences preferences;
     private BmiViewModel viewModel;
 
     @Before
     public void setUp() {
-        viewModel = new BmiViewModel();
+        preferences = new FakeUnitPreferences(WeightUnit.KILOGRAMS, HeightUnit.CENTIMETERS);
+        viewModel = new BmiViewModel(preferences);
     }
 
     @Test
-    public void startsWithMetricUnitsAndNoResult() {
-        BmiUiState state = viewModel.currentState();
+    public void startsWithTheRememberedUnitsAndNoResult() {
+        BmiUiState state = new BmiViewModel(
+                new FakeUnitPreferences(WeightUnit.POUNDS, HeightUnit.FEET_AND_INCHES))
+                .currentState();
 
-        assertEquals(WeightUnit.KILOGRAMS, state.weightUnit());
-        assertEquals(HeightUnit.CENTIMETERS, state.heightUnit());
+        assertEquals(WeightUnit.POUNDS, state.weightUnit());
+        assertEquals(HeightUnit.FEET_AND_INCHES, state.heightUnit());
         assertNull(state.result());
+    }
+
+    @Test
+    public void remembersSelectedUnitsForTheNextLaunch() {
+        viewModel.selectWeightUnit(WeightUnit.POUNDS);
+        viewModel.selectHeightUnit(HeightUnit.FEET_AND_INCHES);
+
+        BmiUiState nextLaunch = new BmiViewModel(preferences).currentState();
+        assertEquals(WeightUnit.POUNDS, nextLaunch.weightUnit());
+        assertEquals(HeightUnit.FEET_AND_INCHES, nextLaunch.heightUnit());
     }
 
     @Test

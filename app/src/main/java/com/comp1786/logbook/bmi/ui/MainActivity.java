@@ -21,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.comp1786.logbook.bmi.R;
+import com.comp1786.logbook.bmi.data.SharedPreferencesUnitPreferences;
+import com.comp1786.logbook.bmi.data.UnitPreferences;
 import com.comp1786.logbook.bmi.databinding.ActivityMainBinding;
 import com.comp1786.logbook.bmi.databinding.ItemBmiCategoryBinding;
 import com.comp1786.logbook.bmi.domain.BmiCategory;
@@ -31,6 +33,7 @@ import com.comp1786.logbook.bmi.domain.MeasurementConverter.HeightText;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -59,9 +62,12 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        text = new MeasurementText(
-                getResources(), getResources().getConfiguration().getLocales().get(0));
-        viewModel = new ViewModelProvider(this).get(BmiViewModel.class);
+        Locale locale = getResources().getConfiguration().getLocales().get(0);
+        text = new MeasurementText(getResources(), locale);
+        UnitPreferences unitPreferences =
+                new SharedPreferencesUnitPreferences(getApplicationContext(), locale);
+        viewModel = new ViewModelProvider(this, BmiViewModel.factory(unitPreferences))
+                .get(BmiViewModel.class);
 
         buildCategoryScale();
         applyWindowInsets();

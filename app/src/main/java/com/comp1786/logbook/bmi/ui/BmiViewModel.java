@@ -1,9 +1,12 @@
 package com.comp1786.logbook.bmi.ui;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.comp1786.logbook.bmi.data.UnitPreferences;
 import com.comp1786.logbook.bmi.domain.BmiCalculator;
 import com.comp1786.logbook.bmi.domain.BmiResult;
 import com.comp1786.logbook.bmi.domain.FieldResult;
@@ -24,11 +27,24 @@ import java.util.function.UnaryOperator;
  */
 public final class BmiViewModel extends ViewModel {
 
+    private final UnitPreferences unitPreferences;
     private final MutableLiveData<BmiUiState> uiState;
 
-    public BmiViewModel() {
-        uiState = new MutableLiveData<>(
-                BmiUiState.initial(WeightUnit.KILOGRAMS, HeightUnit.CENTIMETERS));
+    public BmiViewModel(UnitPreferences unitPreferences) {
+        this.unitPreferences = unitPreferences;
+        uiState = new MutableLiveData<>(BmiUiState.initial(
+                unitPreferences.weightUnit(), unitPreferences.heightUnit()));
+    }
+
+    /** Creates the view model with its dependencies, since it has no no-argument constructor. */
+    public static ViewModelProvider.Factory factory(UnitPreferences unitPreferences) {
+        return new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return modelClass.cast(new BmiViewModel(unitPreferences));
+            }
+        };
     }
 
     public LiveData<BmiUiState> uiState() {
@@ -40,14 +56,18 @@ public final class BmiViewModel extends ViewModel {
         return Objects.requireNonNull(uiState.getValue());
     }
 
+    /** Switches the weight unit and remembers it for the next launch. */
     public void selectWeightUnit(WeightUnit unit) {
         if (unit != currentState().weightUnit()) {
+            unitPreferences.setWeightUnit(unit);
             update(state -> state.withWeightUnit(unit));
         }
     }
 
+    /** Switches the height unit and remembers it for the next launch. */
     public void selectHeightUnit(HeightUnit unit) {
         if (unit != currentState().heightUnit()) {
+            unitPreferences.setHeightUnit(unit);
             update(state -> state.withHeightUnit(unit));
         }
     }
