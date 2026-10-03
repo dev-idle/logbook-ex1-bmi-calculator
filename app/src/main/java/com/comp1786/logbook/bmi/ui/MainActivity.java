@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -16,8 +17,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.comp1786.logbook.bmi.R;
-import com.comp1786.logbook.bmi.data.SharedPreferencesUnitPreferences;
-import com.comp1786.logbook.bmi.data.UnitPreferences;
 import com.comp1786.logbook.bmi.databinding.ActivityMainBinding;
 import com.comp1786.logbook.bmi.databinding.ItemBmiCategoryBinding;
 import com.comp1786.logbook.bmi.domain.BmiCategory;
@@ -63,9 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         Locale locale = getResources().getConfiguration().getLocales().get(0);
         text = new MeasurementText(getResources(), locale);
-        UnitPreferences unitPreferences =
-                new SharedPreferencesUnitPreferences(getApplicationContext(), locale);
-        viewModel = new ViewModelProvider(this, BmiViewModel.factory(unitPreferences))
+        viewModel = new ViewModelProvider(
+                this, ViewModelProvider.Factory.from(BmiViewModel.INITIALIZER))
                 .get(BmiViewModel.class);
 
         weightFields = new MeasurementFields(binding.weightLayout, binding.weightCompoundRow,
@@ -91,14 +89,17 @@ public class MainActivity extends AppCompatActivity {
         // Height is the last measurement, so Done on its last field calculates.
         heightFields.setOnDone(this::calculate);
         viewModel.uiState().observe(this, this::render);
+        if (savedInstanceState == null) {
+            watchEdits();
+        }
     }
 
     @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Added after the fields' text is restored, so a restore does not count as an edit.
-        weightFields.watchEdits(viewModel::onWeightEdited, viewModel::onWeightPartEdited);
-        heightFields.watchEdits(viewModel::onHeightEdited, viewModel::onHeightPartEdited);
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Edits are watched only once the fields' text is restored, so that a restore is not
+        // taken for an edit that clears the saved errors and result.
+        watchEdits();
     }
 
     // --- Setup ---------------------------------------------------------------
@@ -125,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
             view.setPadding(bars.left, 0, bars.right, keyboard > 0 ? 0 : bars.bottom);
             return insets;
         });
+    }
+
+    private void watchEdits() {
+        weightFields.watchEdits(viewModel::onWeightEdited, viewModel::onWeightPartEdited);
+        heightFields.watchEdits(viewModel::onHeightEdited, viewModel::onHeightPartEdited);
     }
 
     private void setUpMenu() {
@@ -160,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Converts the typed value into the new unit, clearing text that is not a number. */
+    /** Converts the typed value into the new unit, clearing text that is not an accepted number. */
     private static <U extends Enum<U> & MeasurementUnit> void convertTypedValue(
             MeasurementFields fields, U from, U to) {
         fields.setInput(to, MeasurementConverter.convert(fields.input(from), from, to)

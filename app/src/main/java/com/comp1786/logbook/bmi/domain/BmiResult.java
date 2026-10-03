@@ -1,9 +1,12 @@
 package com.comp1786.logbook.bmi.domain;
 
+import java.io.Serializable;
+
 /**
- * The outcome of a BMI calculation.
+ * The outcome of a BMI calculation. It is serializable so that the screen state can be saved.
  *
- * @param bmi                           the exact BMI, free of floating-point error
+ * @param bmi                           the BMI, rounded to nine decimal places to remove
+ *                                      floating-point error
  * @param category                      the category of {@code bmi}
  * @param healthyWeightMinimumKilograms the lowest healthy weight for the height (inclusive)
  * @param healthyWeightLimitKilograms   the weight at which overweight starts (exclusive)
@@ -12,7 +15,7 @@ public record BmiResult(
         double bmi,
         BmiCategory category,
         double healthyWeightMinimumKilograms,
-        double healthyWeightLimitKilograms) {
+        double healthyWeightLimitKilograms) implements Serializable {
 
     /**
      * The BMI to two decimal places, so a value just below a bound, such as 24.96, is not shown

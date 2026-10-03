@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.lifecycle.livedata)
+    implementation(libs.lifecycle.viewmodel.savedstate)
     testImplementation(libs.junit)
     testImplementation(libs.arch.core.testing)
     androidTestImplementation(libs.espresso.core)

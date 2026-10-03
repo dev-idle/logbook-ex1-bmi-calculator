@@ -6,8 +6,11 @@ import com.comp1786.logbook.bmi.domain.BmiResult;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
+import java.io.Serializable;
+
 /**
  * An immutable snapshot of what the screen shows, apart from typed text, which the fields keep.
+ * It is serializable so that the view model can save it.
  *
  * @param result the latest result, or {@code null} when none is shown
  */
@@ -16,7 +19,7 @@ record BmiUiState(
         HeightUnit heightUnit,
         FieldErrors weightErrors,
         FieldErrors heightErrors,
-        @Nullable BmiResult result) {
+        @Nullable BmiResult result) implements Serializable {
 
     static BmiUiState initial(WeightUnit weightUnit, HeightUnit heightUnit) {
         return new BmiUiState(weightUnit, heightUnit, FieldErrors.NONE, FieldErrors.NONE, null);

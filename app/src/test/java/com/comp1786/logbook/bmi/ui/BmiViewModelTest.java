@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.SavedStateHandle;
 
 import com.comp1786.logbook.bmi.domain.BmiCategory;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
@@ -15,6 +16,12 @@ import com.comp1786.logbook.bmi.domain.WeightUnit;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class BmiViewModelTest {
 
@@ -31,13 +38,14 @@ public class BmiViewModelTest {
     @Before
     public void setUp() {
         preferences = new FakeUnitPreferences(WeightUnit.KILOGRAMS, HeightUnit.CENTIMETERS);
-        viewModel = new BmiViewModel(preferences);
+        viewModel = new BmiViewModel(preferences, new SavedStateHandle());
     }
 
     @Test
     public void startsWithTheRememberedUnitsAndNoResult() {
         BmiUiState state = new BmiViewModel(
-                new FakeUnitPreferences(WeightUnit.POUNDS, HeightUnit.FEET_AND_INCHES))
+                new FakeUnitPreferences(WeightUnit.POUNDS, HeightUnit.FEET_AND_INCHES),
+                new SavedStateHandle())
                 .currentState();
 
         assertEquals(WeightUnit.POUNDS, state.weightUnit());
@@ -50,9 +58,38 @@ public class BmiViewModelTest {
         viewModel.selectWeightUnit(WeightUnit.POUNDS);
         viewModel.selectHeightUnit(HeightUnit.FEET_AND_INCHES);
 
-        BmiUiState nextLaunch = new BmiViewModel(preferences).currentState();
+        BmiUiState nextLaunch =
+                new BmiViewModel(preferences, new SavedStateHandle()).currentState();
         assertEquals(WeightUnit.POUNDS, nextLaunch.weightUnit());
         assertEquals(HeightUnit.FEET_AND_INCHES, nextLaunch.heightUnit());
+    }
+
+    @Test
+    public void restoresErrorsAndResultFromTheSavedState() {
+        SavedStateHandle savedState = new SavedStateHandle();
+        BmiViewModel before = new BmiViewModel(preferences, savedState);
+        before.calculate(MeasurementInput.EMPTY, MeasurementInput.of("175"));
+
+        // A view model created after the process is recreated reads the same saved state.
+        BmiUiState restored = new BmiViewModel(preferences, savedState).currentState();
+
+        assertEquals(before.currentState(), restored);
+        assertEquals(InputError.REQUIRED, restored.weightErrors().primary());
+    }
+
+    @Test
+    public void stateSurvivesSerialization() throws IOException, ClassNotFoundException {
+        viewModel.calculate(MeasurementInput.of("70"), MeasurementInput.of("175"));
+        BmiUiState state = viewModel.currentState();
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            out.writeObject(state);
+        }
+        try (ObjectInputStream in =
+                     new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            assertEquals(state, in.readObject());
+        }
     }
 
     @Test

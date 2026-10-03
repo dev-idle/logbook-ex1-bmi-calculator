@@ -1,11 +1,16 @@
 package com.comp1786.logbook.bmi.ui;
 
-import androidx.annotation.NonNull;
+import android.app.Application;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
+import androidx.lifecycle.SavedStateHandleSupport;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import com.comp1786.logbook.bmi.data.SharedPreferencesUnitPreferences;
 import com.comp1786.logbook.bmi.data.UnitPreferences;
 import com.comp1786.logbook.bmi.domain.BmiCalculator;
 import com.comp1786.logbook.bmi.domain.BmiResult;
@@ -15,33 +20,41 @@ import com.comp1786.logbook.bmi.domain.MeasurementResult;
 import com.comp1786.logbook.bmi.domain.MeasurementValidator;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 /**
- * Holds the calculator state, which survives rotation. The screen observes {@link #uiState()}
- * and sends events; it never changes the state itself.
+ * Holds the calculator state. The screen observes {@link #uiState()} and sends events; it never
+ * changes the state itself. The state is kept in a {@link SavedStateHandle}, so it survives the
+ * system ending the app in the background as well as rotation.
  */
 final class BmiViewModel extends ViewModel {
+
+    /**
+     * Creates the view model with its dependencies, following the Android guide "Create
+     * ViewModels with dependencies".
+     */
+    static final ViewModelInitializer<BmiViewModel> INITIALIZER = new ViewModelInitializer<>(
+            BmiViewModel.class,
+            extras -> {
+                Application application = Objects.requireNonNull(
+                        extras.get(ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY));
+                Locale locale = application.getResources().getConfiguration().getLocales().get(0);
+                return new BmiViewModel(
+                        new SharedPreferencesUnitPreferences(application, locale),
+                        SavedStateHandleSupport.createSavedStateHandle(extras));
+            });
+
+    private static final String UI_STATE_KEY = "ui_state";
 
     private final UnitPreferences unitPreferences;
     private final MutableLiveData<BmiUiState> uiState;
 
-    BmiViewModel(UnitPreferences unitPreferences) {
+    BmiViewModel(UnitPreferences unitPreferences, SavedStateHandle savedState) {
         this.unitPreferences = unitPreferences;
-        uiState = new MutableLiveData<>(BmiUiState.initial(
+        uiState = savedState.getLiveData(UI_STATE_KEY, BmiUiState.initial(
                 unitPreferences.weightUnit(), unitPreferences.heightUnit()));
-    }
-
-    /** Supplies the constructor argument, which the default factory cannot. */
-    static ViewModelProvider.Factory factory(UnitPreferences unitPreferences) {
-        return new ViewModelProvider.Factory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return modelClass.cast(new BmiViewModel(unitPreferences));
-            }
-        };
     }
 
     LiveData<BmiUiState> uiState() {

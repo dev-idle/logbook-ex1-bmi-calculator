@@ -5,13 +5,16 @@ import androidx.annotation.Nullable;
 import com.comp1786.logbook.bmi.domain.InputError;
 import com.comp1786.logbook.bmi.domain.MeasurementResult;
 
+import java.io.Serializable;
+
 /**
  * The errors shown on one measurement's fields.
  *
  * @param primary the error for the single field, or the whole field of a compound unit
  * @param part    the error for the part field of a compound unit
  */
-record FieldErrors(@Nullable InputError primary, @Nullable InputError part) {
+record FieldErrors(@Nullable InputError primary, @Nullable InputError part)
+        implements Serializable {
 
     static final FieldErrors NONE = new FieldErrors(null, null);
 
