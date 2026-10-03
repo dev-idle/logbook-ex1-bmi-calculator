@@ -15,7 +15,7 @@ public final class BmiCalculator {
      * Calculates the BMI, its category and the healthy weight range for the height.
      *
      * <p>The category comes from the exact BMI, as the CDC defines it: healthy weight is "18.5
-     * to less than 25", so the CDC's own example of 24.96 is healthy.
+     * to less than 25", so a BMI of 24.96 is healthy.
      *
      * @throws IllegalArgumentException if either value is not positive and finite
      */

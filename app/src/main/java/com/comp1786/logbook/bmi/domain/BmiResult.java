@@ -15,8 +15,8 @@ public record BmiResult(
         double healthyWeightLimitKilograms) {
 
     /**
-     * The BMI to two decimal places, as in the CDC's worked example. It never rounds up into
-     * the next category, so 24.996 shows as 24.99 rather than as a healthy 25.00.
+     * The BMI to two decimal places, so a value just below a bound, such as 24.96, is not shown
+     * as the bound. It never rounds up into the next category: 24.996 shows as 24.99.
      */
     public double roundedBmi() {
         double rounded = Rounding.halfUp(bmi, 2);

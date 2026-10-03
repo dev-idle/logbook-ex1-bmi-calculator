@@ -17,7 +17,7 @@ feedback.
 
 ### Beyond the requirements
 
-- The app states that it is for adults aged 20 and over, before any input, as the CDC's adult
+- The app states that it is for adults aged 18 and over, before any input, as the NHS adult
   calculator does. The About dialog explains that children and teens are assessed on growth
   charts instead.
 - Accepted ranges are shown under each field before the user makes a mistake.
@@ -59,9 +59,11 @@ value into an error. A value outside the range is cleared, not converted, when t
 
 ## BMI categories
 
-The categories are the adult categories published by the U.S. Centers for Disease Control and
-Prevention (CDC), which match the World Health Organization classification. They apply to adults
-aged 20 and over.
+The cut-offs are shared by the World Health Organization (WHO), the NHS and the U.S. Centers for
+Disease Control and Prevention (CDC); the names and the three obesity classes follow the CDC's
+table. The app applies them from age 18, as the NHS does. The CDC applies them from age 20, and
+the WHO assesses everyone aged 5 to 19 with BMI-for-age, although its statistics count adults
+from 18.
 
 | Category | BMI |
 |----------|-----|
@@ -72,9 +74,10 @@ aged 20 and over.
 | Class 2 obesity | 35 to less than 40 |
 | Class 3 obesity | 40 or greater |
 
-The category is taken from the exact BMI, as both the CDC ("18.5 to less than 25") and the WHO
-(18.50 to 24.99) define it. The BMI is shown to two decimal places, as in the CDC's worked
-example: 150 lb at 5 ft 5 in gives 24.96, a healthy weight, and the app shows exactly that. The
+The category is taken from the exact BMI, as the CDC ("18.5 to less than 25") and the WHO
+(overweight is a BMI "greater than or equal to 25") define it. The BMI is shown to two decimal
+places, so a value just below a bound is not shown as the bound: 150 lb at 5 ft 5 in gives
+150 / 65^2 x 703 = 24.96 by the CDC's formula, a healthy weight, and the app shows 24.96. The
 shown value never rounds up across a category bound, so 24.996 shows as 24.99. The healthy weight
 range uses the same bounds, so its ends agree with the category shown.
 
@@ -82,14 +85,15 @@ The CDC's imperial formula multiplies by 703, a rounded factor; the app converts
 inches to kilograms and meters with the exact definitions instead, which gives the same result
 to two decimal places.
 
-Children and teens aged 2 to 19 are assessed with sex-specific BMI-for-age percentiles, because
-they are still growing, so these categories do not apply to them.
+Children and teens are assessed with sex-specific BMI-for-age centiles instead, because they are
+still growing, so these categories do not apply to them.
 
-Other standards were considered. The WHO applies the same cut-offs to adults from age 18, and
-Vietnam's Ministry of Health (Decision 2892/QD-BYT, 2022) uses the WHO cut-offs for Asian
-populations, where 23 to 24.9 is overweight and 25 or more is obesity, because health risks rise
-at lower BMI in Asian populations. The app follows a single source, the CDC, so that its
-categories, age scope and wording stay consistent with each other.
+Lower cut-offs for some populations were considered and not adopted. The NHS gives 23 to 27.4 as
+overweight and 27.5 or more as obese for people from South Asian, Chinese, other Asian, Middle
+Eastern, Black African or African-Caribbean backgrounds, and Vietnam's Ministry of Health
+(Decision 2892/QD-BYT, 2022) uses the WHO cut-offs for Asian populations, where 23 to 24.9 is
+overweight and 25 or more is obesity. The app uses the general WHO cut-offs so that one set of
+categories, ranges and wording applies throughout.
 
 ## Technology
 
@@ -143,13 +147,18 @@ Android Studio's bundled JDK can be used by setting `JAVA_HOME` to its `jbr` fol
 
 - CDC, *Adult BMI Categories*:
   https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html
-- CDC, *Calculating BMI* (formulas and the 150 lb, 5 ft 5 in example):
+- NHS, *Calculate your body mass index (BMI) for adults* (aged 18 and over; not for use in
+  pregnancy or with an eating disorder):
+  https://www.nhs.uk/health-assessment-tools/calculate-your-body-mass-index/calculate-bmi-for-adults
+- NHS, *Overweight and obesity in adults* (lower cut-offs for some ethnic backgrounds):
+  https://www.nhs.uk/conditions/overweight-and-obesity/
+- CDC, *Calculating BMI* (metric and U.S. customary formulas, with the 703 factor):
   https://www.cdc.gov/growth-chart-training/hcp/using-bmi/calculating-bmi.html
 - CDC, *Child and Teen BMI Categories*:
   https://www.cdc.gov/bmi/child-teen-calculator/bmi-categories.html
 - World Health Organization (2000) *Obesity: Preventing and Managing the Global Epidemic*. WHO
   Technical Report Series 894. Geneva: WHO.
-- World Health Organization, *Obesity and overweight* (fact sheet; adults are 18 and over):
+- World Health Organization, *Obesity and overweight* (adult cut-offs; BMI-for-age from 5 to 19):
   https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight
 - WHO Expert Consultation (2004) Appropriate body-mass index for Asian populations and its
   implications for policy and intervention strategies. *The Lancet*, 363(9403), pp. 157-163.

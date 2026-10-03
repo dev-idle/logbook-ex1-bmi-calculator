@@ -20,8 +20,8 @@ public class BmiCalculatorTest {
     }
 
     @Test
-    public void matchesTheCdcWorkedExample() {
-        // CDC: 150 lb at 5 ft 5 in gives [150 / 65^2] x 703 = 24.96, a healthy weight.
+    public void matchesTheCdcFormulaForPoundsAndInches() {
+        // CDC formula: 150 lb at 5 ft 5 in gives 150 / 65^2 x 703 = 24.96, a healthy weight.
         BmiResult result = BmiCalculator.calculate(
                 WeightUnit.POUNDS.toBaseUnit(150.0), HeightUnit.FEET_AND_INCHES.toBaseUnit(65.0));
 
