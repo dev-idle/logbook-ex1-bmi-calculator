@@ -1,9 +1,9 @@
 package com.comp1786.logbook.bmi.ui;
 
 import android.content.res.ColorStateList;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.comp1786.logbook.bmi.R;
@@ -111,11 +112,17 @@ public class MainActivity extends AppCompatActivity {
         });
         ViewCompat.setOnApplyWindowInsetsListener(binding.scrollView, (view, insets) -> {
             Insets bars = insets.getInsets(SYSTEM_BARS_AND_CUTOUT);
-            Insets keyboard = insets.getInsets(WindowInsetsCompat.Type.ime());
-            view.setPadding(bars.left, 0, bars.right, Math.max(bars.bottom, keyboard.bottom));
-            if (keyboard.bottom > 0) {
-                view.post(this::keepFocusedFieldVisible);
+            int keyboard = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            // The keyboard shrinks the scroll view, which then scrolls the focused field into
+            // view itself; NestedScrollView ignores bottom padding when it does that. The
+            // navigation bar only pads it, so content still scrolls behind the bar.
+            ViewGroup.MarginLayoutParams params =
+                    (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            if (params.bottomMargin != keyboard) {
+                params.bottomMargin = keyboard;
+                view.setLayoutParams(params);
             }
+            view.setPadding(bars.left, 0, bars.right, keyboard > 0 ? 0 : bars.bottom);
             return insets;
         });
     }
@@ -124,8 +131,11 @@ public class MainActivity extends AppCompatActivity {
         binding.toolbar.setOnMenuItemClickListener(item -> {
             // Resource IDs are not constants under AGP 9, so they are compared with if, not switch.
             if (item.getItemId() == R.id.action_about) {
-                new AboutBmiDialogFragment()
-                        .show(getSupportFragmentManager(), AboutBmiDialogFragment.TAG);
+                FragmentManager fragments = getSupportFragmentManager();
+                // showNow commits at once, so a quick second tap finds the open dialog.
+                if (fragments.findFragmentByTag(AboutBmiDialogFragment.TAG) == null) {
+                    new AboutBmiDialogFragment().showNow(fragments, AboutBmiDialogFragment.TAG);
+                }
                 return true;
             }
             return false;
@@ -166,9 +176,11 @@ public class MainActivity extends AppCompatActivity {
         BmiUiState next = viewModel.currentState();
         if (next.result() != null) {
             hideKeyboard();
-            // The result card is last, so this shows all of it above the navigation bar.
+            // Brings the top of the result card into view. When the whole card fits, the scroll
+            // stops at the end of the content, so all of it shows above the navigation bar.
+            int spacing = getResources().getDimensionPixelSize(R.dimen.screen_padding);
             binding.scrollView.post(() -> binding.scrollView.smoothScrollTo(
-                    0, binding.scrollView.getChildAt(0).getHeight()));
+                    0, binding.content.getTop() + binding.resultCard.getTop() - spacing));
         } else if (next.weightErrors().any()) {
             weightFields.fieldWithError(next.weightUnit(), next.weightErrors()).requestFocus();
         } else {
@@ -205,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
     private void renderResult(@Nullable BmiResult result, WeightUnit weightUnit) {
         binding.resultCard.setVisibility(result == null ? View.GONE : View.VISIBLE);
         if (result == null) {
+            // Cleared so that the same result is announced again when it comes back.
+            binding.resultSummary.setContentDescription(null);
             return;
         }
         BmiCategory category = result.category();
@@ -274,14 +288,6 @@ public class MainActivity extends AppCompatActivity {
         View focused = getCurrentFocus();
         if (focused != null) {
             focused.clearFocus();
-        }
-    }
-
-    private void keepFocusedFieldVisible() {
-        View focused = getCurrentFocus();
-        if (focused != null) {
-            focused.requestRectangleOnScreen(
-                    new Rect(0, 0, focused.getWidth(), focused.getHeight()), false);
         }
     }
 }

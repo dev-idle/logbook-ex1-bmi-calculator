@@ -86,7 +86,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/weight_input"
                         style="@style/Widget.BMICalculator.DecimalInput"
-                        android:imeOptions="actionNext" />
+                        android:imeOptions="actionNext|flagNoExtractUi" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -104,7 +104,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/stones_input"
                             style="@style/Widget.BMICalculator.WholeInput"
-                            android:imeOptions="actionNext" />
+                            android:imeOptions="actionNext|flagNoExtractUi" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,7 +117,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/weight_pounds_input"
                             style="@style/Widget.BMICalculator.PartInput"
-                            android:imeOptions="actionNext" />
+                            android:imeOptions="actionNext|flagNoExtractUi" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,7 +165,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/height_input"
                         style="@style/Widget.BMICalculator.DecimalInput"
-                        android:imeOptions="actionDone" />
+                        android:imeOptions="actionDone|flagNoExtractUi" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -183,7 +183,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/feet_input"
                             style="@style/Widget.BMICalculator.WholeInput"
-                            android:imeOptions="actionNext" />
+                            android:imeOptions="actionNext|flagNoExtractUi" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -196,7 +196,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inches_input"
                             style="@style/Widget.BMICalculator.PartInput"
-                            android:imeOptions="actionDone" />
+                            android:imeOptions="actionDone|flagNoExtractUi" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -244,7 +244,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:accessibilityLiveRegion="polite"
-                            android:focusable="true"
+                            android:screenReaderFocusable="true"
                             android:orientation="vertical">
 
                             <TextView
