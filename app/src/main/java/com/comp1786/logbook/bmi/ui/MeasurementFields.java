@@ -4,15 +4,18 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.transition.TransitionManager;
 
 import com.comp1786.logbook.bmi.domain.MeasurementInput;
 import com.comp1786.logbook.bmi.domain.MeasurementUnit;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.transition.MaterialFadeThrough;
 
 import java.util.Objects;
 
@@ -71,6 +74,12 @@ final class MeasurementFields {
     void render(MeasurementUnit unit, String symbol, String range,
                 @Nullable String primaryError, @Nullable String partError) {
         boolean compound = unit.isCompound();
+        boolean switching = compound != (compoundRow.getVisibility() == View.VISIBLE);
+        if (switching && compoundRow.getParent() instanceof ViewGroup parent
+                && parent.isLaidOut()) {
+            // Material fade through: the old fields fade out before the new ones fade in.
+            TransitionManager.beginDelayedTransition(parent, new MaterialFadeThrough());
+        }
         singleLayout.setVisibility(compound ? View.GONE : View.VISIBLE);
         compoundRow.setVisibility(compound ? View.VISIBLE : View.GONE);
         if (compound) {

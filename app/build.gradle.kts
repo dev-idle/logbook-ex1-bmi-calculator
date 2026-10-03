@@ -37,6 +37,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    testOptions {
+        // Espresso cannot wait for animations, so instrumented tests run with them off.
+        animationsDisabled = true
+    }
 }
 
 dependencies {

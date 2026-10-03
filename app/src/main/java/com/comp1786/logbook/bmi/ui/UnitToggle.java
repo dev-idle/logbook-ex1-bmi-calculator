@@ -7,8 +7,9 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Links a group of unit buttons to a unit enum. Button IDs are mapped rather than switched on,
- * because resource IDs are not constants under Android Gradle Plugin 9.
+ * Links a group of unit buttons to a unit enum, with a pill that slides to the selected unit.
+ * Button IDs are mapped rather than switched on, because resource IDs are not constants under
+ * Android Gradle Plugin 9.
  */
 final class UnitToggle<U extends Enum<U>> {
 
@@ -23,6 +24,7 @@ final class UnitToggle<U extends Enum<U>> {
                Consumer<U> onSelected) {
         this.group = group;
         this.buttonIds = buttonIds;
+        SlidingSelectionIndicator.attach(group);
         group.addOnButtonCheckedListener((toggleGroup, checkedId, isChecked) -> {
             if (!isChecked) {
                 return;

@@ -11,14 +11,13 @@
     </style>
 
     <!--
-        Single-choice unit selector: equal segments on one rounded track, with the selected unit
-        shown as a filled pill. A fractional inner corner keeps every segment fully rounded.
+        Single-choice unit selector: equal segments on one rounded track, drawn with the sliding
+        pill by SlidingSelectionIndicator. A fractional inner corner keeps every ripple round.
     -->
     <style name="Widget.BMICalculator.UnitToggleGroup" parent="Widget.Material3.MaterialButtonToggleGroup">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">@dimen/field_spacing</item>
-        <item name="android:background">@drawable/bg_unit_toggle_track</item>
         <item name="android:padding">@dimen/unit_toggle_track_padding</item>
         <item name="singleSelection">true</item>
         <item name="selectionRequired">true</item>
@@ -33,8 +32,8 @@
         <item name="android:minHeight">@dimen/unit_toggle_height</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="backgroundTint">@color/unit_toggle_background</item>
-        <item name="android:textColor">@color/unit_toggle_text</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>
 
     <style name="Widget.BMICalculator.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
