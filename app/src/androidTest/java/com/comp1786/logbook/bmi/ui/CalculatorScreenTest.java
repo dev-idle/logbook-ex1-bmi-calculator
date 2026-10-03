@@ -58,7 +58,7 @@ public class CalculatorScreenTest {
 
         onView(withId(R.id.calculate_button)).perform(click());
 
-        onView(withId(R.id.bmi_value)).check(matches(withText(oneDecimal(22.9))));
+        onView(withId(R.id.bmi_value)).check(matches(withText(twoDecimals(22.86))));
         onView(withId(R.id.category_label))
                 .check(matches(withText(R.string.category_healthy_weight)));
     }
@@ -102,8 +102,8 @@ public class CalculatorScreenTest {
 
         onView(withId(R.id.calculate_button)).perform(click());
 
-        // 11 st 0 lb = 154 lb = 69.85 kg; 69.85 / 1.75^2 = 22.8.
-        onView(withId(R.id.bmi_value)).check(matches(withText(oneDecimal(22.8))));
+        // 11 st 0 lb = 154 lb = 69.85 kg; 69.85 / 1.75^2 = 22.81.
+        onView(withId(R.id.bmi_value)).check(matches(withText(twoDecimals(22.81))));
     }
 
     @Test
@@ -133,10 +133,10 @@ public class CalculatorScreenTest {
     }
 
     /** Formats a value the way the screen does, so the test passes in any locale. */
-    private static String oneDecimal(double value) {
+    private static String twoDecimals(double value) {
         NumberFormat format = NumberFormat.getNumberInstance(Locale.getDefault());
-        format.setMinimumFractionDigits(1);
-        format.setMaximumFractionDigits(1);
+        format.setMinimumFractionDigits(2);
+        format.setMaximumFractionDigits(2);
         return format.format(value);
     }
 }

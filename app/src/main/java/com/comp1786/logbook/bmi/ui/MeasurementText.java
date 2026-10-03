@@ -22,6 +22,7 @@ final class MeasurementText {
     private final Resources resources;
     private final NumberFormat numberFormat;
     private final NumberFormat oneDecimalFormat;
+    private final NumberFormat bmiFormat;
 
     MeasurementText(Resources resources, Locale locale) {
         this.resources = resources;
@@ -35,6 +36,10 @@ final class MeasurementText {
         oneDecimalFormat = NumberFormat.getNumberInstance(locale);
         oneDecimalFormat.setMinimumFractionDigits(1);
         oneDecimalFormat.setMaximumFractionDigits(1);
+
+        bmiFormat = NumberFormat.getNumberInstance(locale);
+        bmiFormat.setMinimumFractionDigits(2);
+        bmiFormat.setMaximumFractionDigits(2);
     }
 
     /** Formats a value with at most one decimal place: "25" or "18.5". */
@@ -42,9 +47,14 @@ final class MeasurementText {
         return numberFormat.format(value);
     }
 
-    /** Formats a calculated value, such as a BMI, to one decimal place. */
+    /** Formats a calculated weight to one decimal place. */
     String oneDecimal(double value) {
         return oneDecimalFormat.format(value);
+    }
+
+    /** Formats a BMI to two decimal places, such as "24.96". */
+    String bmi(double value) {
+        return bmiFormat.format(value);
     }
 
     /** The symbol of a simple unit, or of the whole part of a compound unit: "kg" or "ft". */
@@ -102,21 +112,18 @@ final class MeasurementText {
         };
     }
 
-    /**
-     * The BMI values a category covers, such as "18.5 to 24.9": at one decimal place, a
-     * category's highest value is 0.1 below the next category's lower bound.
-     */
+    /** The BMI values a category covers, in the CDC's wording: "18.5 to less than 25". */
     String categoryRange(BmiCategory category) {
         if (category == BmiCategory.UNDERWEIGHT) {
             return resources.getString(
-                    R.string.category_range_below, oneDecimal(category.upperBound()));
+                    R.string.category_range_below, number(category.upperBound()));
         }
         if (Double.isInfinite(category.upperBound())) {
             return resources.getString(
-                    R.string.category_range_above, oneDecimal(category.lowerBound()));
+                    R.string.category_range_above, number(category.lowerBound()));
         }
         return resources.getString(R.string.category_range_between,
-                oneDecimal(category.lowerBound()), oneDecimal(category.upperBound() - 0.1));
+                number(category.lowerBound()), number(category.upperBound()));
     }
 
     /** A compound value such as "5 ft 8.9 in", with the part written by {@code partFormat}. */

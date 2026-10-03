@@ -61,7 +61,7 @@ public class BmiViewModelTest {
 
         BmiUiState state = viewModel.currentState();
         assertNotNull(state.result());
-        assertEquals(22.9, state.result().bmi(), DELTA);
+        assertEquals(22.86, state.result().roundedBmi(), DELTA);
         assertEquals(BmiCategory.HEALTHY_WEIGHT, state.result().category());
     }
 
@@ -72,17 +72,17 @@ public class BmiViewModelTest {
 
         viewModel.calculate(MeasurementInput.of("154.3"), new MeasurementInput("5", "8.9"));
 
-        assertEquals(22.9, viewModel.currentState().result().bmi(), DELTA);
+        assertEquals(22.85, viewModel.currentState().result().roundedBmi(), DELTA);
     }
 
     @Test
     public void calculatesFromStonesAndPounds() {
         viewModel.selectWeightUnit(WeightUnit.STONES_AND_POUNDS);
 
-        // 11 st 0 lb = 154 lb = 69.85 kg; 69.85 / 1.75^2 = 22.8.
+        // 11 st 0 lb = 154 lb = 69.85 kg; 69.85 / 1.75^2 = 22.81.
         viewModel.calculate(new MeasurementInput("11", "0"), MeasurementInput.of("175"));
 
-        assertEquals(22.8, viewModel.currentState().result().bmi(), DELTA);
+        assertEquals(22.81, viewModel.currentState().result().roundedBmi(), DELTA);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class BmiViewModelTest {
 
         viewModel.calculate(MeasurementInput.of("70"), MeasurementInput.of("1.75"));
 
-        assertEquals(22.9, viewModel.currentState().result().bmi(), DELTA);
+        assertEquals(22.86, viewModel.currentState().result().roundedBmi(), DELTA);
     }
 
     @Test

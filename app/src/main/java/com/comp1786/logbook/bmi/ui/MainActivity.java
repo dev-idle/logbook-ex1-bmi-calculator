@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         BmiCategory category = result.category();
-        String bmi = text.oneDecimal(result.bmi());
+        String bmi = text.bmi(result.roundedBmi());
         String label = getString(CategoryAppearance.label(category));
         int color = ContextCompat.getColor(this, CategoryAppearance.color(category));
 
