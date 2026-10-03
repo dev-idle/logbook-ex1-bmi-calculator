@@ -8,8 +8,11 @@ package com.comp1786.logbook.bmi.domain;
  */
 public final class BmiCalculator {
 
-    /** Healthy weight ends below 25.0, so 24.9 is its highest value at one decimal place. */
-    private static final double HIGHEST_HEALTHY_BMI = 24.9;
+    /**
+     * BMI is rounded half up before it is classified, so each category starts half a step below
+     * its published bound: a BMI of 18.45 already shows as 18.5 and counts as healthy.
+     */
+    private static final double HALF_DISPLAY_STEP = 0.05;
 
     private BmiCalculator() {
     }
@@ -28,11 +31,12 @@ public final class BmiCalculator {
 
         double heightSquared = heightMeters * heightMeters;
         double bmi = Rounding.halfUp(weightKilograms / heightSquared, 1);
+        BmiCategory healthy = BmiCategory.HEALTHY_WEIGHT;
         return new BmiResult(
                 bmi,
                 BmiCategory.of(bmi),
-                BmiCategory.HEALTHY_WEIGHT.lowerBound() * heightSquared,
-                HIGHEST_HEALTHY_BMI * heightSquared);
+                (healthy.lowerBound() - HALF_DISPLAY_STEP) * heightSquared,
+                (healthy.upperBound() - HALF_DISPLAY_STEP) * heightSquared);
     }
 
     private static void requirePositive(double value, String name) {

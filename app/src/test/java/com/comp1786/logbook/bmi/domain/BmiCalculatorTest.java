@@ -32,21 +32,36 @@ public class BmiCalculatorTest {
     }
 
     @Test
-    public void healthyWeightRangeStaysInsideTheHealthyCategory() {
+    public void healthyWeightRangeFollowsTheRoundedClassification() {
         BmiResult result = BmiCalculator.calculate(70.0, 1.75);
 
-        // 18.5 x 1.75^2 = 56.656 rounds up; 24.9 x 1.75^2 = 76.256 rounds down.
-        assertEquals(56.7, result.healthyWeightMinimum(WeightUnit.KILOGRAMS), DELTA);
-        assertEquals(76.2, result.healthyWeightMaximum(WeightUnit.KILOGRAMS), DELTA);
+        // 18.45 x 1.75^2 = 56.503 rounds up; overweight starts at 24.95 x 1.75^2 = 76.409.
+        assertEquals(56.6, result.healthyWeightMinimum(WeightUnit.KILOGRAMS), DELTA);
+        assertEquals(76.4, result.healthyWeightMaximum(WeightUnit.KILOGRAMS), DELTA);
+    }
+
+    @Test
+    public void healthyWeightRangeMatchesTheCategoryAtBothEnds() {
+        assertEquals(BmiCategory.UNDERWEIGHT, BmiCalculator.calculate(56.5, 1.75).category());
+        assertEquals(BmiCategory.HEALTHY_WEIGHT, BmiCalculator.calculate(56.6, 1.75).category());
+        assertEquals(BmiCategory.HEALTHY_WEIGHT, BmiCalculator.calculate(76.4, 1.75).category());
+        assertEquals(BmiCategory.OVERWEIGHT, BmiCalculator.calculate(76.5, 1.75).category());
+    }
+
+    @Test
+    public void highestHealthyWeightStaysBelowAnExactLimit() {
+        // At 1 m overweight starts at exactly 24.95 kg, which itself shows as BMI 25.0.
+        assertEquals(24.9, BmiCalculator.calculate(70.0, 1.0)
+                .healthyWeightMaximum(WeightUnit.KILOGRAMS), DELTA);
     }
 
     @Test
     public void healthyWeightRangeIsConvertedBeforeRounding() {
         BmiResult result = BmiCalculator.calculate(70.0, 1.75);
 
-        // 56.656 kg = 124.906 lb rounds up; 76.256 kg = 168.116 lb rounds down.
-        assertEquals(125.0, result.healthyWeightMinimum(WeightUnit.POUNDS), DELTA);
-        assertEquals(168.1, result.healthyWeightMaximum(WeightUnit.POUNDS), DELTA);
+        // 56.503 kg = 124.568 lb rounds up; 76.409 kg = 168.454 lb rounds down.
+        assertEquals(124.6, result.healthyWeightMinimum(WeightUnit.POUNDS), DELTA);
+        assertEquals(168.4, result.healthyWeightMaximum(WeightUnit.POUNDS), DELTA);
     }
 
     @Test

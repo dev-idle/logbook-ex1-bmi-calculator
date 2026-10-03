@@ -22,9 +22,14 @@ final class Rounding {
         return round(value, scale, RoundingMode.CEILING);
     }
 
-    /** Rounds down to {@code scale} decimal places. */
-    static double down(double value, int scale) {
-        return round(value, scale, RoundingMode.FLOOR);
+    /** The largest value with {@code scale} decimal places that is strictly below {@code value}. */
+    static double below(double value, int scale) {
+        BigDecimal exact = BigDecimal.valueOf(value);
+        BigDecimal floor = exact.setScale(scale, RoundingMode.FLOOR);
+        if (floor.compareTo(exact) == 0) {
+            floor = floor.subtract(BigDecimal.ONE.movePointLeft(scale));
+        }
+        return floor.doubleValue();
     }
 
     private static double round(double value, int scale, RoundingMode mode) {
