@@ -55,7 +55,7 @@ public final class MeasurementValidator {
             return MeasurementResult.invalid(whole.error(), part.error());
         }
 
-        double total = whole.value() * unit.partsPerWhole() + part.value();
+        double total = unit.combine(whole.value(), part.value());
         if (!unit.accepts(total)) {
             // The combined value is out of range; the whole field carries the message.
             return MeasurementResult.invalid(InputError.OUT_OF_RANGE, null);

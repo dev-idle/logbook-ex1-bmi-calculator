@@ -52,8 +52,7 @@ public final class MeasurementConverter {
         if (!part.isPresent()) {
             return OptionalDouble.empty();
         }
-        return OptionalDouble.of(
-                primary.getAsDouble() * unit.partsPerWhole() + part.getAsDouble());
+        return OptionalDouble.of(unit.combine(primary.getAsDouble(), part.getAsDouble()));
     }
 
     /**

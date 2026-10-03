@@ -30,6 +30,11 @@ public class HeightUnitTest {
     }
 
     @Test
+    public void combinesFeetAndInchesIntoTotalInches() {
+        assertEquals(70.5, HeightUnit.FEET_AND_INCHES.combine(5, 10.5), DELTA);
+    }
+
+    @Test
     public void rangeIsInclusiveAtBothEnds() {
         assertTrue(HeightUnit.CENTIMETERS.accepts(50.0));
         assertTrue(HeightUnit.CENTIMETERS.accepts(250.0));

@@ -32,11 +32,6 @@ public class CompoundQuantityTest {
     }
 
     @Test
-    public void totalCombinesBothParts() {
-        assertEquals(70.5, new CompoundQuantity(5, 10.5, INCHES_PER_FOOT).total(), DELTA);
-    }
-
-    @Test
     public void rejectsAPartOfAWholeUnitOrMore() {
         assertThrows(IllegalArgumentException.class,
                 () -> new CompoundQuantity(5, 12.0, INCHES_PER_FOOT));

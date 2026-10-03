@@ -50,6 +50,14 @@ public interface MeasurementUnit {
         return partsPerWhole() > 0;
     }
 
+    /**
+     * Combines the whole and part of a compound value into a total in the small unit, so
+     * 5 ft and 8.9 in become 68.9 in.
+     */
+    default double combine(double whole, double part) {
+        return whole * partsPerWhole() + part;
+    }
+
     /** Decimal places kept when a value is converted into this unit. */
     default int fractionDigits() {
         return scale().fractionDigits();

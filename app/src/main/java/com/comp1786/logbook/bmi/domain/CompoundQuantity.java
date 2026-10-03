@@ -46,9 +46,4 @@ public record CompoundQuantity(int whole, double part, int partsPerWhole) {
                 (tenths % tenthsPerWhole) / 10.0,
                 partsPerWhole);
     }
-
-    /** The quantity as a total in small units. */
-    public double total() {
-        return whole * (double) partsPerWhole + part;
-    }
 }
