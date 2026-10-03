@@ -3,6 +3,10 @@ plugins {
 }
 
 android {
+    // The module is written entirely in Java, so the Kotlin compile task and the
+    // implicit Kotlin standard library dependency added by AGP 9 are not needed.
+    enableKotlin = false
+
     namespace = "com.comp1786.logbook.bmi"
     compileSdk {
         version = release(37)
@@ -27,8 +31,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
