@@ -33,6 +33,6 @@
         android:layout_height="wrap_content"
         android:importantForAccessibility="no"
         android:textAppearance="@style/TextAppearance.BMICalculator.CategoryRow"
-        tools:text="18.5 to 24.9" />
+        tools:text="18.5 to less than 25" />
 
 </LinearLayout>

@@ -32,7 +32,7 @@ final class MeasurementText {
         numberFormat.setMinimumFractionDigits(0);
         numberFormat.setMaximumFractionDigits(1);
 
-        // Calculated values always show one decimal place: "25.0", "125.0 to 168.1".
+        // Calculated weights always show one decimal place: "56.7 kg", "125.0 lb".
         oneDecimalFormat = NumberFormat.getNumberInstance(locale);
         oneDecimalFormat.setMinimumFractionDigits(1);
         oneDecimalFormat.setMaximumFractionDigits(1);
@@ -48,7 +48,7 @@ final class MeasurementText {
     }
 
     /** Formats a calculated weight to one decimal place. */
-    String oneDecimal(double value) {
+    private String oneDecimal(double value) {
         return oneDecimalFormat.format(value);
     }
 

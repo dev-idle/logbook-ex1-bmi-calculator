@@ -10,7 +10,7 @@ public class BmiCalculatorTest {
     private static final double DELTA = 1e-9;
 
     @Test
-    public void dividesWeightByHeightSquaredAndRoundsToOneDecimal() {
+    public void dividesWeightByHeightSquared() {
         BmiResult result = BmiCalculator.calculate(70.0, 1.75);
 
         // 70 / 1.75^2 = 22.857...

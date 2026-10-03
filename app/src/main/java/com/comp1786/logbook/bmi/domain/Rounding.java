@@ -14,8 +14,9 @@ final class Rounding {
 
     /**
      * Removes floating-point error, which is around 1e-14 here, by rounding to nine decimal
-     * places. From one-decimal input, every BMI and healthy weight limit lies either exactly on
-     * a bound or at least 2e-7 from it, so this cannot move a value across one.
+     * places. From input at the precision the converter writes (0.1 kg or lb, 1 mm, 0.1 in),
+     * every BMI and healthy weight limit lies exactly on a bound or at least 2e-7 from it, so
+     * this cannot move such a value across a bound.
      */
     static double withoutFloatError(double value) {
         return halfUp(value, 9);

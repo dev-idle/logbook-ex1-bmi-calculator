@@ -57,6 +57,7 @@ final class SlidingSelectionIndicator extends Drawable {
         slide.setDuration(MotionUtils.resolveThemeDuration(context,
                 com.google.android.material.R.attr.motionDurationMedium2,
                 FALLBACK_DURATION_MILLIS));
+        // The fallback is the Material 3 standard easing curve, cubic-bezier(0.2, 0, 0, 1).
         slide.setInterpolator(MotionUtils.resolveThemeInterpolator(context,
                 com.google.android.material.R.attr.motionEasingEmphasizedInterpolator,
                 new PathInterpolator(0.2f, 0f, 0f, 1f)));

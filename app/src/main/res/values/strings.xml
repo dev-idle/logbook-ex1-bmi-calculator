@@ -63,7 +63,7 @@
 
     <!-- Result -->
     <string name="result_title">Your BMI</string>
-    <!-- Read by screen readers, e.g. "Your BMI is 22.9: Healthy weight". -->
+    <!-- Read by screen readers, e.g. "Your BMI is 22.86: Healthy weight". -->
     <string name="result_summary_description">Your BMI is %1$s: %2$s</string>
     <string name="category_list_title">BMI categories for adults</string>
     <!-- Category ranges in the CDC's wording, e.g. "18.5 to less than 25". -->
