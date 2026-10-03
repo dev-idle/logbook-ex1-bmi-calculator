@@ -46,6 +46,59 @@ public class BmiCalculatorTest {
     }
 
     @Test
+    public void classifiesABmiExactlyOnABoundDespiteFloatingPointError() {
+        // 64 / 1.6^2 is exactly 25, but double arithmetic gives 24.999999999999996.
+        BmiResult result = BmiCalculator.calculate(64.0, HeightUnit.CENTIMETERS.toBaseUnit(160.0));
+
+        assertEquals(BmiCategory.OVERWEIGHT, result.category());
+        assertEquals(25.0, result.roundedBmi(), DELTA);
+    }
+
+    @Test
+    public void classifiesEveryMetricInputThatLandsExactlyOnABound() {
+        // Searches every height and weight the metric fields accept, in 0.1 steps, with integer
+        // arithmetic: weight (tenths of kg) x 1,000,000 = bound (tenths) x height (mm) squared.
+        int checked = 0;
+        for (BmiCategory category : BmiCategory.values()) {
+            long bound = Math.round(category.lowerBound() * 10);
+            for (long millimeters = 500; millimeters <= 2800 && bound > 0; millimeters++) {
+                long product = bound * millimeters * millimeters;
+                long tenthsOfKilograms = product / 1_000_000;
+                if (product % 1_000_000 != 0 || tenthsOfKilograms < 100
+                        || tenthsOfKilograms > 4000) {
+                    continue;
+                }
+                BmiResult result = BmiCalculator.calculate(tenthsOfKilograms / 10.0,
+                        HeightUnit.CENTIMETERS.toBaseUnit(millimeters / 10.0));
+                assertEquals(tenthsOfKilograms + " at " + millimeters,
+                        category, result.category());
+                checked++;
+            }
+        }
+        assertEquals(95, checked);
+    }
+
+    @Test
+    public void healthyWeightRangeMatchesTheCategoryAtEveryMetricHeight() {
+        for (long millimeters = 500; millimeters <= 2800; millimeters++) {
+            double meters = HeightUnit.CENTIMETERS.toBaseUnit(millimeters / 10.0);
+            BmiResult result = BmiCalculator.calculate(70.0, meters);
+            double lowest = result.healthyWeightMinimum(WeightUnit.KILOGRAMS);
+            double highest = result.healthyWeightMaximum(WeightUnit.KILOGRAMS);
+            String height = millimeters + " mm";
+
+            assertEquals(height, BmiCategory.HEALTHY_WEIGHT,
+                    BmiCalculator.calculate(lowest, meters).category());
+            assertEquals(height, BmiCategory.UNDERWEIGHT,
+                    BmiCalculator.calculate(oneDecimal(lowest - 0.1), meters).category());
+            assertEquals(height, BmiCategory.HEALTHY_WEIGHT,
+                    BmiCalculator.calculate(highest, meters).category());
+            assertEquals(height, BmiCategory.OVERWEIGHT,
+                    BmiCalculator.calculate(oneDecimal(highest + 0.1), meters).category());
+        }
+    }
+
+    @Test
     public void healthyWeightRangeFollowsTheCategoryBounds() {
         BmiResult result = BmiCalculator.calculate(70.0, 1.75);
 
@@ -76,6 +129,10 @@ public class BmiCalculatorTest {
         // 56.656 kg = 124.906 lb rounds up; 76.5625 kg = 168.791 lb rounds down.
         assertEquals(125.0, result.healthyWeightMinimum(WeightUnit.POUNDS), DELTA);
         assertEquals(168.7, result.healthyWeightMaximum(WeightUnit.POUNDS), DELTA);
+    }
+
+    private static double oneDecimal(double value) {
+        return Math.round(value * 10) / 10.0;
     }
 
     @Test

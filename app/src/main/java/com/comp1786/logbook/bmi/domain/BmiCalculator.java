@@ -24,7 +24,8 @@ public final class BmiCalculator {
         requirePositive(heightMeters, "heightMeters");
 
         double heightSquared = heightMeters * heightMeters;
-        double bmi = weightKilograms / heightSquared;
+        // Without this, 64 kg at 160 cm, a BMI of exactly 25, computes as 24.999999999999996.
+        double bmi = Rounding.withoutFloatError(weightKilograms / heightSquared);
         BmiCategory healthy = BmiCategory.HEALTHY_WEIGHT;
         return new BmiResult(
                 bmi,

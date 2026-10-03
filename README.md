@@ -138,7 +138,7 @@ Android Studio's bundled JDK can be used by setting `JAVA_HOME` to its `jbr` fol
 ## Tests
 
 ```bash
-./gradlew testDebugUnitTest            # 78 unit tests for the domain, view model and gauge
+./gradlew testDebugUnitTest            # 81 unit tests for the domain, view model and gauge
 ./gradlew connectedDebugAndroidTest    # Espresso tests; needs a running emulator or device
 ./gradlew lintDebug                    # Android Lint
 ```

@@ -12,6 +12,15 @@ final class Rounding {
     private Rounding() {
     }
 
+    /**
+     * Removes floating-point error, which is around 1e-14 here, by rounding to nine decimal
+     * places. From one-decimal input, every BMI and healthy weight limit lies either exactly on
+     * a bound or at least 2e-7 from it, so this cannot move a value across one.
+     */
+    static double withoutFloatError(double value) {
+        return halfUp(value, 9);
+    }
+
     /** Rounds to {@code scale} decimal places, with halves rounded away from zero. */
     static double halfUp(double value, int scale) {
         return round(value, scale, RoundingMode.HALF_UP);
