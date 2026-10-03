@@ -1,25 +1,19 @@
 package com.comp1786.logbook.bmi.domain;
 
+import androidx.annotation.Nullable;
+
 import java.util.OptionalDouble;
 
 /**
- * Checks the weight and height typed by the user before a BMI is calculated.
- *
- * <p>A field is checked in order: it must not be empty, it must be a number, and the number
- * must be within the range accepted for the selected unit. Only the first problem is reported,
- * so the user sees one clear message per field.
+ * Checks typed weight and height values. Each field reports only its first problem: empty, not a
+ * number, or out of range.
  */
 public final class MeasurementValidator {
 
     private MeasurementValidator() {
     }
 
-    /**
-     * Validates a measurement entered in {@code unit}.
-     *
-     * <p>For a compound unit the part field is optional, so "6" feet alone means 6 ft 0 in. For
-     * a simple unit the part field is ignored.
-     */
+    /** Validates {@code input} in {@code unit}. An empty part field counts as 0. */
     public static MeasurementResult validate(MeasurementUnit unit, MeasurementInput input) {
         return unit.isCompound()
                 ? validateCompound(unit, input.primary(), input.part())
@@ -44,9 +38,7 @@ public final class MeasurementValidator {
             whole = FieldResult.invalid(InputError.NOT_A_WHOLE_NUMBER);
         }
 
-        FieldResult part = NumberInput.isBlank(partText)
-                ? FieldResult.valid(0.0)
-                : parse(partText);
+        FieldResult part = NumberInput.isBlank(partText) ? FieldResult.valid(0.0) : parse(partText);
         if (part.isValid() && part.value() >= unit.partsPerWhole()) {
             part = FieldResult.invalid(InputError.PART_OUT_OF_RANGE);
         }
@@ -57,7 +49,7 @@ public final class MeasurementValidator {
 
         double total = unit.combine(whole.value(), part.value());
         if (!unit.accepts(total)) {
-            // The combined value is out of range; the whole field carries the message.
+            // The whole field carries the message for an out-of-range total.
             return MeasurementResult.invalid(InputError.OUT_OF_RANGE, null);
         }
         return MeasurementResult.valid(total);
@@ -72,5 +64,21 @@ public final class MeasurementValidator {
         return value.isPresent()
                 ? FieldResult.valid(value.getAsDouble())
                 : FieldResult.invalid(InputError.NOT_A_NUMBER);
+    }
+
+    /** One parsed field: a value, or the error that rejected it. */
+    private record FieldResult(double value, @Nullable InputError error) {
+
+        static FieldResult valid(double value) {
+            return new FieldResult(value, null);
+        }
+
+        static FieldResult invalid(InputError error) {
+            return new FieldResult(Double.NaN, error);
+        }
+
+        boolean isValid() {
+            return error == null;
+        }
     }
 }
