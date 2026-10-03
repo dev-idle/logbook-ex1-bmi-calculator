@@ -39,6 +39,7 @@
     <style name="Widget.BMICalculator.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="helperTextEnabled">true</item>
         <item name="errorEnabled">true</item>
+        <item name="boxStrokeWidthFocused">@dimen/text_field_stroke_width_focused</item>
     </style>
 
     <!-- A number field that accepts either decimal separator; NumberInput parses both. -->

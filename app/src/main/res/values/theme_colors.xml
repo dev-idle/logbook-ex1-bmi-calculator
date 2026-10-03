@@ -4,6 +4,9 @@
         Material 3 color scheme generated with Google material-color-utilities (tonal spot) from
         the seed #1E6FB8, a calm blue associated with health care. Dark values are in
         values-night.
+
+        The error roles use the same tones as the generated error palette but chroma 56 instead
+        of 84, so the red is less harsh while text keeps a 6.15:1 contrast on the surface.
     -->
     <color name="theme_primary">#38608F</color>
     <color name="theme_on_primary">#FFFFFF</color>
@@ -30,10 +33,10 @@
     <color name="theme_tertiary_fixed_dim">#D8BDE4</color>
     <color name="theme_on_tertiary_fixed">#261431</color>
     <color name="theme_on_tertiary_fixed_variant">#533F5F</color>
-    <color name="theme_error">#BA1A1A</color>
+    <color name="theme_error">#A43B33</color>
     <color name="theme_on_error">#FFFFFF</color>
     <color name="theme_error_container">#FFDAD6</color>
-    <color name="theme_on_error_container">#93000A</color>
+    <color name="theme_on_error_container">#84241E</color>
     <color name="theme_background">#F8F9FF</color>
     <color name="theme_on_background">#191C20</color>
     <color name="theme_surface">#F8F9FF</color>

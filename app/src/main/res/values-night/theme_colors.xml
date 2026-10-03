@@ -26,8 +26,8 @@
     <color name="theme_on_tertiary_fixed">#261431</color>
     <color name="theme_on_tertiary_fixed_variant">#533F5F</color>
     <color name="theme_error">#FFB4AB</color>
-    <color name="theme_on_error">#690005</color>
-    <color name="theme_error_container">#93000A</color>
+    <color name="theme_on_error">#640C0A</color>
+    <color name="theme_error_container">#84241E</color>
     <color name="theme_on_error_container">#FFDAD6</color>
     <color name="theme_background">#111418</color>
     <color name="theme_on_background">#E1E2E8</color>

@@ -7,6 +7,8 @@
     <dimen name="field_spacing">12dp</dimen>
     <dimen name="item_spacing">8dp</dimen>
     <dimen name="card_padding">20dp</dimen>
+    <!-- Lighter than the 2dp default, yet still clearly thicker than the 1dp resting outline. -->
+    <dimen name="text_field_stroke_width_focused">1.5dp</dimen>
 
     <!-- Unit selector: 48dp touch targets on a track as tall as a text field. -->
     <dimen name="unit_toggle_height">48dp</dimen>
