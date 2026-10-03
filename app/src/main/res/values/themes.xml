@@ -1,8 +1,16 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
+    <!--
+        Material 3 day/night theme. Light and dark variants come from the parent, so no
+        separate values-night theme is needed.
+    -->
     <style name="Base.Theme.BMICalculator" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="textInputStyle">@style/Widget.BMICalculator.TextInputLayout</item>
+        <!--
+            The window is drawn edge to edge behind transparent system bars, so their icons must
+            contrast with the app's own background: dark icons in light mode, light in dark mode.
+        -->
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
     </style>
 
     <style name="Theme.BMICalculator" parent="Base.Theme.BMICalculator" />

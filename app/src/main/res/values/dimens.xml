@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Content stops growing past this width so lines stay readable on tablets. -->
+    <dimen name="content_max_width">560dp</dimen>
+    <dimen name="screen_padding">16dp</dimen>
+    <dimen name="section_spacing">24dp</dimen>
+    <dimen name="field_spacing">12dp</dimen>
+    <dimen name="item_spacing">8dp</dimen>
+    <dimen name="card_padding">20dp</dimen>
+</resources>

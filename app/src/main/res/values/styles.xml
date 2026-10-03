@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Heading above each group of inputs. -->
+    <style name="Widget.BMICalculator.SectionTitle" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/item_spacing</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="android:accessibilityHeading">true</item>
+    </style>
+
+    <!-- Single-choice unit selector, e.g. kg / lb. -->
+    <style name="Widget.BMICalculator.UnitToggleGroup" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/field_spacing</item>
+        <item name="singleSelection">true</item>
+        <item name="selectionRequired">true</item>
+    </style>
+
+    <style name="Widget.BMICalculator.UnitToggleButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">88dp</item>
+    </style>
+
+    <style name="Widget.BMICalculator.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="helperTextEnabled">true</item>
+        <item name="errorEnabled">true</item>
+    </style>
+
+    <!-- A number field that accepts either decimal separator; NumberInput parses both. -->
+    <style name="Widget.BMICalculator.DecimalInput" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:digits">0123456789.,</item>
+        <item name="android:maxLength">6</item>
+    </style>
+
+    <style name="Widget.BMICalculator.ResultCard" parent="Widget.Material3.CardView.Filled">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/section_spacing</item>
+        <item name="contentPadding">@dimen/card_padding</item>
+    </style>
+
+    <style name="TextAppearance.BMICalculator.BmiValue" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

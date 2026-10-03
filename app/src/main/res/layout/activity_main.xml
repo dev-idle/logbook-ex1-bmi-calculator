@@ -1,19 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:fitsSystemWindows="true"
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@id/scroll_view">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/app_name" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/screen_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="@dimen/content_max_width">
+
+                <!-- Weight -->
+
+                <TextView
+                    style="@style/Widget.BMICalculator.SectionTitle"
+                    android:text="@string/weight_title" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/weight_unit_group"
+                    style="@style/Widget.BMICalculator.UnitToggleGroup"
+                    app:checkedButton="@id/button_kilograms">
+
+                    <Button
+                        android:id="@+id/button_kilograms"
+                        style="@style/Widget.BMICalculator.UnitToggleButton"
+                        android:contentDescription="@string/unit_kilograms_description"
+                        android:text="@string/unit_kilograms" />
+
+                    <Button
+                        android:id="@+id/button_pounds"
+                        style="@style/Widget.BMICalculator.UnitToggleButton"
+                        android:contentDescription="@string/unit_pounds_description"
+                        android:text="@string/unit_pounds" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/weight_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/weight_hint">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/weight_input"
+                        style="@style/Widget.BMICalculator.DecimalInput"
+                        android:imeOptions="actionNext" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Height -->
+
+                <TextView
+                    style="@style/Widget.BMICalculator.SectionTitle"
+                    android:layout_marginTop="@dimen/section_spacing"
+                    android:text="@string/height_title" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/height_unit_group"
+                    style="@style/Widget.BMICalculator.UnitToggleGroup"
+                    app:checkedButton="@id/button_centimeters">
+
+                    <Button
+                        android:id="@+id/button_centimeters"
+                        style="@style/Widget.BMICalculator.UnitToggleButton"
+                        android:contentDescription="@string/unit_centimeters_description"
+                        android:text="@string/unit_centimeters" />
+
+                    <Button
+                        android:id="@+id/button_feet_and_inches"
+                        style="@style/Widget.BMICalculator.UnitToggleButton"
+                        android:contentDescription="@string/unit_feet_and_inches_description"
+                        android:text="@string/unit_feet_and_inches" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <!-- Shown for centimeters. -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/centimeters_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/height_hint"
+                    app:suffixText="@string/unit_centimeters">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/centimeters_input"
+                        style="@style/Widget.BMICalculator.DecimalInput"
+                        android:imeOptions="actionDone" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Shown for feet and inches. -->
+                <LinearLayout
+                    android:id="@+id/feet_and_inches_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/feet_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/field_spacing"
+                        android:layout_weight="1"
+                        android:hint="@string/feet_hint"
+                        app:suffixText="@string/unit_feet">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/feet_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLength="1" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inches_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/inches_hint"
+                        app:suffixText="@string/unit_inches">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inches_input"
+                            style="@style/Widget.BMICalculator.DecimalInput"
+                            android:imeOptions="actionDone"
+                            android:maxLength="4" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <!-- Actions -->
+
+                <Button
+                    android:id="@+id/calculate_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/section_spacing"
+                    android:text="@string/calculate" />
+
+                <Button
+                    android:id="@+id/clear_button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/item_spacing"
+                    android:text="@string/clear" />
+
+                <!-- Result: announced by screen readers whenever it changes. -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/result_card"
+                    style="@style/Widget.BMICalculator.ResultCard"
+                    android:accessibilityLiveRegion="polite"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/result_title"
+                            android:textAppearance="?attr/textAppearanceLabelLarge" />
+
+                        <TextView
+                            android:id="@+id/bmi_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.BMICalculator.BmiValue"
+                            tools:text="22.9" />
+
+                        <TextView
+                            android:id="@+id/category_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            tools:text="@string/category_healthy_weight" />
+
+                        <TextView
+                            android:id="@+id/healthy_range"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_spacing"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            tools:text="For your height, a healthy weight is 56.7 to 76.2 kg." />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_spacing"
+                            android:text="@string/adult_note"
+                            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

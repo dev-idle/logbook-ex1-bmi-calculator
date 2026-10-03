@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tablets get wider margins around the centered content. -->
+    <dimen name="screen_padding">32dp</dimen>
+    <dimen name="section_spacing">32dp</dimen>
+</resources>

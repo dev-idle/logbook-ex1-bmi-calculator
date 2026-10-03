@@ -1,3 +1,57 @@
 <resources>
     <string name="app_name">BMI Calculator</string>
+
+    <!-- Unit labels shown on the toggle buttons and as field suffixes. -->
+    <string name="unit_kilograms">kg</string>
+    <string name="unit_pounds">lb</string>
+    <string name="unit_centimeters">cm</string>
+    <string name="unit_feet">ft</string>
+    <string name="unit_inches">in</string>
+    <string name="unit_feet_and_inches">ft / in</string>
+
+    <!-- Spoken by screen readers instead of the abbreviations above. -->
+    <string name="unit_kilograms_description">Kilograms</string>
+    <string name="unit_pounds_description">Pounds</string>
+    <string name="unit_centimeters_description">Centimeters</string>
+    <string name="unit_feet_and_inches_description">Feet and inches</string>
+
+    <!-- Form -->
+    <string name="weight_title">Weight</string>
+    <string name="height_title">Height</string>
+    <string name="weight_hint">Weight</string>
+    <string name="height_hint">Height</string>
+    <string name="feet_hint">Feet</string>
+    <string name="inches_hint">Inches</string>
+    <string name="calculate">Calculate BMI</string>
+    <string name="clear">Clear</string>
+
+    <!-- Accepted ranges, e.g. "10 to 400 kg" or "1 ft 8 in to 8 ft 2 in". -->
+    <string name="range_with_unit">%1$s to %2$s %3$s</string>
+    <string name="range">%1$s to %2$s</string>
+    <string name="feet_and_inches_value">%1$d ft %2$s in</string>
+
+    <!-- Validation messages -->
+    <string name="error_weight_required">Please enter your weight</string>
+    <string name="error_height_required">Please enter your height</string>
+    <string name="error_feet_required">Please enter your height in feet</string>
+    <string name="error_not_a_number">Enter a number using digits only</string>
+    <string name="error_not_whole_feet">Enter whole feet and put the rest in inches</string>
+    <string name="error_inches_out_of_range">Inches must be less than 12</string>
+    <!-- %1$s is an accepted range such as "10 to 400 kg". -->
+    <string name="error_weight_out_of_range">Enter a weight from %1$s</string>
+    <string name="error_height_out_of_range">Enter a height from %1$s</string>
+
+    <!-- Result -->
+    <string name="result_title">Your BMI</string>
+    <!-- %1$s and %2$s are weights and %3$s is their unit, e.g. "56.7 to 76.2 kg". -->
+    <string name="healthy_weight_range">For your height, a healthy weight is %1$s to %2$s %3$s.</string>
+    <string name="adult_note">BMI categories apply to adults aged 20 and over. BMI is a screening measure, not a diagnosis.</string>
+
+    <!-- BMI categories, worded as in the CDC adult BMI categories. -->
+    <string name="category_underweight">Underweight</string>
+    <string name="category_healthy_weight">Healthy weight</string>
+    <string name="category_overweight">Overweight</string>
+    <string name="category_obesity_class_1">Class 1 obesity</string>
+    <string name="category_obesity_class_2">Class 2 obesity</string>
+    <string name="category_obesity_class_3">Class 3 obesity</string>
 </resources>
