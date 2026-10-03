@@ -15,4 +15,7 @@
 
     <!-- Text drawn on top of a category color. -->
     <color name="bmi_on_category">#FFFFFF</color>
+
+    <!-- Launcher icon background; the same in light and dark mode. -->
+    <color name="ic_launcher_background">#1E293B</color>
 </resources>
