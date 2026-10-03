@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One row of the BMI category scale: color dot, category name and BMI range. -->
+<!-- One row of the BMI category list: color dot, category name and BMI range. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_category_row"
     android:gravity="center_vertical"
     android:minHeight="@dimen/category_row_height"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/field_spacing">
+    android:paddingHorizontal="@dimen/category_row_padding">
 
     <View
         android:id="@+id/swatch"

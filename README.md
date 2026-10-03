@@ -9,7 +9,7 @@ feedback.
 | ID | Requirement | How it is met |
 |----|-------------|---------------|
 | LB1-01 | Take weight and height and calculate the BMI | `BmiCalculator` divides weight in kilograms by the square of height in meters and rounds to one decimal place |
-| LB1-02 | Health category feedback with color coding | The result shows the category on its color, outlines the card in it, and lists all categories on a color-coded scale with the user's highlighted (`BmiCategory`, `CategoryAppearance`) |
+| LB1-02 | Health category feedback with color coding | The result shows the category on its color, points to the BMI on a color-coded gauge, and lists all categories with the user's row tinted in its color (`BmiCategory`, `CategoryAppearance`, `BmiGaugeView`) |
 | LB1-03 | Support different units for weight and height | Weight in kilograms, pounds, or stones and pounds; height in centimeters, meters, or feet and inches; chosen with toggle buttons. A typed value is converted when the unit changes (`WeightUnit`, `HeightUnit`, `MeasurementConverter`) |
 | LB1-04 | Validate that input is a valid number within a reasonable range | `MeasurementValidator` rejects empty fields, text that is not a number, and values outside each unit's range |
 | LB1-05 | Display an error message for invalid or out-of-range input | Each problem appears on the field it belongs to and states the accepted range |
@@ -99,7 +99,7 @@ Android Studio's bundled JDK can be used by setting `JAVA_HOME` to its `jbr` fol
 ## Tests
 
 ```bash
-./gradlew testDebugUnitTest            # 69 unit tests for the domain and view model
+./gradlew testDebugUnitTest            # 73 unit tests for the domain, view model and gauge
 ./gradlew connectedDebugAndroidTest    # Espresso tests; needs a running emulator or device
 ./gradlew lintDebug                    # Android Lint
 ```

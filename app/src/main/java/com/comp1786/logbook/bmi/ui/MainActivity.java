@@ -27,7 +27,9 @@ import com.comp1786.logbook.bmi.domain.MeasurementInput;
 import com.comp1786.logbook.bmi.domain.MeasurementUnit;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 HeightUnit.FEET_AND_INCHES, R.id.button_feet_and_inches),
                 this::onHeightUnitSelected);
 
-        buildCategoryScale();
+        buildCategoryViews();
         applyWindowInsets();
         setUpMenu();
         binding.calculateButton.setOnClickListener(view -> calculate());
@@ -213,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         binding.bmiValue.setText(bmi);
         binding.categoryLabel.setText(label);
         binding.categoryLabel.setBackgroundTintList(ColorStateList.valueOf(color));
-        binding.resultCard.setStrokeColor(color);
+        binding.bmiGauge.setPointer(GaugeScale.position(result.bmi()));
         binding.resultSummary.setContentDescription(
                 getString(R.string.result_summary_description, bmi, label));
 
@@ -223,17 +225,29 @@ public class MainActivity extends AppCompatActivity {
         highlightCategory(category);
     }
 
-    /** Builds the category rows once; {@link #highlightCategory} marks the user's row. */
-    private void buildCategoryScale() {
-        for (BmiCategory category : BmiCategory.values()) {
+    /** Builds the gauge and category rows once; each result only moves the highlights. */
+    private void buildCategoryViews() {
+        BmiCategory[] categories = BmiCategory.values();
+        int[] colors = new int[categories.length];
+        List<String> boundaries = new ArrayList<>();
+        for (BmiCategory category : categories) {
+            int color = ContextCompat.getColor(this, CategoryAppearance.color(category));
+            colors[category.ordinal()] = color;
+            if (Double.isFinite(category.upperBound())) {
+                boundaries.add(text.number(category.upperBound()));
+            }
+
             ItemBmiCategoryBinding row = ItemBmiCategoryBinding.inflate(
-                    getLayoutInflater(), binding.categoryScale, true);
-            row.swatch.setBackgroundTintList(ColorStateList.valueOf(
-                    ContextCompat.getColor(this, CategoryAppearance.color(category))));
+                    getLayoutInflater(), binding.categoryList, true);
+            // The row's tint only shows while it is activated as the user's category.
+            ColorStateList tint = ColorStateList.valueOf(color);
+            row.swatch.setBackgroundTintList(tint);
+            row.getRoot().setBackgroundTintList(tint);
             row.name.setText(CategoryAppearance.label(category));
             row.range.setText(text.categoryRange(category));
             categoryRows.put(category, row);
         }
+        binding.bmiGauge.setSegments(colors, boundaries);
     }
 
     private void highlightCategory(BmiCategory current) {
@@ -242,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
             int appearance = isCurrent
                     ? R.style.TextAppearance_BMICalculator_CategoryRow_Current
                     : R.style.TextAppearance_BMICalculator_CategoryRow;
-            row.getRoot().setBackgroundResource(isCurrent ? R.drawable.bg_category_row_current : 0);
+            row.getRoot().setActivated(isCurrent);
             row.name.setTextAppearance(appearance);
             row.range.setTextAppearance(appearance);
             row.getRoot().setContentDescription(getString(isCurrent

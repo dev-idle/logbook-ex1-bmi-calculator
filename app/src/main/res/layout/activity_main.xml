@@ -227,10 +227,13 @@
                     android:visibility="gone"
                     tools:visibility="visible">
 
+                    <!-- Padding is set here, unclipped, so category rows can extend into it. -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:clipToPadding="false"
+                        android:orientation="vertical"
+                        android:padding="@dimen/card_padding">
 
                         <!--
                             Screen readers announce this summary whenever it changes, as one
@@ -268,6 +271,13 @@
 
                         </LinearLayout>
 
+                        <com.comp1786.logbook.bmi.ui.BmiGaugeView
+                            android:id="@+id/bmi_gauge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/section_spacing"
+                            android:importantForAccessibility="no" />
+
                         <TextView
                             android:id="@+id/healthy_range"
                             android:layout_width="wrap_content"
@@ -283,14 +293,20 @@
 
                         <TextView
                             style="@style/Widget.BMICalculator.SectionTitle"
-                            android:text="@string/category_scale_title"
+                            android:text="@string/category_list_title"
                             android:textAppearance="?attr/textAppearanceTitleSmall" />
 
-                        <!-- Filled from code with one item_bmi_category row per category. -->
+                        <!--
+                            Filled from code with one item_bmi_category row per category. The
+                            negative inset lines the row text up with the heading above; it is
+                            set per side, as layout_marginHorizontal ignores negative values.
+                        -->
                         <LinearLayout
-                            android:id="@+id/category_scale"
+                            android:id="@+id/category_list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/category_list_inset"
+                            android:layout_marginEnd="@dimen/category_list_inset"
                             android:orientation="vertical" />
 
                         <TextView

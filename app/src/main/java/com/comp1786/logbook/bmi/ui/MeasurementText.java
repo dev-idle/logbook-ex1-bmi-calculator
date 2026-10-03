@@ -37,7 +37,8 @@ final class MeasurementText {
         oneDecimalFormat.setMaximumFractionDigits(1);
     }
 
-    private String number(double value) {
+    /** Formats a value with at most one decimal place: "25" or "18.5". */
+    String number(double value) {
         return numberFormat.format(value);
     }
 

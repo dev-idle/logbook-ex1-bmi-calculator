@@ -61,7 +61,7 @@
     <string name="result_title">Your BMI</string>
     <!-- Read by screen readers, e.g. "Your BMI is 22.9: Healthy weight". -->
     <string name="result_summary_description">Your BMI is %1$s: %2$s</string>
-    <string name="category_scale_title">BMI categories for adults</string>
+    <string name="category_list_title">BMI categories for adults</string>
     <string name="category_range_below">Below %1$s</string>
     <string name="category_range_between">%1$s to %2$s</string>
     <string name="category_range_above">%1$s and above</string>
