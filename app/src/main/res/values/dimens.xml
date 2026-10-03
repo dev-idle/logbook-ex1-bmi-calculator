@@ -8,6 +8,10 @@
     <dimen name="item_spacing">8dp</dimen>
     <dimen name="card_padding">20dp</dimen>
 
+    <!-- Unit selector: 48dp touch targets on a track as tall as a text field. -->
+    <dimen name="unit_toggle_height">48dp</dimen>
+    <dimen name="unit_toggle_track_padding">4dp</dimen>
+
     <!-- Result -->
     <dimen name="category_row_height">40dp</dimen>
     <dimen name="category_row_padding">12dp</dimen>
