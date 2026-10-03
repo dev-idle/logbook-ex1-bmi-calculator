@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         buildCategoryScale();
         applyWindowInsets();
+        setUpMenu();
         setUpUnitToggles();
         setUpActions();
         viewModel.uiState().observe(this, this::render);
@@ -107,6 +108,18 @@ public class MainActivity extends AppCompatActivity {
                 view.post(this::keepFocusedFieldVisible);
             }
             return insets;
+        });
+    }
+
+    private void setUpMenu() {
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            // Resource IDs are not constants under AGP 9, so they are compared with if, not switch.
+            if (item.getItemId() == R.id.action_about) {
+                new AboutBmiDialogFragment()
+                        .show(getSupportFragmentManager(), AboutBmiDialogFragment.TAG);
+                return true;
+            }
+            return false;
         });
     }
 

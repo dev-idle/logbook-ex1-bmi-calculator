@@ -56,6 +56,15 @@
     <string name="healthy_weight_range">For your height, a healthy weight is %1$s to %2$s %3$s.</string>
     <string name="adult_note">BMI categories apply to adults aged 20 and over. BMI is a screening measure, not a diagnosis.</string>
 
+    <!-- About dialog -->
+    <string name="menu_about">About BMI</string>
+    <string name="about_title">About BMI</string>
+    <string name="about_message">Body mass index (BMI) is your weight in kilograms divided by the square of your height in meters.\n\nIt is a quick screening measure for adults aged 20 and over, not a diagnosis of health.\n\nThe categories follow the adult BMI categories published by the U.S. Centers for Disease Control and Prevention (CDC), which match the World Health Organization classification.</string>
+    <string name="about_open_source">Open CDC page</string>
+    <string name="about_source_url" translatable="false">https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html</string>
+    <string name="error_no_browser">No app on this device can open web pages</string>
+    <string name="ok">OK</string>
+
     <!-- BMI categories, worded as in the CDC adult BMI categories. -->
     <string name="category_underweight">Underweight</string>
     <string name="category_healthy_weight">Healthy weight</string>
