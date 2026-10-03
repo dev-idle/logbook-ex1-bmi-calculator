@@ -33,7 +33,7 @@
     <string name="clear">Clear</string>
 
     <!--
-        Accepted ranges, e.g. "10 to 400 kg" or "1 ft 8 in to 8 ft 2 in". A number and its
+        Accepted ranges, e.g. "10 to 400 kg" or "1 ft 7.7 in to 8 ft 2.4 in". A number and its
         unit are joined by a no-break space (\u00A0) so a line never breaks between them.
     -->
     <string name="range_with_unit">%1$s to %2$s\u00A0%3$s</string>
@@ -43,16 +43,19 @@
     <!-- A compound value, e.g. "5 ft 8.9 in": whole, its unit, part, its unit. -->
     <string name="compound_value">%1$d\u00A0%2$s %3$s\u00A0%4$s</string>
 
-    <!-- Validation messages -->
+    <!--
+        Validation messages, worded after Shneiderman's guidelines for error messages: positive,
+        precise, and saying how to fix the problem rather than only that there is one.
+    -->
     <string name="error_weight_required">Please enter your weight</string>
     <string name="error_height_required">Please enter your height</string>
     <string name="error_feet_required">Please enter your height in feet</string>
-    <string name="error_not_a_number">Enter a number using digits only</string>
+    <string name="error_not_a_number">Enter digits with at most one decimal point</string>
     <string name="error_not_whole_feet">Enter whole feet and put the rest in inches</string>
-    <string name="error_inches_out_of_range">Inches must be less than 12</string>
+    <string name="error_inches_out_of_range">Enter less than 12 inches, as 12 inches make a foot</string>
     <string name="error_stones_required">Please enter your weight in stones</string>
     <string name="error_not_whole_stones">Enter whole stones and put the rest in pounds</string>
-    <string name="error_pounds_out_of_range">Pounds must be less than 14</string>
+    <string name="error_pounds_out_of_range">Enter less than 14 pounds, as 14 pounds make a stone</string>
     <!-- %1$s is an accepted range such as "10 to 400 kg". -->
     <string name="error_weight_out_of_range">Enter a weight from %1$s</string>
     <string name="error_height_out_of_range">Enter a height from %1$s</string>
@@ -65,7 +68,7 @@
     <string name="category_range_below">Below %1$s</string>
     <string name="category_range_between">%1$s to %2$s</string>
     <string name="category_range_above">%1$s and above</string>
-    <!-- Read by screen readers for each row of the category scale. -->
+    <!-- Read by screen readers for each row of the category list. -->
     <string name="category_row_description">%1$s: BMI %2$s</string>
     <string name="category_row_current_description">%1$s: BMI %2$s. This is your category.</string>
     <!-- %1$s and %2$s are weights with their unit, e.g. "56.7 kg" and "76.2 kg". -->
