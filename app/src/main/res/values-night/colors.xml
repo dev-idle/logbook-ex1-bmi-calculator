@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Lighter tones of the same hues for the dark theme, paired with dark text so the contrast
+        stays above the WCAG 2.2 AA minimum on a dark background.
+    -->
+    <color name="bmi_underweight">#93C5FD</color>
+    <color name="bmi_healthy_weight">#86EFAC</color>
+    <color name="bmi_overweight">#FCD34D</color>
+    <color name="bmi_obesity_class_1">#FDBA74</color>
+    <color name="bmi_obesity_class_2">#FCA5A5</color>
+    <color name="bmi_obesity_class_3">#F87171</color>
+
+    <color name="bmi_on_category">#1C1B1F</color>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One row of the BMI category scale: color dot, category name and BMI range. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/category_row_height"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/field_spacing">
+
+    <View
+        android:id="@+id/swatch"
+        android:layout_width="@dimen/category_swatch_size"
+        android:layout_height="@dimen/category_swatch_size"
+        android:background="@drawable/bg_category_swatch"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/field_spacing"
+        android:layout_weight="1"
+        android:importantForAccessibility="no"
+        android:textAppearance="@style/TextAppearance.BMICalculator.CategoryRow"
+        tools:text="@string/category_healthy_weight" />
+
+    <TextView
+        android:id="@+id/range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        android:textAppearance="@style/TextAppearance.BMICalculator.CategoryRow"
+        tools:text="18.5 to 24.9" />
+
+</LinearLayout>

@@ -7,4 +7,9 @@
     <dimen name="field_spacing">12dp</dimen>
     <dimen name="item_spacing">8dp</dimen>
     <dimen name="card_padding">20dp</dimen>
+
+    <!-- Result -->
+    <dimen name="result_stroke_width">2dp</dimen>
+    <dimen name="category_row_height">40dp</dimen>
+    <dimen name="category_swatch_size">12dp</dimen>
 </resources>

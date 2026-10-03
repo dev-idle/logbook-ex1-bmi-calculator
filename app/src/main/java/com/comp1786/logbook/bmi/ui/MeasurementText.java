@@ -3,7 +3,6 @@ package com.comp1786.logbook.bmi.ui;
 import android.content.res.Resources;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 
 import com.comp1786.logbook.bmi.R;
 import com.comp1786.logbook.bmi.domain.BmiCategory;
@@ -113,16 +112,23 @@ final class MeasurementText {
                 : R.string.error_not_a_number);
     }
 
-    @StringRes
-    static int categoryLabel(BmiCategory category) {
-        return switch (category) {
-            case UNDERWEIGHT -> R.string.category_underweight;
-            case HEALTHY_WEIGHT -> R.string.category_healthy_weight;
-            case OVERWEIGHT -> R.string.category_overweight;
-            case OBESITY_CLASS_1 -> R.string.category_obesity_class_1;
-            case OBESITY_CLASS_2 -> R.string.category_obesity_class_2;
-            case OBESITY_CLASS_3 -> R.string.category_obesity_class_3;
-        };
+    /**
+     * The BMI values a category covers, e.g. "Below 18.5", "18.5 to 24.9" or "40.0 and above".
+     *
+     * <p>A category ends just below the next one, and BMI is shown to one decimal place, so
+     * the highest value shown is 0.1 below the next category's lower bound.
+     */
+    String categoryRange(BmiCategory category) {
+        if (category == BmiCategory.UNDERWEIGHT) {
+            return resources.getString(
+                    R.string.category_range_below, oneDecimal(category.upperBound()));
+        }
+        if (Double.isInfinite(category.upperBound())) {
+            return resources.getString(
+                    R.string.category_range_above, oneDecimal(category.lowerBound()));
+        }
+        return resources.getString(R.string.category_range_between,
+                oneDecimal(category.lowerBound()), oneDecimal(category.upperBound() - 0.1));
     }
 
     private String feetAndInches(double totalInches) {

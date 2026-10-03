@@ -1,5 +1,6 @@
 package com.comp1786.logbook.bmi.ui;
 
+import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -20,11 +22,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.comp1786.logbook.bmi.R;
 import com.comp1786.logbook.bmi.databinding.ActivityMainBinding;
+import com.comp1786.logbook.bmi.databinding.ItemBmiCategoryBinding;
+import com.comp1786.logbook.bmi.domain.BmiCategory;
 import com.comp1786.logbook.bmi.domain.BmiResult;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.MeasurementConverter;
 import com.comp1786.logbook.bmi.domain.MeasurementConverter.HeightText;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * The calculator screen: weight and height inputs with unit selection, and the result.
@@ -37,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int SYSTEM_BARS_AND_CUTOUT =
             WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout();
+
+    private final Map<BmiCategory, ItemBmiCategoryBinding> categoryRows =
+            new EnumMap<>(BmiCategory.class);
 
     private ActivityMainBinding binding;
     private BmiViewModel viewModel;
@@ -53,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 getResources(), getResources().getConfiguration().getLocales().get(0));
         viewModel = new ViewModelProvider(this).get(BmiViewModel.class);
 
+        buildCategoryScale();
         applyWindowInsets();
         setUpUnitToggles();
         setUpActions();
@@ -228,12 +239,55 @@ public class MainActivity extends AppCompatActivity {
         if (result == null) {
             return;
         }
-        binding.bmiValue.setText(text.oneDecimal(result.bmi()));
-        binding.categoryLabel.setText(MeasurementText.categoryLabel(result.category()));
+        BmiCategory category = result.category();
+        String bmi = text.oneDecimal(result.bmi());
+        String label = getString(CategoryAppearance.label(category));
+        int color = ContextCompat.getColor(this, CategoryAppearance.color(category));
+
+        binding.bmiValue.setText(bmi);
+        binding.categoryLabel.setText(label);
+        binding.categoryLabel.setBackgroundTintList(ColorStateList.valueOf(color));
+        binding.resultCard.setStrokeColor(color);
+        binding.resultSummary.setContentDescription(
+                getString(R.string.result_summary_description, bmi, label));
+
         binding.healthyRange.setText(getString(R.string.healthy_weight_range,
                 text.oneDecimal(result.healthyWeightMinimum(weightUnit)),
                 text.oneDecimal(result.healthyWeightMaximum(weightUnit)),
                 text.unitLabel(weightUnit)));
+        highlightCategory(category);
+    }
+
+    /**
+     * Adds one row per category to the scale in the result card. The rows never change, so
+     * they are created once; {@link #highlightCategory} marks the user's row.
+     */
+    private void buildCategoryScale() {
+        for (BmiCategory category : BmiCategory.values()) {
+            ItemBmiCategoryBinding row = ItemBmiCategoryBinding.inflate(
+                    getLayoutInflater(), binding.categoryScale, true);
+            row.swatch.setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(this, CategoryAppearance.color(category))));
+            row.name.setText(CategoryAppearance.label(category));
+            row.range.setText(text.categoryRange(category));
+            categoryRows.put(category, row);
+        }
+    }
+
+    private void highlightCategory(BmiCategory current) {
+        categoryRows.forEach((category, row) -> {
+            boolean isCurrent = category == current;
+            int appearance = isCurrent
+                    ? R.style.TextAppearance_BMICalculator_CategoryRow_Current
+                    : R.style.TextAppearance_BMICalculator_CategoryRow;
+            row.getRoot().setBackgroundResource(isCurrent ? R.drawable.bg_category_row_current : 0);
+            row.name.setTextAppearance(appearance);
+            row.range.setTextAppearance(appearance);
+            row.getRoot().setContentDescription(getString(isCurrent
+                            ? R.string.category_row_current_description
+                            : R.string.category_row_description,
+                    row.name.getText(), row.range.getText()));
+        });
     }
 
     // --- Helpers -------------------------------------------------------------

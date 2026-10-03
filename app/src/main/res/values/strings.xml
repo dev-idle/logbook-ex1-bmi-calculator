@@ -43,6 +43,15 @@
 
     <!-- Result -->
     <string name="result_title">Your BMI</string>
+    <!-- Read by screen readers, e.g. "Your BMI is 22.9: Healthy weight". -->
+    <string name="result_summary_description">Your BMI is %1$s: %2$s</string>
+    <string name="category_scale_title">BMI categories for adults</string>
+    <string name="category_range_below">Below %1$s</string>
+    <string name="category_range_between">%1$s to %2$s</string>
+    <string name="category_range_above">%1$s and above</string>
+    <!-- Read by screen readers for each row of the category scale. -->
+    <string name="category_row_description">%1$s: BMI %2$s</string>
+    <string name="category_row_current_description">%1$s: BMI %2$s. This is your category.</string>
     <!-- %1$s and %2$s are weights and %3$s is their unit, e.g. "56.7 to 76.2 kg". -->
     <string name="healthy_weight_range">For your height, a healthy weight is %1$s to %2$s %3$s.</string>
     <string name="adult_note">BMI categories apply to adults aged 20 and over. BMI is a screening measure, not a diagnosis.</string>

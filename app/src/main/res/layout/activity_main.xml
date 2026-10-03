@@ -186,12 +186,11 @@
                     android:layout_marginTop="@dimen/item_spacing"
                     android:text="@string/clear" />
 
-                <!-- Result: announced by screen readers whenever it changes. -->
+                <!-- Result -->
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/result_card"
                     style="@style/Widget.BMICalculator.ResultCard"
-                    android:accessibilityLiveRegion="polite"
                     android:visibility="gone"
                     tools:visibility="visible">
 
@@ -200,25 +199,41 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <!--
+                            Screen readers announce this summary whenever it changes, as one
+                            sentence set from code, rather than reading the whole card.
+                        -->
+                        <LinearLayout
+                            android:id="@+id/result_summary"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/result_title"
-                            android:textAppearance="?attr/textAppearanceLabelLarge" />
+                            android:accessibilityLiveRegion="polite"
+                            android:focusable="true"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/bmi_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.BMICalculator.BmiValue"
-                            tools:text="22.9" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:importantForAccessibility="no"
+                                android:text="@string/result_title"
+                                android:textAppearance="?attr/textAppearanceLabelLarge" />
 
-                        <TextView
-                            android:id="@+id/category_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceTitleLarge"
-                            tools:text="@string/category_healthy_weight" />
+                            <TextView
+                                android:id="@+id/bmi_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:importantForAccessibility="no"
+                                android:textAppearance="@style/TextAppearance.BMICalculator.BmiValue"
+                                tools:text="22.9" />
+
+                            <TextView
+                                android:id="@+id/category_label"
+                                style="@style/Widget.BMICalculator.CategoryPill"
+                                android:importantForAccessibility="no"
+                                tools:backgroundTint="@color/bmi_healthy_weight"
+                                tools:text="@string/category_healthy_weight" />
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/healthy_range"
@@ -227,6 +242,23 @@
                             android:layout_marginTop="@dimen/field_spacing"
                             android:textAppearance="?attr/textAppearanceBodyLarge"
                             tools:text="For your height, a healthy weight is 56.7 to 76.2 kg." />
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/field_spacing" />
+
+                        <TextView
+                            style="@style/Widget.BMICalculator.SectionTitle"
+                            android:text="@string/category_scale_title"
+                            android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+                        <!-- Filled from code with one item_bmi_category row per category. -->
+                        <LinearLayout
+                            android:id="@+id/category_scale"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
 
                         <TextView
                             android:layout_width="wrap_content"

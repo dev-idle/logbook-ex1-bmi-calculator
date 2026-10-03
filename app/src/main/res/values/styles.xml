@@ -39,14 +39,38 @@
         <item name="android:maxLength">6</item>
     </style>
 
+    <!-- The outline takes the color of the result's category at runtime. -->
     <style name="Widget.BMICalculator.ResultCard" parent="Widget.Material3.CardView.Filled">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/section_spacing</item>
         <item name="contentPadding">@dimen/card_padding</item>
+        <item name="strokeWidth">@dimen/result_stroke_width</item>
+    </style>
+
+    <!-- Category name on a background of the category's color. -->
+    <style name="Widget.BMICalculator.CategoryPill" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/item_spacing</item>
+        <item name="android:background">@drawable/bg_category_pill</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="android:textColor">@color/bmi_on_category</item>
     </style>
 
     <style name="TextAppearance.BMICalculator.BmiValue" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.BMICalculator.CategoryRow" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- The user's own category, drawn on bg_category_row_current. -->
+    <style name="TextAppearance.BMICalculator.CategoryRow.Current">
+        <item name="android:textColor">?attr/colorOnSecondaryContainer</item>
         <item name="android:textStyle">bold</item>
     </style>
 
