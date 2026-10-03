@@ -1,0 +1,22 @@
+# Store and check out text files with LF on every platform, matching .editorconfig.
+* text=auto eol=lf
+
+# Windows scripts must keep CRLF to run.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Source and build files.
+*.java text diff=java
+*.kts text diff=kotlin
+*.xml text
+*.toml text
+*.properties text
+*.md text diff=markdown
+
+# Binary assets.
+*.jar binary
+*.png binary
+*.jpg binary
+*.webp binary
+*.ttf binary
+*.otf binary
