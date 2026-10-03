@@ -15,11 +15,11 @@ public record MeasurementResult(
         @Nullable InputError primaryError,
         @Nullable InputError partError) {
 
-    public static MeasurementResult valid(double value) {
+    static MeasurementResult valid(double value) {
         return new MeasurementResult(value, null, null);
     }
 
-    public static MeasurementResult invalid(
+    static MeasurementResult invalid(
             @Nullable InputError primaryError, @Nullable InputError partError) {
         return new MeasurementResult(Double.NaN, primaryError, partError);
     }
