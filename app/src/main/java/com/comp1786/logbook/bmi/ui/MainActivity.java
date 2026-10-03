@@ -40,8 +40,8 @@ import java.util.Map;
  * The calculator screen: weight and height inputs with unit selection, and the result.
  *
  * <p>The activity only draws {@link BmiUiState} and forwards user actions to
- * {@link BmiViewModel}. The one thing it changes itself is the text of the input fields, when a
- * unit switch converts what the user has already typed.
+ * {@link BmiViewModel}. The one thing it changes itself is the text of the input fields: a unit
+ * switch converts what the user has already typed, and Clear empties them.
  */
 public class MainActivity extends AppCompatActivity {
 
