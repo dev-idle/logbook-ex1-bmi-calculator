@@ -76,6 +76,16 @@ public class BmiViewModelTest {
     }
 
     @Test
+    public void calculatesFromStonesAndPounds() {
+        viewModel.selectWeightUnit(WeightUnit.STONES_AND_POUNDS);
+
+        // 11 st 0 lb = 154 lb = 69.85 kg; 69.85 / 1.75^2 = 22.8.
+        viewModel.calculate(new MeasurementInput("11", "0"), MeasurementInput.of("175"));
+
+        assertEquals(22.8, viewModel.currentState().result().bmi(), DELTA);
+    }
+
+    @Test
     public void reportsEveryInvalidFieldAtOnce() {
         viewModel.selectHeightUnit(HeightUnit.FEET_AND_INCHES);
 

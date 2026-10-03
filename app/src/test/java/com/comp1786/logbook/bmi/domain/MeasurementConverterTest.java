@@ -51,6 +51,22 @@ public class MeasurementConverterTest {
     }
 
     @Test
+    public void convertsKilogramsToStonesAndPounds() {
+        // 70 kg = 154.32 lb = 11 st 0.3 lb.
+        MeasurementInput input =
+                convert("70", "", WeightUnit.KILOGRAMS, WeightUnit.STONES_AND_POUNDS);
+
+        assertEquals("11", input.primary());
+        assertEquals("0.3", input.part());
+    }
+
+    @Test
+    public void convertsStonesAndPoundsToPoundsWithoutLoss() {
+        assertEquals("154",
+                convert("11", "0", WeightUnit.STONES_AND_POUNDS, WeightUnit.POUNDS).primary());
+    }
+
+    @Test
     public void treatsAnEmptyPartAsZero() {
         assertEquals("182.9",
                 convert("6", "", HeightUnit.FEET_AND_INCHES, HeightUnit.CENTIMETERS).primary());

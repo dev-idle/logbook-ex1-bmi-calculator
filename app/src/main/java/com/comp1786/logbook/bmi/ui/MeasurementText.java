@@ -133,6 +133,7 @@ final class MeasurementText {
             return switch (weight) {
                 case KILOGRAMS -> R.string.unit_kilograms;
                 case POUNDS -> R.string.unit_pounds;
+                case STONES_AND_POUNDS -> R.string.unit_stones;
             };
         }
         if (unit instanceof HeightUnit height) {
@@ -144,11 +145,14 @@ final class MeasurementText {
         throw new IllegalArgumentException("Unknown unit: " + unit);
     }
 
-    /** The symbol of the part of a compound unit: "in" for feet and inches. */
+    /** The symbol of the part of a compound unit: "in" for feet and inches, "lb" for stones. */
     @StringRes
     private static int partSymbolRes(MeasurementUnit unit) {
         if (unit == HeightUnit.FEET_AND_INCHES) {
             return R.string.unit_inches;
+        }
+        if (unit == WeightUnit.STONES_AND_POUNDS) {
+            return R.string.unit_pounds;
         }
         throw new IllegalArgumentException("Not a compound unit: " + unit);
     }

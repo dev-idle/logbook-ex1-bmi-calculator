@@ -92,6 +92,22 @@ public class MeasurementValidatorTest {
     }
 
     @Test
+    public void acceptsStonesAndPounds() {
+        MeasurementResult result = validate(WeightUnit.STONES_AND_POUNDS, "11", "3.5");
+
+        assertTrue(result.isValid());
+        // 11 st 3.5 lb = 11 x 14 + 3.5 = 157.5 lb.
+        assertEquals(157.5, result.value(), DELTA);
+    }
+
+    @Test
+    public void rejectsFourteenPoundsOrMore() {
+        assertEquals(InputError.PART_OUT_OF_RANGE,
+                validate(WeightUnit.STONES_AND_POUNDS, "11", "14").partError());
+        assertTrue(validate(WeightUnit.STONES_AND_POUNDS, "11", "13.9").isValid());
+    }
+
+    @Test
     public void reportsACombinedValueOutsideTheRangeOnTheWholeField() {
         MeasurementResult result = validate(HeightUnit.FEET_AND_INCHES, "9", "0");
 

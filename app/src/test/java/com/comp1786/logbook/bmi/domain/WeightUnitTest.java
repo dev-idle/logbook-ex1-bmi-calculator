@@ -29,6 +29,21 @@ public class WeightUnitTest {
     }
 
     @Test
+    public void stonesAndPoundsIsACompoundOfFourteenPoundsPerStone() {
+        assertTrue(WeightUnit.STONES_AND_POUNDS.isCompound());
+        assertEquals(14, WeightUnit.STONES_AND_POUNDS.partsPerWhole());
+        // Values are total pounds, so they convert exactly like pounds.
+        assertEquals(WeightUnit.POUNDS.toBaseUnit(154.0),
+                WeightUnit.STONES_AND_POUNDS.toBaseUnit(154.0), DELTA);
+    }
+
+    @Test
+    public void simpleUnitsAreNotCompound() {
+        assertFalse(WeightUnit.KILOGRAMS.isCompound());
+        assertFalse(WeightUnit.POUNDS.isCompound());
+    }
+
+    @Test
     public void rangeIsInclusiveAtBothEnds() {
         assertTrue(WeightUnit.KILOGRAMS.accepts(10.0));
         assertTrue(WeightUnit.KILOGRAMS.accepts(400.0));

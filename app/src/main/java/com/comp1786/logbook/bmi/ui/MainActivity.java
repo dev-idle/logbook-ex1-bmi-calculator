@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 binding.feetLayout, binding.inchesLayout);
         weightToggle = new UnitToggle<>(binding.weightUnitGroup, Map.of(
                 WeightUnit.KILOGRAMS, R.id.button_kilograms,
-                WeightUnit.POUNDS, R.id.button_pounds),
+                WeightUnit.POUNDS, R.id.button_pounds,
+                WeightUnit.STONES_AND_POUNDS, R.id.button_stones_and_pounds),
                 this::onWeightUnitSelected);
         heightToggle = new UnitToggle<>(binding.heightUnitGroup, Map.of(
                 HeightUnit.CENTIMETERS, R.id.button_centimeters,

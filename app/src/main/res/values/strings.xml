@@ -9,12 +9,14 @@
     <string name="unit_feet">ft</string>
     <string name="unit_inches">in</string>
     <string name="unit_feet_and_inches">ft / in</string>
+    <string name="unit_stones_and_pounds">st / lb</string>
 
     <!-- Spoken by screen readers instead of the abbreviations above. -->
     <string name="unit_kilograms_description">Kilograms</string>
     <string name="unit_pounds_description">Pounds</string>
     <string name="unit_centimeters_description">Centimeters</string>
     <string name="unit_feet_and_inches_description">Feet and inches</string>
+    <string name="unit_stones_and_pounds_description">Stones and pounds</string>
 
     <!-- Form -->
     <string name="weight_title">Weight</string>
@@ -28,13 +30,16 @@
     <string name="calculate">Calculate BMI</string>
     <string name="clear">Clear</string>
 
-    <!-- Accepted ranges, e.g. "10 to 400 kg" or "1 ft 8 in to 8 ft 2 in". -->
-    <string name="range_with_unit">%1$s to %2$s %3$s</string>
+    <!--
+        Accepted ranges, e.g. "10 to 400 kg" or "1 ft 8 in to 8 ft 2 in". A number and its
+        unit are joined by a no-break space (\u00A0) so a line never breaks between them.
+    -->
+    <string name="range_with_unit">%1$s to %2$s\u00A0%3$s</string>
     <string name="range">%1$s to %2$s</string>
     <!-- A value and its unit, e.g. "56.7 kg". -->
-    <string name="value_with_unit">%1$s %2$s</string>
+    <string name="value_with_unit">%1$s\u00A0%2$s</string>
     <!-- A compound value, e.g. "5 ft 8.9 in": whole, its unit, part, its unit. -->
-    <string name="compound_value">%1$d %2$s %3$s %4$s</string>
+    <string name="compound_value">%1$d\u00A0%2$s %3$s\u00A0%4$s</string>
 
     <!-- Validation messages -->
     <string name="error_weight_required">Please enter your weight</string>

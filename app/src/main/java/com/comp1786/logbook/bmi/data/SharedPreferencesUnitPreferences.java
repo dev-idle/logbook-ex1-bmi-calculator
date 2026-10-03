@@ -14,7 +14,8 @@ import java.util.Locale;
  * Stores the selected units in {@link SharedPreferences}.
  *
  * <p>Before the user picks anything, the units follow the measurement system of the device's
- * locale: pounds and feet in the US and UK, kilograms and centimeters elsewhere.
+ * locale: stones and feet in the UK, pounds and feet in the US, and kilograms and centimeters
+ * elsewhere.
  */
 public final class SharedPreferencesUnitPreferences implements UnitPreferences {
 
@@ -24,26 +25,32 @@ public final class SharedPreferencesUnitPreferences implements UnitPreferences {
     private static final String KEY_HEIGHT_UNIT = "height_unit";
 
     private final SharedPreferences preferences;
-    private final boolean imperialByDefault;
+    private final LocaleData.MeasurementSystem measurementSystem;
 
     public SharedPreferencesUnitPreferences(Context context, Locale locale) {
         preferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        LocaleData.MeasurementSystem system =
-                LocaleData.getMeasurementSystem(ULocale.forLocale(locale));
-        imperialByDefault = system == LocaleData.MeasurementSystem.US
-                || system == LocaleData.MeasurementSystem.UK;
+        measurementSystem = LocaleData.getMeasurementSystem(ULocale.forLocale(locale));
     }
 
     @Override
     public WeightUnit weightUnit() {
-        return read(KEY_WEIGHT_UNIT, WeightUnit.class,
-                imperialByDefault ? WeightUnit.POUNDS : WeightUnit.KILOGRAMS);
+        WeightUnit defaultUnit;
+        if (measurementSystem == LocaleData.MeasurementSystem.UK) {
+            defaultUnit = WeightUnit.STONES_AND_POUNDS;
+        } else if (measurementSystem == LocaleData.MeasurementSystem.US) {
+            defaultUnit = WeightUnit.POUNDS;
+        } else {
+            defaultUnit = WeightUnit.KILOGRAMS;
+        }
+        return read(KEY_WEIGHT_UNIT, WeightUnit.class, defaultUnit);
     }
 
     @Override
     public HeightUnit heightUnit() {
+        boolean imperial = measurementSystem == LocaleData.MeasurementSystem.UK
+                || measurementSystem == LocaleData.MeasurementSystem.US;
         return read(KEY_HEIGHT_UNIT, HeightUnit.class,
-                imperialByDefault ? HeightUnit.FEET_AND_INCHES : HeightUnit.CENTIMETERS);
+                imperial ? HeightUnit.FEET_AND_INCHES : HeightUnit.CENTIMETERS);
     }
 
     @Override

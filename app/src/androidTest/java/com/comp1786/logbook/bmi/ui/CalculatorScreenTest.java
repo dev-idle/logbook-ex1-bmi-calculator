@@ -93,6 +93,30 @@ public class CalculatorScreenTest {
         onView(withId(R.id.weight_input)).check(matches(withText("154.3")));
     }
 
+    @Test
+    public void calculatesFromStonesAndPounds() {
+        onView(withId(R.id.button_stones_and_pounds)).perform(click());
+        onView(withId(R.id.stones_input)).perform(replaceText("11"));
+        onView(withId(R.id.weight_pounds_input)).perform(replaceText("0"));
+        onView(withId(R.id.height_input)).perform(replaceText("175"), closeSoftKeyboard());
+
+        onView(withId(R.id.calculate_button)).perform(click());
+
+        // 11 st 0 lb = 154 lb = 69.85 kg; 69.85 / 1.75^2 = 22.8.
+        onView(withId(R.id.bmi_value)).check(matches(withText(oneDecimal(22.8))));
+    }
+
+    @Test
+    public void convertsKilogramsToStonesAndPounds() {
+        onView(withId(R.id.weight_input)).perform(replaceText("70"), closeSoftKeyboard());
+
+        onView(withId(R.id.button_stones_and_pounds)).perform(click());
+
+        // 70 kg = 154.32 lb = 11 st 0.3 lb.
+        onView(withId(R.id.stones_input)).check(matches(withText("11")));
+        onView(withId(R.id.weight_pounds_input)).check(matches(withText("0.3")));
+    }
+
     private static void enterMeasurements(String weight, String centimeters) {
         onView(withId(R.id.weight_input)).perform(replaceText(weight));
         onView(withId(R.id.height_input))

@@ -68,6 +68,12 @@
                         android:contentDescription="@string/unit_pounds_description"
                         android:text="@string/unit_pounds" />
 
+                    <Button
+                        android:id="@+id/button_stones_and_pounds"
+                        style="@style/Widget.BMICalculator.UnitToggleButton"
+                        android:contentDescription="@string/unit_stones_and_pounds_description"
+                        android:text="@string/unit_stones_and_pounds" />
+
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <!-- Shown for simple weight units; the suffix is set from the unit. -->
