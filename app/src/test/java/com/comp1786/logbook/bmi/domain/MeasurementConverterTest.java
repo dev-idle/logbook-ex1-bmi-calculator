@@ -3,9 +3,9 @@ package com.comp1786.logbook.bmi.domain;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import com.comp1786.logbook.bmi.domain.MeasurementConverter.FieldText;
-
 import org.junit.Test;
+
+import java.util.Optional;
 
 public class MeasurementConverterTest {
 
@@ -27,27 +27,27 @@ public class MeasurementConverterTest {
 
     @Test
     public void leavesTextThatIsNotANumber() {
-        assertFalse(MeasurementConverter
-                .convert("abc", "", WeightUnit.KILOGRAMS, WeightUnit.POUNDS).isPresent());
-        assertFalse(MeasurementConverter
-                .convert("", "", WeightUnit.KILOGRAMS, WeightUnit.POUNDS).isPresent());
+        assertFalse(tryConvert("abc", "", WeightUnit.KILOGRAMS, WeightUnit.POUNDS).isPresent());
+        assertFalse(tryConvert("", "", WeightUnit.KILOGRAMS, WeightUnit.POUNDS).isPresent());
     }
 
     @Test
     public void convertsASimpleUnitToACompoundOne() {
         // 175 cm = 68.898 in = 5 ft 8.9 in.
-        FieldText text = convert("175", "", HeightUnit.CENTIMETERS, HeightUnit.FEET_AND_INCHES);
+        MeasurementInput input =
+                convert("175", "", HeightUnit.CENTIMETERS, HeightUnit.FEET_AND_INCHES);
 
-        assertEquals("5", text.primary());
-        assertEquals("8.9", text.part());
+        assertEquals("5", input.primary());
+        assertEquals("8.9", input.part());
     }
 
     @Test
     public void convertsACompoundUnitToASimpleOne() {
-        FieldText text = convert("5", "8.9", HeightUnit.FEET_AND_INCHES, HeightUnit.CENTIMETERS);
+        MeasurementInput input =
+                convert("5", "8.9", HeightUnit.FEET_AND_INCHES, HeightUnit.CENTIMETERS);
 
-        assertEquals("175", text.primary());
-        assertEquals("", text.part());
+        assertEquals("175", input.primary());
+        assertEquals("", input.part());
     }
 
     @Test
@@ -58,8 +58,8 @@ public class MeasurementConverterTest {
 
     @Test
     public void leavesACompoundValueThatCannotBeRead() {
-        assertFalse(MeasurementConverter.convert(
-                "5", "x", HeightUnit.FEET_AND_INCHES, HeightUnit.CENTIMETERS).isPresent());
+        assertFalse(tryConvert("5", "x", HeightUnit.FEET_AND_INCHES, HeightUnit.CENTIMETERS)
+                .isPresent());
     }
 
     @Test
@@ -69,8 +69,13 @@ public class MeasurementConverterTest {
         assertEquals("70", convert(pounds, "", WeightUnit.POUNDS, WeightUnit.KILOGRAMS).primary());
     }
 
-    private static <U extends Enum<U> & MeasurementUnit> FieldText convert(
+    private static <U extends Enum<U> & MeasurementUnit> MeasurementInput convert(
             String primary, String part, U from, U to) {
-        return MeasurementConverter.convert(primary, part, from, to).orElseThrow();
+        return tryConvert(primary, part, from, to).orElseThrow();
+    }
+
+    private static <U extends Enum<U> & MeasurementUnit> Optional<MeasurementInput> tryConvert(
+            String primary, String part, U from, U to) {
+        return MeasurementConverter.convert(new MeasurementInput(primary, part), from, to);
     }
 }

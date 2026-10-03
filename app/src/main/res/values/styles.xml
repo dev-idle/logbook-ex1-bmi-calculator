@@ -40,6 +40,44 @@
     </style>
 
     <!-- The outline takes the color of the result's category at runtime. -->
+    <!--
+        A compound unit such as feet and inches is typed into two fields side by side: a whole
+        field and a part field. Hidden until a compound unit is selected.
+    -->
+    <style name="Widget.BMICalculator.CompoundRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:baselineAligned">false</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="Widget.BMICalculator.WholeField" parent="Widget.BMICalculator.TextInputLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginEnd">@dimen/field_spacing</item>
+    </style>
+
+    <style name="Widget.BMICalculator.PartField" parent="Widget.BMICalculator.TextInputLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <!-- Whole feet or stones: digits only. -->
+    <style name="Widget.BMICalculator.WholeInput" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">2</item>
+    </style>
+
+    <!-- Inches or pounds below one whole unit, e.g. "11.5". -->
+    <style name="Widget.BMICalculator.PartInput" parent="Widget.BMICalculator.DecimalInput">
+        <item name="android:maxLength">4</item>
+    </style>
+
     <style name="Widget.BMICalculator.ResultCard" parent="Widget.Material3.CardView.Filled">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

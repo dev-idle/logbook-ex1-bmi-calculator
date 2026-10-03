@@ -17,15 +17,13 @@ public final class MeasurementValidator {
     /**
      * Validates a measurement entered in {@code unit}.
      *
-     * @param primaryText the single field, or the whole field of a compound unit (e.g. feet)
-     * @param partText    the part field of a compound unit (e.g. inches); ignored for simple
-     *                    units, and optional otherwise, so "6" feet alone means 6 ft 0 in
+     * <p>For a compound unit the part field is optional, so "6" feet alone means 6 ft 0 in. For
+     * a simple unit the part field is ignored.
      */
-    public static MeasurementResult validate(
-            MeasurementUnit unit, String primaryText, String partText) {
+    public static MeasurementResult validate(MeasurementUnit unit, MeasurementInput input) {
         return unit.isCompound()
-                ? validateCompound(unit, primaryText, partText)
-                : validateSimple(unit, primaryText);
+                ? validateCompound(unit, input.primary(), input.part())
+                : validateSimple(unit, input.primary());
     }
 
     private static MeasurementResult validateSimple(MeasurementUnit unit, String text) {

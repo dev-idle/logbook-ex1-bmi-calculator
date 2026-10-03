@@ -95,7 +95,7 @@ public class CalculatorScreenTest {
 
     private static void enterMeasurements(String weight, String centimeters) {
         onView(withId(R.id.weight_input)).perform(replaceText(weight));
-        onView(withId(R.id.centimeters_input))
+        onView(withId(R.id.height_input))
                 .perform(replaceText(centimeters), closeSoftKeyboard());
     }
 

@@ -10,6 +10,7 @@ import com.comp1786.logbook.bmi.data.UnitPreferences;
 import com.comp1786.logbook.bmi.domain.BmiCalculator;
 import com.comp1786.logbook.bmi.domain.BmiResult;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
+import com.comp1786.logbook.bmi.domain.MeasurementInput;
 import com.comp1786.logbook.bmi.domain.MeasurementResult;
 import com.comp1786.logbook.bmi.domain.MeasurementValidator;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
@@ -71,42 +72,43 @@ public final class BmiViewModel extends ViewModel {
         }
     }
 
+    /** The single weight field, or the whole field of a compound unit, was edited. */
     public void onWeightEdited() {
-        update(BmiUiState::withWeightEdited);
+        update(state -> state.withWeightErrors(state.weightErrors().withoutPrimary()));
     }
 
+    /** The part field of a compound weight unit was edited. */
+    public void onWeightPartEdited() {
+        update(state -> state.withWeightErrors(state.weightErrors().withoutPart()));
+    }
+
+    /** The single height field, or the whole field of a compound unit, was edited. */
     public void onHeightEdited() {
-        update(BmiUiState::withHeightEdited);
+        update(state -> state.withHeightErrors(state.heightErrors().withoutPrimary()));
     }
 
-    public void onInchesEdited() {
-        update(BmiUiState::withInchesEdited);
+    /** The part field of a compound height unit was edited. */
+    public void onHeightPartEdited() {
+        update(state -> state.withHeightErrors(state.heightErrors().withoutPart()));
     }
 
     /**
      * Validates the typed values and, when all are valid, calculates the BMI. Otherwise the
      * state reports an error for every invalid field at once.
-     *
-     * @param weightText  the weight field
-     * @param heightText  the centimeters field, or the feet field for feet and inches
-     * @param inchesText  the inches field; ignored for centimeters
      */
-    public void calculate(String weightText, String heightText, String inchesText) {
+    public void calculate(MeasurementInput weightInput, MeasurementInput heightInput) {
         BmiUiState state = currentState();
-        MeasurementResult weight =
-                MeasurementValidator.validate(state.weightUnit(), weightText, "");
-        MeasurementResult height =
-                MeasurementValidator.validate(state.heightUnit(), heightText, inchesText);
+        MeasurementResult weight = MeasurementValidator.validate(state.weightUnit(), weightInput);
+        MeasurementResult height = MeasurementValidator.validate(state.heightUnit(), heightInput);
 
         if (!weight.isValid() || !height.isValid()) {
-            uiState.setValue(state.withErrors(
-                    weight.primaryError(), height.primaryError(), height.partError()));
+            uiState.setValue(state.withErrors(FieldErrors.of(weight), FieldErrors.of(height)));
             return;
         }
 
-        BmiResult result = BmiCalculator.calculate(
-                state.weightUnit().toBaseUnit(weight.value()),
-                state.heightUnit().toBaseUnit(height.value()));
+        double kilograms = state.weightUnit().toBaseUnit(weight.value());
+        double meters = state.heightUnit().toBaseUnit(height.value());
+        BmiResult result = BmiCalculator.calculate(kilograms, meters);
         uiState.setValue(state.withResult(result));
     }
 

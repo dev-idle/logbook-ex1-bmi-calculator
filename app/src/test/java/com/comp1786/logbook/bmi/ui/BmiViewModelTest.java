@@ -9,6 +9,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import com.comp1786.logbook.bmi.domain.BmiCategory;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.InputError;
+import com.comp1786.logbook.bmi.domain.MeasurementInput;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
 import org.junit.Before;
@@ -18,6 +19,7 @@ import org.junit.Test;
 public class BmiViewModelTest {
 
     private static final double DELTA = 1e-9;
+    private static final MeasurementInput EMPTY = MeasurementInput.EMPTY;
 
     /** Runs LiveData updates synchronously so the state can be read straight after an action. */
     @Rule
@@ -55,7 +57,7 @@ public class BmiViewModelTest {
 
     @Test
     public void calculatesFromValidMetricInput() {
-        viewModel.calculate("70", "175", "");
+        viewModel.calculate(MeasurementInput.of("70"), MeasurementInput.of("175"));
 
         BmiUiState state = viewModel.currentState();
         assertNotNull(state.result());
@@ -68,7 +70,7 @@ public class BmiViewModelTest {
         viewModel.selectWeightUnit(WeightUnit.POUNDS);
         viewModel.selectHeightUnit(HeightUnit.FEET_AND_INCHES);
 
-        viewModel.calculate("154.3", "5", "8.9");
+        viewModel.calculate(MeasurementInput.of("154.3"), new MeasurementInput("5", "8.9"));
 
         assertEquals(22.9, viewModel.currentState().result().bmi(), DELTA);
     }
@@ -77,29 +79,41 @@ public class BmiViewModelTest {
     public void reportsEveryInvalidFieldAtOnce() {
         viewModel.selectHeightUnit(HeightUnit.FEET_AND_INCHES);
 
-        viewModel.calculate("", "5", "13");
+        viewModel.calculate(EMPTY, new MeasurementInput("5", "13"));
 
         BmiUiState state = viewModel.currentState();
-        assertEquals(InputError.REQUIRED, state.weightError());
-        assertNull(state.heightError());
-        assertEquals(InputError.PART_OUT_OF_RANGE, state.inchesError());
+        assertEquals(InputError.REQUIRED, state.weightErrors().primary());
+        assertNull(state.heightErrors().primary());
+        assertEquals(InputError.PART_OUT_OF_RANGE, state.heightErrors().part());
         assertNull(state.result());
     }
 
     @Test
     public void editingAFieldClearsItsErrorAndKeepsTheOthers() {
-        viewModel.calculate("", "", "");
+        viewModel.calculate(EMPTY, EMPTY);
 
         viewModel.onWeightEdited();
 
         BmiUiState state = viewModel.currentState();
-        assertNull(state.weightError());
-        assertEquals(InputError.REQUIRED, state.heightError());
+        assertNull(state.weightErrors().primary());
+        assertEquals(InputError.REQUIRED, state.heightErrors().primary());
+    }
+
+    @Test
+    public void editingThePartFieldClearsOnlyItsError() {
+        viewModel.selectHeightUnit(HeightUnit.FEET_AND_INCHES);
+        viewModel.calculate(MeasurementInput.of("70"), new MeasurementInput("", "13"));
+
+        viewModel.onHeightPartEdited();
+
+        BmiUiState state = viewModel.currentState();
+        assertEquals(InputError.REQUIRED, state.heightErrors().primary());
+        assertNull(state.heightErrors().part());
     }
 
     @Test
     public void editingAfterAResultHidesTheOutdatedResult() {
-        viewModel.calculate("70", "175", "");
+        viewModel.calculate(MeasurementInput.of("70"), MeasurementInput.of("175"));
 
         viewModel.onHeightEdited();
 
@@ -108,7 +122,7 @@ public class BmiViewModelTest {
 
     @Test
     public void changingAUnitHidesTheOutdatedResult() {
-        viewModel.calculate("70", "175", "");
+        viewModel.calculate(MeasurementInput.of("70"), MeasurementInput.of("175"));
 
         viewModel.selectWeightUnit(WeightUnit.POUNDS);
 
@@ -119,7 +133,7 @@ public class BmiViewModelTest {
     @Test
     public void clearRemovesErrorsAndResultButKeepsUnits() {
         viewModel.selectWeightUnit(WeightUnit.POUNDS);
-        viewModel.calculate("", "", "");
+        viewModel.calculate(EMPTY, EMPTY);
 
         viewModel.clear();
 

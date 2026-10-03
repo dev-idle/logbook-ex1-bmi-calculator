@@ -3,19 +3,21 @@ package com.comp1786.logbook.bmi.ui;
 import android.content.res.Resources;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 
 import com.comp1786.logbook.bmi.R;
 import com.comp1786.logbook.bmi.domain.BmiCategory;
 import com.comp1786.logbook.bmi.domain.CompoundQuantity;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.InputError;
+import com.comp1786.logbook.bmi.domain.MeasurementUnit;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Builds the text the calculator screen shows: unit labels, accepted ranges, error messages and
+ * Builds the text the calculator screen shows: unit symbols, accepted ranges, error messages and
  * numbers formatted for the user's locale.
  */
 final class MeasurementText {
@@ -43,72 +45,58 @@ final class MeasurementText {
         return numberFormat.format(value);
     }
 
-    /** Formats a calculated value, such as a BMI or a healthy weight, to one decimal place. */
+    /** Formats a calculated value, such as a BMI, to one decimal place. */
     String oneDecimal(double value) {
         return oneDecimalFormat.format(value);
     }
 
-    String unitLabel(WeightUnit unit) {
-        return resources.getString(switch (unit) {
-            case KILOGRAMS -> R.string.unit_kilograms;
-            case POUNDS -> R.string.unit_pounds;
-        });
+    /** The symbol of a simple unit, or of the whole part of a compound unit: "kg" or "ft". */
+    String symbol(MeasurementUnit unit) {
+        return resources.getString(symbolRes(unit));
     }
 
-    /** The accepted weight range, e.g. "10 to 400 kg". */
-    String weightRange(WeightUnit unit) {
+    /** The accepted range, e.g. "10 to 400 kg" or "1 ft 8 in to 8 ft 2 in". */
+    String range(MeasurementUnit unit) {
+        if (unit.isCompound()) {
+            return resources.getString(R.string.range,
+                    compound(unit.minimum(), unit, numberFormat),
+                    compound(unit.maximum(), unit, numberFormat));
+        }
         return resources.getString(R.string.range_with_unit,
-                number(unit.minimum()), number(unit.maximum()), unitLabel(unit));
+                number(unit.minimum()), number(unit.maximum()), symbol(unit));
     }
 
-    /** The accepted height range, e.g. "50 to 250 cm" or "1 ft 8 in to 8 ft 2 in". */
-    String heightRange(HeightUnit unit) {
-        return switch (unit) {
-            case CENTIMETERS -> resources.getString(R.string.range_with_unit,
-                    number(unit.minimum()), number(unit.maximum()),
-                    resources.getString(R.string.unit_centimeters));
-            case FEET_AND_INCHES -> resources.getString(R.string.range,
-                    feetAndInches(unit.minimum()), feetAndInches(unit.maximum()));
-        };
+    /** A calculated value with its unit, to one decimal place: "56.7 kg" or "8 st 13.0 lb". */
+    String quantity(double value, MeasurementUnit unit) {
+        if (unit.isCompound()) {
+            return compound(value, unit, oneDecimalFormat);
+        }
+        return resources.getString(R.string.value_with_unit, oneDecimal(value), symbol(unit));
     }
 
+    /** The message for the single field, or the whole field of a compound unit. */
     @Nullable
-    String weightError(@Nullable InputError error, WeightUnit unit) {
+    String primaryError(MeasurementKind kind, MeasurementUnit unit, @Nullable InputError error) {
         if (error == null) {
             return null;
         }
         return switch (error) {
-            case REQUIRED -> resources.getString(R.string.error_weight_required);
-            case OUT_OF_RANGE ->
-                    resources.getString(R.string.error_weight_out_of_range, weightRange(unit));
+            case REQUIRED ->
+                    resources.getString(unit.isCompound() ? kind.wholeRequired : kind.required);
+            case NOT_A_WHOLE_NUMBER -> resources.getString(kind.notWhole);
+            case OUT_OF_RANGE -> resources.getString(kind.outOfRange, range(unit));
             default -> resources.getString(R.string.error_not_a_number);
         };
     }
 
-    /** The message for the centimeters field, or for the feet field in feet and inches. */
+    /** The message for the part field of a compound unit. */
     @Nullable
-    String heightError(@Nullable InputError error, HeightUnit unit) {
-        if (error == null) {
-            return null;
-        }
-        return switch (error) {
-            case REQUIRED -> resources.getString(unit == HeightUnit.CENTIMETERS
-                    ? R.string.error_height_required
-                    : R.string.error_feet_required);
-            case NOT_A_WHOLE_NUMBER -> resources.getString(R.string.error_not_whole_feet);
-            case OUT_OF_RANGE ->
-                    resources.getString(R.string.error_height_out_of_range, heightRange(unit));
-            default -> resources.getString(R.string.error_not_a_number);
-        };
-    }
-
-    @Nullable
-    String inchesError(@Nullable InputError error) {
+    String partError(MeasurementKind kind, @Nullable InputError error) {
         if (error == null) {
             return null;
         }
         return resources.getString(error == InputError.PART_OUT_OF_RANGE
-                ? R.string.error_inches_out_of_range
+                ? kind.partOutOfRange
                 : R.string.error_not_a_number);
     }
 
@@ -131,10 +119,37 @@ final class MeasurementText {
                 oneDecimal(category.lowerBound()), oneDecimal(category.upperBound() - 0.1));
     }
 
-    private String feetAndInches(double totalInches) {
-        CompoundQuantity height = CompoundQuantity.fromTotal(
-                totalInches, HeightUnit.FEET_AND_INCHES.partsPerWhole());
-        return resources.getString(
-                R.string.feet_and_inches_value, height.whole(), number(height.part()));
+    /** A compound value such as "5 ft 8.9 in", with the part written by {@code partFormat}. */
+    private String compound(double total, MeasurementUnit unit, NumberFormat partFormat) {
+        CompoundQuantity quantity = CompoundQuantity.fromTotal(total, unit.partsPerWhole());
+        return resources.getString(R.string.compound_value,
+                quantity.whole(), symbol(unit),
+                partFormat.format(quantity.part()), resources.getString(partSymbolRes(unit)));
+    }
+
+    @StringRes
+    private static int symbolRes(MeasurementUnit unit) {
+        if (unit instanceof WeightUnit weight) {
+            return switch (weight) {
+                case KILOGRAMS -> R.string.unit_kilograms;
+                case POUNDS -> R.string.unit_pounds;
+            };
+        }
+        if (unit instanceof HeightUnit height) {
+            return switch (height) {
+                case CENTIMETERS -> R.string.unit_centimeters;
+                case FEET_AND_INCHES -> R.string.unit_feet;
+            };
+        }
+        throw new IllegalArgumentException("Unknown unit: " + unit);
+    }
+
+    /** The symbol of the part of a compound unit: "in" for feet and inches. */
+    @StringRes
+    private static int partSymbolRes(MeasurementUnit unit) {
+        if (unit == HeightUnit.FEET_AND_INCHES) {
+            return R.string.unit_inches;
+        }
+        throw new IllegalArgumentException("Not a compound unit: " + unit);
     }
 }

@@ -70,6 +70,7 @@
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
+                <!-- Shown for simple weight units; the suffix is set from the unit. -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/weight_layout"
                     android:layout_width="match_parent"
@@ -82,6 +83,39 @@
                         android:imeOptions="actionNext" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Shown for stones and pounds. -->
+                <LinearLayout
+                    android:id="@+id/weight_compound_row"
+                    style="@style/Widget.BMICalculator.CompoundRow">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/stones_layout"
+                        style="@style/Widget.BMICalculator.WholeField"
+                        android:hint="@string/stones_hint"
+                        app:suffixText="@string/unit_stones">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/stones_input"
+                            style="@style/Widget.BMICalculator.WholeInput"
+                            android:imeOptions="actionNext" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/weight_pounds_layout"
+                        style="@style/Widget.BMICalculator.PartField"
+                        android:hint="@string/pounds_hint"
+                        app:suffixText="@string/unit_pounds">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/weight_pounds_input"
+                            style="@style/Widget.BMICalculator.PartInput"
+                            android:imeOptions="actionNext" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
 
                 <!-- Height -->
 
@@ -109,16 +143,15 @@
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
-                <!-- Shown for centimeters. -->
+                <!-- Shown for simple height units; the suffix is set from the unit. -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/centimeters_layout"
+                    android:id="@+id/height_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/height_hint"
-                    app:suffixText="@string/unit_centimeters">
+                    android:hint="@string/height_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/centimeters_input"
+                        android:id="@+id/height_input"
                         style="@style/Widget.BMICalculator.DecimalInput"
                         android:imeOptions="actionDone" />
 
@@ -126,45 +159,32 @@
 
                 <!-- Shown for feet and inches. -->
                 <LinearLayout
-                    android:id="@+id/feet_and_inches_row"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:id="@+id/height_compound_row"
+                    style="@style/Widget.BMICalculator.CompoundRow">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/feet_layout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/field_spacing"
-                        android:layout_weight="1"
+                        style="@style/Widget.BMICalculator.WholeField"
                         android:hint="@string/feet_hint"
                         app:suffixText="@string/unit_feet">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/feet_input"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionNext"
-                            android:inputType="number"
-                            android:maxLength="1" />
+                            style="@style/Widget.BMICalculator.WholeInput"
+                            android:imeOptions="actionNext" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inches_layout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        style="@style/Widget.BMICalculator.PartField"
                         android:hint="@string/inches_hint"
                         app:suffixText="@string/unit_inches">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inches_input"
-                            style="@style/Widget.BMICalculator.DecimalInput"
-                            android:imeOptions="actionDone"
-                            android:maxLength="4" />
+                            style="@style/Widget.BMICalculator.PartInput"
+                            android:imeOptions="actionDone" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 

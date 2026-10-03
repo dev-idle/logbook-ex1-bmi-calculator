@@ -4,6 +4,7 @@
     <!-- Unit labels shown on the toggle buttons and as field suffixes. -->
     <string name="unit_kilograms">kg</string>
     <string name="unit_pounds">lb</string>
+    <string name="unit_stones">st</string>
     <string name="unit_centimeters">cm</string>
     <string name="unit_feet">ft</string>
     <string name="unit_inches">in</string>
@@ -22,13 +23,18 @@
     <string name="height_hint">Height</string>
     <string name="feet_hint">Feet</string>
     <string name="inches_hint">Inches</string>
+    <string name="stones_hint">Stones</string>
+    <string name="pounds_hint">Pounds</string>
     <string name="calculate">Calculate BMI</string>
     <string name="clear">Clear</string>
 
     <!-- Accepted ranges, e.g. "10 to 400 kg" or "1 ft 8 in to 8 ft 2 in". -->
     <string name="range_with_unit">%1$s to %2$s %3$s</string>
     <string name="range">%1$s to %2$s</string>
-    <string name="feet_and_inches_value">%1$d ft %2$s in</string>
+    <!-- A value and its unit, e.g. "56.7 kg". -->
+    <string name="value_with_unit">%1$s %2$s</string>
+    <!-- A compound value, e.g. "5 ft 8.9 in": whole, its unit, part, its unit. -->
+    <string name="compound_value">%1$d %2$s %3$s %4$s</string>
 
     <!-- Validation messages -->
     <string name="error_weight_required">Please enter your weight</string>
@@ -37,6 +43,9 @@
     <string name="error_not_a_number">Enter a number using digits only</string>
     <string name="error_not_whole_feet">Enter whole feet and put the rest in inches</string>
     <string name="error_inches_out_of_range">Inches must be less than 12</string>
+    <string name="error_stones_required">Please enter your weight in stones</string>
+    <string name="error_not_whole_stones">Enter whole stones and put the rest in pounds</string>
+    <string name="error_pounds_out_of_range">Pounds must be less than 14</string>
     <!-- %1$s is an accepted range such as "10 to 400 kg". -->
     <string name="error_weight_out_of_range">Enter a weight from %1$s</string>
     <string name="error_height_out_of_range">Enter a height from %1$s</string>
@@ -52,8 +61,8 @@
     <!-- Read by screen readers for each row of the category scale. -->
     <string name="category_row_description">%1$s: BMI %2$s</string>
     <string name="category_row_current_description">%1$s: BMI %2$s. This is your category.</string>
-    <!-- %1$s and %2$s are weights and %3$s is their unit, e.g. "56.7 to 76.2 kg". -->
-    <string name="healthy_weight_range">For your height, a healthy weight is %1$s to %2$s %3$s.</string>
+    <!-- %1$s and %2$s are weights with their unit, e.g. "56.7 kg" and "76.2 kg". -->
+    <string name="healthy_weight_range">For your height, a healthy weight is %1$s to %2$s.</string>
     <string name="adult_note">BMI categories apply to adults aged 20 and over. BMI is a screening measure, not a diagnosis.</string>
 
     <!-- About dialog -->

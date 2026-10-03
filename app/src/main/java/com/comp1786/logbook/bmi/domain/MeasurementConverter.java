@@ -18,45 +18,35 @@ public final class MeasurementConverter {
     }
 
     /**
-     * The text of a measurement's input fields.
-     *
-     * @param primary the single field, or the whole field of a compound unit
-     * @param part    the part field of a compound unit; empty for a simple unit
-     */
-    public record FieldText(String primary, String part) {
-    }
-
-    /**
-     * Converts typed fields from one unit to another of the same kind. The type parameter keeps
+     * Converts typed input from one unit to another of the same kind. The type parameter keeps
      * weight and height units from being mixed.
      *
-     * @param primaryText the single field, or the whole field of a compound unit
-     * @param partText    the part field; ignored for simple units, and empty means 0
-     * @return the converted field texts, or empty when the typed value cannot be read
+     * @return the input to show in the new unit, or empty when the typed value cannot be read
      */
-    public static <U extends Enum<U> & MeasurementUnit> Optional<FieldText> convert(
-            String primaryText, String partText, U from, U to) {
-        OptionalDouble value = read(primaryText, partText, from);
+    public static <U extends Enum<U> & MeasurementUnit> Optional<MeasurementInput> convert(
+            MeasurementInput input, U from, U to) {
+        OptionalDouble value = read(input, from);
         if (!value.isPresent()) {
             return Optional.empty();
         }
         double converted = to.fromBaseUnit(from.toBaseUnit(value.getAsDouble()));
         if (!to.isCompound()) {
-            return Optional.of(new FieldText(format(converted), ""));
+            return Optional.of(MeasurementInput.of(format(converted)));
         }
         CompoundQuantity split = CompoundQuantity.fromTotal(converted, to.partsPerWhole());
-        return Optional.of(new FieldText(String.valueOf(split.whole()), format(split.part())));
+        return Optional.of(
+                new MeasurementInput(String.valueOf(split.whole()), format(split.part())));
     }
 
     /** Reads the typed value in {@code unit}: a plain number, or the total of a compound one. */
-    private static OptionalDouble read(String primaryText, String partText, MeasurementUnit unit) {
-        OptionalDouble primary = NumberInput.parse(primaryText);
+    private static OptionalDouble read(MeasurementInput input, MeasurementUnit unit) {
+        OptionalDouble primary = NumberInput.parse(input.primary());
         if (!primary.isPresent() || !unit.isCompound()) {
             return primary;
         }
-        OptionalDouble part = NumberInput.isBlank(partText)
+        OptionalDouble part = NumberInput.isBlank(input.part())
                 ? OptionalDouble.of(0.0)
-                : NumberInput.parse(partText);
+                : NumberInput.parse(input.part());
         if (!part.isPresent()) {
             return OptionalDouble.empty();
         }

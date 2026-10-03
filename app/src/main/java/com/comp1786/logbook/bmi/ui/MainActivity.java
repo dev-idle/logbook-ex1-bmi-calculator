@@ -3,13 +3,7 @@ package com.comp1786.logbook.bmi.ui;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +23,8 @@ import com.comp1786.logbook.bmi.domain.BmiCategory;
 import com.comp1786.logbook.bmi.domain.BmiResult;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.MeasurementConverter;
-import com.comp1786.logbook.bmi.domain.MeasurementConverter.FieldText;
+import com.comp1786.logbook.bmi.domain.MeasurementInput;
+import com.comp1786.logbook.bmi.domain.MeasurementUnit;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
 import java.util.EnumMap;
@@ -54,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private BmiViewModel viewModel;
     private MeasurementText text;
+    private MeasurementFields weightFields;
+    private MeasurementFields heightFields;
+    private UnitToggle<WeightUnit> weightToggle;
+    private UnitToggle<HeightUnit> heightToggle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,11 +68,26 @@ public class MainActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this, BmiViewModel.factory(unitPreferences))
                 .get(BmiViewModel.class);
 
+        weightFields = new MeasurementFields(binding.weightLayout, binding.weightCompoundRow,
+                binding.stonesLayout, binding.weightPoundsLayout);
+        heightFields = new MeasurementFields(binding.heightLayout, binding.heightCompoundRow,
+                binding.feetLayout, binding.inchesLayout);
+        weightToggle = new UnitToggle<>(binding.weightUnitGroup, Map.of(
+                WeightUnit.KILOGRAMS, R.id.button_kilograms,
+                WeightUnit.POUNDS, R.id.button_pounds),
+                this::onWeightUnitSelected);
+        heightToggle = new UnitToggle<>(binding.heightUnitGroup, Map.of(
+                HeightUnit.CENTIMETERS, R.id.button_centimeters,
+                HeightUnit.FEET_AND_INCHES, R.id.button_feet_and_inches),
+                this::onHeightUnitSelected);
+
         buildCategoryScale();
         applyWindowInsets();
         setUpMenu();
-        setUpUnitToggles();
-        setUpActions();
+        binding.calculateButton.setOnClickListener(view -> calculate());
+        binding.clearButton.setOnClickListener(view -> clear());
+        // Height is the last measurement, so Done on its last field calculates.
+        heightFields.setOnDone(this::calculate);
         viewModel.uiState().observe(this, this::render);
     }
 
@@ -82,10 +96,8 @@ public class MainActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         // Watchers are added only after the framework has restored the fields' text, so that a
         // restore after rotation is not mistaken for an edit that clears the result.
-        watchEdits(binding.weightInput, viewModel::onWeightEdited);
-        watchEdits(binding.centimetersInput, viewModel::onHeightEdited);
-        watchEdits(binding.feetInput, viewModel::onHeightEdited);
-        watchEdits(binding.inchesInput, viewModel::onInchesEdited);
+        weightFields.watchEdits(viewModel::onWeightEdited, viewModel::onWeightPartEdited);
+        heightFields.watchEdits(viewModel::onHeightEdited, viewModel::onHeightPartEdited);
     }
 
     // --- Setup ---------------------------------------------------------------
@@ -123,133 +135,77 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpUnitToggles() {
-        binding.weightUnitGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                onWeightUnitSelected(checkedId == R.id.button_pounds
-                        ? WeightUnit.POUNDS
-                        : WeightUnit.KILOGRAMS);
-            }
-        });
-        binding.heightUnitGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                onHeightUnitSelected(checkedId == R.id.button_feet_and_inches
-                        ? HeightUnit.FEET_AND_INCHES
-                        : HeightUnit.CENTIMETERS);
-            }
-        });
-    }
-
-    private void setUpActions() {
-        binding.calculateButton.setOnClickListener(view -> calculate());
-        binding.clearButton.setOnClickListener(view -> clear());
-
-        // "Done" on the last field calculates, saving a tap. A hardware keyboard's Enter key
-        // arrives as IME_NULL with a key event instead, so it is handled too.
-        TextView.OnEditorActionListener calculateOnDone = (view, actionId, event) -> {
-            boolean doneKey = actionId == EditorInfo.IME_ACTION_DONE;
-            boolean enterKey = event != null
-                    && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                    && event.getAction() == KeyEvent.ACTION_DOWN;
-            if (doneKey || enterKey) {
-                calculate();
-                return true;
-            }
-            return false;
-        };
-        binding.centimetersInput.setOnEditorActionListener(calculateOnDone);
-        binding.inchesInput.setOnEditorActionListener(calculateOnDone);
-    }
-
     // --- User actions --------------------------------------------------------
 
     private void onWeightUnitSelected(WeightUnit unit) {
         WeightUnit previous = viewModel.currentState().weightUnit();
-        if (unit == previous) {
-            // The button was checked while drawing the current state, not by the user.
-            return;
+        if (unit != previous) {
+            convertTypedValue(weightFields, previous, unit);
+            viewModel.selectWeightUnit(unit);
         }
-        binding.weightInput.setText(MeasurementConverter
-                .convert(textOf(binding.weightInput), "", previous, unit)
-                .map(FieldText::primary)
-                .orElse(""));
-        viewModel.selectWeightUnit(unit);
     }
 
     private void onHeightUnitSelected(HeightUnit unit) {
         HeightUnit previous = viewModel.currentState().heightUnit();
-        if (unit == previous) {
-            return;
+        if (unit != previous) {
+            convertTypedValue(heightFields, previous, unit);
+            viewModel.selectHeightUnit(unit);
         }
-        FieldText converted = MeasurementConverter
-                .convert(heightText(previous), textOf(binding.inchesInput), previous, unit)
-                .orElse(new FieldText("", ""));
-        if (unit == HeightUnit.CENTIMETERS) {
-            binding.centimetersInput.setText(converted.primary());
-        } else {
-            binding.feetInput.setText(converted.primary());
-            binding.inchesInput.setText(converted.part());
-        }
-        viewModel.selectHeightUnit(unit);
+    }
+
+    /**
+     * Rewrites what the user typed in the new unit, so a switch from kilograms to pounds turns
+     * 70 into 154.3 instead of reading it as 70 lb. Text that cannot be read is cleared.
+     */
+    private static <U extends Enum<U> & MeasurementUnit> void convertTypedValue(
+            MeasurementFields fields, U from, U to) {
+        fields.setInput(to, MeasurementConverter.convert(fields.input(from), from, to)
+                .orElse(MeasurementInput.EMPTY));
     }
 
     private void calculate() {
-        HeightUnit heightUnit = viewModel.currentState().heightUnit();
-        viewModel.calculate(
-                textOf(binding.weightInput),
-                heightText(heightUnit),
-                textOf(binding.inchesInput));
-
         BmiUiState state = viewModel.currentState();
-        if (state.result() != null) {
+        viewModel.calculate(
+                weightFields.input(state.weightUnit()),
+                heightFields.input(state.heightUnit()));
+
+        BmiUiState next = viewModel.currentState();
+        if (next.result() != null) {
             hideKeyboard();
             // The result is the last item, so scrolling to the end reveals all of it, including
             // the bottom padding that keeps it clear of the navigation bar.
             binding.scrollView.post(() -> binding.scrollView.smoothScrollTo(
                     0, binding.scrollView.getChildAt(0).getHeight()));
+        } else if (next.weightErrors().any()) {
+            weightFields.fieldWithError(next.weightUnit(), next.weightErrors()).requestFocus();
         } else {
-            firstFieldWithError(state).requestFocus();
+            heightFields.fieldWithError(next.heightUnit(), next.heightErrors()).requestFocus();
         }
     }
 
     private void clear() {
-        binding.weightInput.setText(null);
-        binding.centimetersInput.setText(null);
-        binding.feetInput.setText(null);
-        binding.inchesInput.setText(null);
+        weightFields.clear();
+        heightFields.clear();
         viewModel.clear();
-        binding.weightInput.requestFocus();
+        weightFields.firstField(viewModel.currentState().weightUnit()).requestFocus();
     }
 
     // --- Rendering -----------------------------------------------------------
 
     private void render(BmiUiState state) {
         WeightUnit weightUnit = state.weightUnit();
-        binding.weightUnitGroup.check(weightUnit == WeightUnit.POUNDS
-                ? R.id.button_pounds
-                : R.id.button_kilograms);
-        binding.weightLayout.setSuffixText(text.unitLabel(weightUnit));
-        binding.weightLayout.setHelperText(text.weightRange(weightUnit));
-        binding.weightLayout.setError(text.weightError(state.weightError(), weightUnit));
+        weightToggle.show(weightUnit);
+        weightFields.render(weightUnit, text.symbol(weightUnit), text.range(weightUnit),
+                text.primaryError(MeasurementKind.WEIGHT, weightUnit,
+                        state.weightErrors().primary()),
+                text.partError(MeasurementKind.WEIGHT, state.weightErrors().part()));
 
         HeightUnit heightUnit = state.heightUnit();
-        boolean metric = heightUnit == HeightUnit.CENTIMETERS;
-        binding.heightUnitGroup.check(metric
-                ? R.id.button_centimeters
-                : R.id.button_feet_and_inches);
-        binding.centimetersLayout.setVisibility(metric ? View.VISIBLE : View.GONE);
-        binding.feetAndInchesRow.setVisibility(metric ? View.GONE : View.VISIBLE);
-
-        String heightRange = text.heightRange(heightUnit);
-        String heightError = text.heightError(state.heightError(), heightUnit);
-        if (metric) {
-            binding.centimetersLayout.setHelperText(heightRange);
-            binding.centimetersLayout.setError(heightError);
-        } else {
-            binding.feetLayout.setHelperText(heightRange);
-            binding.feetLayout.setError(heightError);
-            binding.inchesLayout.setError(text.inchesError(state.inchesError()));
-        }
+        heightToggle.show(heightUnit);
+        heightFields.render(heightUnit, text.symbol(heightUnit), text.range(heightUnit),
+                text.primaryError(MeasurementKind.HEIGHT, heightUnit,
+                        state.heightErrors().primary()),
+                text.partError(MeasurementKind.HEIGHT, state.heightErrors().part()));
 
         renderResult(state.result(), weightUnit);
     }
@@ -272,9 +228,8 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.result_summary_description, bmi, label));
 
         binding.healthyRange.setText(getString(R.string.healthy_weight_range,
-                text.oneDecimal(result.healthyWeightMinimum(weightUnit)),
-                text.oneDecimal(result.healthyWeightMaximum(weightUnit)),
-                text.unitLabel(weightUnit)));
+                text.quantity(result.healthyWeightMinimum(weightUnit), weightUnit),
+                text.quantity(result.healthyWeightMaximum(weightUnit), weightUnit)));
         highlightCategory(category);
     }
 
@@ -312,26 +267,6 @@ public class MainActivity extends AppCompatActivity {
 
     // --- Helpers -------------------------------------------------------------
 
-    /** The centimeters field, or the feet field for feet and inches. */
-    private String heightText(HeightUnit unit) {
-        EditText field = unit == HeightUnit.CENTIMETERS
-                ? binding.centimetersInput
-                : binding.feetInput;
-        return textOf(field);
-    }
-
-    private EditText firstFieldWithError(BmiUiState state) {
-        if (state.weightError() != null) {
-            return binding.weightInput;
-        }
-        if (state.heightError() != null) {
-            return state.heightUnit() == HeightUnit.CENTIMETERS
-                    ? binding.centimetersInput
-                    : binding.feetInput;
-        }
-        return binding.inchesInput;
-    }
-
     private void hideKeyboard() {
         WindowCompat.getInsetsController(getWindow(), binding.getRoot())
                 .hide(WindowInsetsCompat.Type.ime());
@@ -344,48 +279,8 @@ public class MainActivity extends AppCompatActivity {
     private void keepFocusedFieldVisible() {
         View focused = getCurrentFocus();
         if (focused != null) {
-            scrollIntoView(focused);
+            focused.requestRectangleOnScreen(
+                    new Rect(0, 0, focused.getWidth(), focused.getHeight()), false);
         }
-    }
-
-    private static void scrollIntoView(View view) {
-        view.requestRectangleOnScreen(new Rect(0, 0, view.getWidth(), view.getHeight()), false);
-    }
-
-    private static String textOf(EditText field) {
-        Editable editable = field.getText();
-        return editable == null ? "" : editable.toString();
-    }
-
-    /**
-     * Calls {@code onEdited} whenever the field's text changes.
-     *
-     * <p>The keyboard can report a change without altering the text, for example when it
-     * attaches to a newly focused field, so the text is compared with its previous value first.
-     * Otherwise focusing a field would clear the error the user still needs to read.
-     */
-    private static void watchEdits(EditText field, Runnable onEdited) {
-        field.addTextChangedListener(new TextWatcher() {
-            private String previousText = textOf(field);
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Only the final text matters.
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Only the final text matters.
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String text = s.toString();
-                if (!text.equals(previousText)) {
-                    previousText = text;
-                    onEdited.run();
-                }
-            }
-        });
     }
 }
