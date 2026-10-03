@@ -142,6 +142,12 @@
                         android:text="@string/unit_centimeters" />
 
                     <Button
+                        android:id="@+id/button_meters"
+                        style="@style/Widget.BMICalculator.UnitToggleButton"
+                        android:contentDescription="@string/unit_meters_description"
+                        android:text="@string/unit_meters" />
+
+                    <Button
                         android:id="@+id/button_feet_and_inches"
                         style="@style/Widget.BMICalculator.UnitToggleButton"
                         android:contentDescription="@string/unit_feet_and_inches_description"

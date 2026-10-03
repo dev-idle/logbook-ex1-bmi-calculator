@@ -49,4 +49,9 @@ public interface MeasurementUnit {
     default boolean isCompound() {
         return partsPerWhole() > 0;
     }
+
+    /** Decimal places kept when a value is converted into this unit. */
+    default int fractionDigits() {
+        return scale().fractionDigits();
+    }
 }

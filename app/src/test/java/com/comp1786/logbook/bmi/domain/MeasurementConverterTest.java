@@ -67,6 +67,22 @@ public class MeasurementConverterTest {
     }
 
     @Test
+    public void keepsTwoDecimalPlacesForMeters() {
+        // One decimal place would turn 175 cm into 1.8 m, losing 5 cm.
+        assertEquals("1.75",
+                convert("175", "", HeightUnit.CENTIMETERS, HeightUnit.METERS).primary());
+        assertEquals("175",
+                convert("1.75", "", HeightUnit.METERS, HeightUnit.CENTIMETERS).primary());
+    }
+
+    @Test
+    public void convertsFeetAndInchesToMeters() {
+        // 5 ft 9 in = 69 in = 1.7526 m.
+        assertEquals("1.75",
+                convert("5", "9", HeightUnit.FEET_AND_INCHES, HeightUnit.METERS).primary());
+    }
+
+    @Test
     public void treatsAnEmptyPartAsZero() {
         assertEquals("182.9",
                 convert("6", "", HeightUnit.FEET_AND_INCHES, HeightUnit.CENTIMETERS).primary());

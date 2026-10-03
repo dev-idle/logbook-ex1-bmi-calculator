@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 this::onWeightUnitSelected);
         heightToggle = new UnitToggle<>(binding.heightUnitGroup, Map.of(
                 HeightUnit.CENTIMETERS, R.id.button_centimeters,
+                HeightUnit.METERS, R.id.button_meters,
                 HeightUnit.FEET_AND_INCHES, R.id.button_feet_and_inches),
                 this::onHeightUnitSelected);
 

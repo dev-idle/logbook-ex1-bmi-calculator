@@ -86,6 +86,15 @@ public class BmiViewModelTest {
     }
 
     @Test
+    public void calculatesFromMeters() {
+        viewModel.selectHeightUnit(HeightUnit.METERS);
+
+        viewModel.calculate(MeasurementInput.of("70"), MeasurementInput.of("1.75"));
+
+        assertEquals(22.9, viewModel.currentState().result().bmi(), DELTA);
+    }
+
+    @Test
     public void reportsEveryInvalidFieldAtOnce() {
         viewModel.selectHeightUnit(HeightUnit.FEET_AND_INCHES);
 

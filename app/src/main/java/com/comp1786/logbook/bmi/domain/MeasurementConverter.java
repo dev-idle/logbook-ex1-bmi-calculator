@@ -8,9 +8,10 @@ import java.util.OptionalDouble;
  * Rewrites values the user has already typed when they switch units, so that 70 kg becomes
  * 154.3 lb instead of being read as 70 lb.
  *
- * <p>Converted values are rounded to one decimal place and written with "." as the decimal
- * separator, which {@link NumberInput} accepts in every language. Text that is not a number is
- * left for the user to correct, so no conversion is returned for it.
+ * <p>Converted values are rounded to the target unit's {@link MeasurementUnit#fractionDigits()}
+ * and written with "." as the decimal separator, which {@link NumberInput} accepts in every
+ * language. Text that is not a number is left for the user to correct, so no conversion is
+ * returned for it.
  */
 public final class MeasurementConverter {
 
@@ -31,11 +32,12 @@ public final class MeasurementConverter {
         }
         double converted = to.fromBaseUnit(from.toBaseUnit(value.getAsDouble()));
         if (!to.isCompound()) {
-            return Optional.of(MeasurementInput.of(format(converted)));
+            return Optional.of(MeasurementInput.of(format(converted, to.fractionDigits())));
         }
+        // CompoundQuantity rounds the part to tenths, matching the default precision.
         CompoundQuantity split = CompoundQuantity.fromTotal(converted, to.partsPerWhole());
-        return Optional.of(
-                new MeasurementInput(String.valueOf(split.whole()), format(split.part())));
+        return Optional.of(new MeasurementInput(
+                String.valueOf(split.whole()), format(split.part(), to.fractionDigits())));
     }
 
     /** Reads the typed value in {@code unit}: a plain number, or the total of a compound one. */
@@ -54,8 +56,13 @@ public final class MeasurementConverter {
                 primary.getAsDouble() * unit.partsPerWhole() + part.getAsDouble());
     }
 
-    /** Formats a value to at most one decimal place without trailing zeros: 70.0 becomes "70". */
-    private static String format(double value) {
-        return BigDecimal.valueOf(Rounding.halfUp(value, 1)).stripTrailingZeros().toPlainString();
+    /**
+     * Formats a value to at most {@code fractionDigits} decimal places without trailing zeros,
+     * so 70.0 becomes "70".
+     */
+    private static String format(double value, int fractionDigits) {
+        return BigDecimal.valueOf(Rounding.halfUp(value, fractionDigits))
+                .stripTrailingZeros()
+                .toPlainString();
     }
 }

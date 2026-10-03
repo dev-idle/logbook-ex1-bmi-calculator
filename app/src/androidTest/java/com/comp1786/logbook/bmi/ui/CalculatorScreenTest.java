@@ -117,6 +117,15 @@ public class CalculatorScreenTest {
         onView(withId(R.id.weight_pounds_input)).check(matches(withText("0.3")));
     }
 
+    @Test
+    public void convertsCentimetersToMetersWithoutLosingPrecision() {
+        onView(withId(R.id.height_input)).perform(replaceText("175"), closeSoftKeyboard());
+
+        onView(withId(R.id.button_meters)).perform(click());
+
+        onView(withId(R.id.height_input)).check(matches(withText("1.75")));
+    }
+
     private static void enterMeasurements(String weight, String centimeters) {
         onView(withId(R.id.weight_input)).perform(replaceText(weight));
         onView(withId(R.id.height_input))

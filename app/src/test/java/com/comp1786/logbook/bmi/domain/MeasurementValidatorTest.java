@@ -45,6 +45,13 @@ public class MeasurementValidatorTest {
     }
 
     @Test
+    public void catchesCentimetersTypedAsMeters() {
+        assertTrue(validate(HeightUnit.METERS, "1.75", "").isValid());
+        assertEquals(InputError.OUT_OF_RANGE,
+                validate(HeightUnit.METERS, "175", "").primaryError());
+    }
+
+    @Test
     public void ignoresThePartFieldForSimpleUnits() {
         assertTrue(validate(HeightUnit.CENTIMETERS, "175", "abc").isValid());
     }

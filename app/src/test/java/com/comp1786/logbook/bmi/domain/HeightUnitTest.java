@@ -17,6 +17,13 @@ public class HeightUnitTest {
     }
 
     @Test
+    public void metersAreTheBaseUnitAndKeepTwoDecimals() {
+        assertEquals(1.75, HeightUnit.METERS.toBaseUnit(1.75), DELTA);
+        assertEquals(2, HeightUnit.METERS.fractionDigits());
+        assertEquals(1, HeightUnit.CENTIMETERS.fractionDigits());
+    }
+
+    @Test
     public void inchesUseTheExactInternationalDefinition() {
         assertEquals(0.0254, HeightUnit.FEET_AND_INCHES.toBaseUnit(1.0), DELTA);
         assertEquals(70.0, HeightUnit.FEET_AND_INCHES.fromBaseUnit(1.778), DELTA);

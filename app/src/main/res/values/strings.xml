@@ -6,6 +6,7 @@
     <string name="unit_pounds">lb</string>
     <string name="unit_stones">st</string>
     <string name="unit_centimeters">cm</string>
+    <string name="unit_meters">m</string>
     <string name="unit_feet">ft</string>
     <string name="unit_inches">in</string>
     <string name="unit_feet_and_inches">ft / in</string>
@@ -15,6 +16,7 @@
     <string name="unit_kilograms_description">Kilograms</string>
     <string name="unit_pounds_description">Pounds</string>
     <string name="unit_centimeters_description">Centimeters</string>
+    <string name="unit_meters_description">Meters</string>
     <string name="unit_feet_and_inches_description">Feet and inches</string>
     <string name="unit_stones_and_pounds_description">Stones and pounds</string>
 

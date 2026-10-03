@@ -139,6 +139,7 @@ final class MeasurementText {
         if (unit instanceof HeightUnit height) {
             return switch (height) {
                 case CENTIMETERS -> R.string.unit_centimeters;
+                case METERS -> R.string.unit_meters;
                 case FEET_AND_INCHES -> R.string.unit_feet;
             };
         }
