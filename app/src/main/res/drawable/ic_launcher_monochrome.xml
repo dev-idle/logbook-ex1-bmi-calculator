@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Single-color launcher icon for Android 13 themed icons. -->
+<!-- Single-color launcher icon for Android 13 themed icons; the scale's display is cut out. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <path
-        android:pathData="M30.02,65.16 A24,24 0 0,1 36.45,49.63 M37.63,48.45 A24,24 0 0,1 53.16,42.02 M54.84,42.02 A24,24 0 0,1 70.37,48.45 M71.55,49.63 A24,24 0 0,1 77.98,65.16"
-        android:strokeWidth="8"
-        android:strokeColor="#FFFFFF" />
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.8"
+        android:scaleY="0.8">
 
-    <path
-        android:pathData="M54,66 L47.84,49.09"
-        android:strokeWidth="4"
-        android:strokeColor="#FFFFFF"
-        android:strokeLineCap="round" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M40.5,30 a6.5,6.5 0,1 0,13 0 a6.5,6.5 0,1 0,-13 0 Z
+                M35,48.5 a9,9 0,0 1,9 -9 h6 a9,9 0,0 1,9 9 v6.5 a3,3 0,0 1,-3 3 h-18
+                a3,3 0,0 1,-3 -3 Z
+                M39,55 h7 v10.5 a3.5,3.5 0,0 1,-7 0 Z
+                M48,55 h7 v10.5 a3.5,3.5 0,0 1,-7 0 Z" />
 
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M49.5,66 a4.5,4.5 0,1 0,9,0 a4.5,4.5 0,1 0,-9,0 Z" />
+        <!-- Even-odd filling cuts the display out of the scale. -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M37,72 h34 a5,5 0,0 1,0 10 h-34 a5,5 0,0 1,0 -10 Z
+                M48,75 h12 a2,2 0,0 1,0 4 h-12 a2,2 0,0 1,0 -4 Z" />
+
+        <path
+            android:pathData="M69,25 V68 M65,29 L69,25 L73,29 M65,64 L69,68 L73,64"
+            android:strokeWidth="3"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+
+    </group>
 
 </vector>
