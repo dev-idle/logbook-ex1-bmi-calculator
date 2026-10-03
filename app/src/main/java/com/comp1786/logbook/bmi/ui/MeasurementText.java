@@ -80,9 +80,11 @@ final class MeasurementText {
         return switch (error) {
             case REQUIRED ->
                     resources.getString(unit.isCompound() ? kind.wholeRequired : kind.required);
+            case NOT_A_NUMBER -> resources.getString(R.string.error_not_a_number);
             case NOT_A_WHOLE_NUMBER -> resources.getString(kind.notWhole);
             case OUT_OF_RANGE -> resources.getString(kind.outOfRange, range(unit));
-            default -> resources.getString(R.string.error_not_a_number);
+            case PART_OUT_OF_RANGE ->
+                    throw new IllegalArgumentException("Not an error of the whole field: " + error);
         };
     }
 
@@ -92,9 +94,12 @@ final class MeasurementText {
         if (error == null) {
             return null;
         }
-        return resources.getString(error == InputError.PART_OUT_OF_RANGE
-                ? kind.partOutOfRange
-                : R.string.error_not_a_number);
+        return switch (error) {
+            case NOT_A_NUMBER -> resources.getString(R.string.error_not_a_number);
+            case PART_OUT_OF_RANGE -> resources.getString(kind.partOutOfRange);
+            case REQUIRED, NOT_A_WHOLE_NUMBER, OUT_OF_RANGE ->
+                    throw new IllegalArgumentException("Not an error of the part field: " + error);
+        };
     }
 
     /**

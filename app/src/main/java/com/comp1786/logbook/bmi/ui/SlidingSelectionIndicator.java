@@ -83,6 +83,17 @@ final class SlidingSelectionIndicator extends Drawable {
                 snapToCheckedButton();
             }
         });
+        group.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(@NonNull View view) {
+                // Nothing to restore: the layout listener places the pill.
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(@NonNull View view) {
+                slide.cancel();
+            }
+        });
     }
 
     /** Makes a sliding selection indicator the background of {@code group}. */

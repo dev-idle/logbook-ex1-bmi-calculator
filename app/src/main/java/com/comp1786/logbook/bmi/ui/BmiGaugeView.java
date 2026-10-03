@@ -60,7 +60,8 @@ public final class BmiGaugeView extends View {
                 this, com.google.android.material.R.attr.colorOnSurfaceVariant));
         pointerPaint.setColor(MaterialColors.getColor(
                 this, com.google.android.material.R.attr.colorOnSurface));
-        pointerPaint.setPathEffect(new CornerPathEffect(pointerWidth / 6));
+        pointerPaint.setPathEffect(new CornerPathEffect(
+                resources.getDimension(R.dimen.gauge_pointer_corner_radius)));
     }
 
     /** Shows one segment per color, with one label fewer at the boundaries between them. */

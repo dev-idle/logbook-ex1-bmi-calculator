@@ -101,8 +101,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/item_spacing</item>
         <item name="android:background">@drawable/bg_category_pill</item>
-        <item name="android:paddingHorizontal">16dp</item>
-        <item name="android:paddingVertical">6dp</item>
+        <item name="android:paddingHorizontal">@dimen/category_pill_padding_horizontal</item>
+        <item name="android:paddingVertical">@dimen/category_pill_padding_vertical</item>
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
         <item name="android:textColor">@color/bmi_on_category</item>
     </style>
