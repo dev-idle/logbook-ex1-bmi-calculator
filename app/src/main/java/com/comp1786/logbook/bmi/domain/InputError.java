@@ -15,6 +15,9 @@ public enum InputError {
     /** The value is outside the range accepted for its unit. */
     OUT_OF_RANGE,
 
-    /** Inches must be less than 12; anything larger belongs in the feet field. */
-    INCHES_OUT_OF_RANGE
+    /**
+     * The part of a compound unit is a whole unit or more, such as 12 inches; it belongs in the
+     * whole field instead.
+     */
+    PART_OUT_OF_RANGE
 }

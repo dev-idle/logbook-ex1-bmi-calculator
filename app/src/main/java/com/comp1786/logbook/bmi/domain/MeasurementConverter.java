@@ -18,65 +18,50 @@ public final class MeasurementConverter {
     }
 
     /**
-     * The text of the height fields.
+     * The text of a measurement's input fields.
      *
-     * @param primary the centimeters field, or the feet field for feet and inches
-     * @param inches  the inches field; empty for centimeters
+     * @param primary the single field, or the whole field of a compound unit
+     * @param part    the part field of a compound unit; empty for a simple unit
      */
-    public record HeightText(String primary, String inches) {
+    public record FieldText(String primary, String part) {
     }
 
     /**
-     * Converts a typed weight to another unit.
+     * Converts typed fields from one unit to another of the same kind. The type parameter keeps
+     * weight and height units from being mixed.
      *
-     * @return the converted text, or empty when {@code text} is not a number
+     * @param primaryText the single field, or the whole field of a compound unit
+     * @param partText    the part field; ignored for simple units, and empty means 0
+     * @return the converted field texts, or empty when the typed value cannot be read
      */
-    public static Optional<String> convertWeight(String text, WeightUnit from, WeightUnit to) {
-        OptionalDouble value = NumberInput.parse(text);
+    public static <U extends Enum<U> & MeasurementUnit> Optional<FieldText> convert(
+            String primaryText, String partText, U from, U to) {
+        OptionalDouble value = read(primaryText, partText, from);
         if (!value.isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(format(to.fromKilograms(from.toKilograms(value.getAsDouble()))));
-    }
-
-    /**
-     * Converts typed height fields to another unit.
-     *
-     * @param primaryText the centimeters field, or the feet field for feet and inches
-     * @param inchesText  the inches field; ignored for centimeters, and empty means 0 inches
-     * @return the converted field texts, or empty when the height cannot be read
-     */
-    public static Optional<HeightText> convertHeight(
-            String primaryText, String inchesText, HeightUnit from, HeightUnit to) {
-        OptionalDouble value = readHeight(primaryText, inchesText, from);
-        if (!value.isPresent()) {
-            return Optional.empty();
+        double converted = to.fromBaseUnit(from.toBaseUnit(value.getAsDouble()));
+        if (!to.isCompound()) {
+            return Optional.of(new FieldText(format(converted), ""));
         }
-        double converted = to.fromMeters(from.toMeters(value.getAsDouble()));
-        return Optional.of(switch (to) {
-            case CENTIMETERS -> new HeightText(format(converted), "");
-            case FEET_AND_INCHES -> {
-                FeetAndInches split = FeetAndInches.fromTotalInches(converted);
-                yield new HeightText(String.valueOf(split.feet()), format(split.inches()));
-            }
-        });
+        CompoundQuantity split = CompoundQuantity.fromTotal(converted, to.partsPerWhole());
+        return Optional.of(new FieldText(String.valueOf(split.whole()), format(split.part())));
     }
 
-    /** Reads the height in {@code unit}: centimeters, or total inches for feet and inches. */
-    private static OptionalDouble readHeight(
-            String primaryText, String inchesText, HeightUnit unit) {
+    /** Reads the typed value in {@code unit}: a plain number, or the total of a compound one. */
+    private static OptionalDouble read(String primaryText, String partText, MeasurementUnit unit) {
         OptionalDouble primary = NumberInput.parse(primaryText);
-        if (!primary.isPresent() || unit == HeightUnit.CENTIMETERS) {
+        if (!primary.isPresent() || !unit.isCompound()) {
             return primary;
         }
-        OptionalDouble inches = NumberInput.isBlank(inchesText)
+        OptionalDouble part = NumberInput.isBlank(partText)
                 ? OptionalDouble.of(0.0)
-                : NumberInput.parse(inchesText);
-        if (!inches.isPresent()) {
+                : NumberInput.parse(partText);
+        if (!part.isPresent()) {
             return OptionalDouble.empty();
         }
         return OptionalDouble.of(
-                primary.getAsDouble() * UnitConversions.INCHES_PER_FOOT + inches.getAsDouble());
+                primary.getAsDouble() * unit.partsPerWhole() + part.getAsDouble());
     }
 
     /** Formats a value to at most one decimal place without trailing zeros: 70.0 becomes "70". */

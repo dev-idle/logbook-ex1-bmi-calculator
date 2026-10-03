@@ -9,9 +9,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.comp1786.logbook.bmi.data.UnitPreferences;
 import com.comp1786.logbook.bmi.domain.BmiCalculator;
 import com.comp1786.logbook.bmi.domain.BmiResult;
-import com.comp1786.logbook.bmi.domain.FieldResult;
-import com.comp1786.logbook.bmi.domain.HeightResult;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
+import com.comp1786.logbook.bmi.domain.MeasurementResult;
 import com.comp1786.logbook.bmi.domain.MeasurementValidator;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
@@ -94,20 +93,20 @@ public final class BmiViewModel extends ViewModel {
      */
     public void calculate(String weightText, String heightText, String inchesText) {
         BmiUiState state = currentState();
-        FieldResult weight =
-                MeasurementValidator.validateWeight(weightText, state.weightUnit());
-        HeightResult height =
-                MeasurementValidator.validateHeight(state.heightUnit(), heightText, inchesText);
+        MeasurementResult weight =
+                MeasurementValidator.validate(state.weightUnit(), weightText, "");
+        MeasurementResult height =
+                MeasurementValidator.validate(state.heightUnit(), heightText, inchesText);
 
         if (!weight.isValid() || !height.isValid()) {
-            uiState.setValue(
-                    state.withErrors(weight.error(), height.primaryError(), height.inchesError()));
+            uiState.setValue(state.withErrors(
+                    weight.primaryError(), height.primaryError(), height.partError()));
             return;
         }
 
         BmiResult result = BmiCalculator.calculate(
-                state.weightUnit().toKilograms(weight.value()),
-                state.heightUnit().toMeters(height.value()));
+                state.weightUnit().toBaseUnit(weight.value()),
+                state.heightUnit().toBaseUnit(height.value()));
         uiState.setValue(state.withResult(result));
     }
 

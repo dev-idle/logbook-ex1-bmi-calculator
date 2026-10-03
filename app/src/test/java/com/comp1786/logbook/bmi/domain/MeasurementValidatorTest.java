@@ -10,112 +10,99 @@ public class MeasurementValidatorTest {
 
     private static final double DELTA = 1e-9;
 
-    // --- Weight ---------------------------------------------------------------
+    // --- Simple units ---------------------------------------------------------
 
     @Test
-    public void acceptsAWeightInsideTheRange() {
-        FieldResult result = MeasurementValidator.validateWeight("70.5", WeightUnit.KILOGRAMS);
+    public void acceptsAValueInsideTheRange() {
+        MeasurementResult result =
+                MeasurementValidator.validate(WeightUnit.KILOGRAMS, "70.5", "");
 
         assertTrue(result.isValid());
         assertEquals(70.5, result.value(), DELTA);
     }
 
     @Test
-    public void reportsAMissingWeight() {
-        assertEquals(InputError.REQUIRED,
-                MeasurementValidator.validateWeight("  ", WeightUnit.KILOGRAMS).error());
+    public void reportsAMissingValue() {
+        assertEquals(InputError.REQUIRED, MeasurementValidator
+                .validate(WeightUnit.KILOGRAMS, "  ", "").primaryError());
     }
 
     @Test
-    public void reportsAWeightThatIsNotANumber() {
-        assertEquals(InputError.NOT_A_NUMBER,
-                MeasurementValidator.validateWeight("7O", WeightUnit.KILOGRAMS).error());
+    public void reportsAValueThatIsNotANumber() {
+        assertEquals(InputError.NOT_A_NUMBER, MeasurementValidator
+                .validate(WeightUnit.KILOGRAMS, "7O", "").primaryError());
+        assertEquals(InputError.NOT_A_NUMBER, MeasurementValidator
+                .validate(HeightUnit.CENTIMETERS, "1.7.5", "").primaryError());
     }
 
     @Test
     public void checksTheRangeOfTheSelectedUnit() {
         // 500 is too heavy in kilograms but a normal weight in pounds.
-        assertEquals(InputError.OUT_OF_RANGE,
-                MeasurementValidator.validateWeight("500", WeightUnit.KILOGRAMS).error());
-        assertTrue(MeasurementValidator.validateWeight("500", WeightUnit.POUNDS).isValid());
-        assertEquals(InputError.OUT_OF_RANGE,
-                MeasurementValidator.validateWeight("0", WeightUnit.POUNDS).error());
-    }
-
-    // --- Height in centimeters ------------------------------------------------
-
-    @Test
-    public void acceptsAHeightInCentimeters() {
-        HeightResult result =
-                MeasurementValidator.validateHeight(HeightUnit.CENTIMETERS, "175", "");
-
-        assertTrue(result.isValid());
-        assertEquals(175.0, result.value(), DELTA);
-    }
-
-    @Test
-    public void reportsInvalidCentimeters() {
-        assertEquals(InputError.REQUIRED, MeasurementValidator
-                .validateHeight(HeightUnit.CENTIMETERS, "", "").primaryError());
-        assertEquals(InputError.NOT_A_NUMBER, MeasurementValidator
-                .validateHeight(HeightUnit.CENTIMETERS, "1.7.5", "").primaryError());
         assertEquals(InputError.OUT_OF_RANGE, MeasurementValidator
-                .validateHeight(HeightUnit.CENTIMETERS, "1.75", "").primaryError());
+                .validate(WeightUnit.KILOGRAMS, "500", "").primaryError());
+        assertTrue(MeasurementValidator.validate(WeightUnit.POUNDS, "500", "").isValid());
+        assertEquals(InputError.OUT_OF_RANGE, MeasurementValidator
+                .validate(HeightUnit.CENTIMETERS, "1.75", "").primaryError());
     }
 
-    // --- Height in feet and inches --------------------------------------------
+    @Test
+    public void ignoresThePartFieldForSimpleUnits() {
+        assertTrue(MeasurementValidator.validate(HeightUnit.CENTIMETERS, "175", "abc").isValid());
+    }
+
+    // --- Compound units -------------------------------------------------------
 
     @Test
-    public void combinesFeetAndInchesIntoTotalInches() {
-        HeightResult result =
-                MeasurementValidator.validateHeight(HeightUnit.FEET_AND_INCHES, "5", "10.5");
+    public void combinesWholeAndPartIntoATotal() {
+        MeasurementResult result =
+                MeasurementValidator.validate(HeightUnit.FEET_AND_INCHES, "5", "10.5");
 
         assertTrue(result.isValid());
         assertEquals(70.5, result.value(), DELTA);
     }
 
     @Test
-    public void treatsEmptyInchesAsZero() {
-        HeightResult result =
-                MeasurementValidator.validateHeight(HeightUnit.FEET_AND_INCHES, "6", "");
+    public void treatsAnEmptyPartAsZero() {
+        MeasurementResult result =
+                MeasurementValidator.validate(HeightUnit.FEET_AND_INCHES, "6", "");
 
         assertTrue(result.isValid());
         assertEquals(72.0, result.value(), DELTA);
     }
 
     @Test
-    public void requiresWholeFeet() {
-        HeightResult result =
-                MeasurementValidator.validateHeight(HeightUnit.FEET_AND_INCHES, "5.5", "");
+    public void requiresAWholeNumberInTheWholeField() {
+        MeasurementResult result =
+                MeasurementValidator.validate(HeightUnit.FEET_AND_INCHES, "5.5", "");
 
         assertEquals(InputError.NOT_A_WHOLE_NUMBER, result.primaryError());
-        assertNull(result.inchesError());
+        assertNull(result.partError());
     }
 
     @Test
-    public void rejectsTwelveInchesOrMore() {
-        HeightResult result =
-                MeasurementValidator.validateHeight(HeightUnit.FEET_AND_INCHES, "5", "12");
+    public void rejectsAPartOfAWholeUnitOrMore() {
+        MeasurementResult result =
+                MeasurementValidator.validate(HeightUnit.FEET_AND_INCHES, "5", "12");
 
         assertNull(result.primaryError());
-        assertEquals(InputError.INCHES_OUT_OF_RANGE, result.inchesError());
+        assertEquals(InputError.PART_OUT_OF_RANGE, result.partError());
     }
 
     @Test
     public void reportsErrorsInBothFieldsAtOnce() {
-        HeightResult result =
-                MeasurementValidator.validateHeight(HeightUnit.FEET_AND_INCHES, "", "abc");
+        MeasurementResult result =
+                MeasurementValidator.validate(HeightUnit.FEET_AND_INCHES, "", "abc");
 
         assertEquals(InputError.REQUIRED, result.primaryError());
-        assertEquals(InputError.NOT_A_NUMBER, result.inchesError());
+        assertEquals(InputError.NOT_A_NUMBER, result.partError());
     }
 
     @Test
-    public void reportsACombinedHeightOutsideTheRangeOnTheFeetField() {
-        HeightResult result =
-                MeasurementValidator.validateHeight(HeightUnit.FEET_AND_INCHES, "9", "0");
+    public void reportsACombinedValueOutsideTheRangeOnTheWholeField() {
+        MeasurementResult result =
+                MeasurementValidator.validate(HeightUnit.FEET_AND_INCHES, "9", "0");
 
         assertEquals(InputError.OUT_OF_RANGE, result.primaryError());
-        assertNull(result.inchesError());
+        assertNull(result.partError());
     }
 }

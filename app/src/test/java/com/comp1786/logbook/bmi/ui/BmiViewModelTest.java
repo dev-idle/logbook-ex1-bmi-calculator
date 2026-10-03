@@ -82,7 +82,7 @@ public class BmiViewModelTest {
         BmiUiState state = viewModel.currentState();
         assertEquals(InputError.REQUIRED, state.weightError());
         assertNull(state.heightError());
-        assertEquals(InputError.INCHES_OUT_OF_RANGE, state.inchesError());
+        assertEquals(InputError.PART_OUT_OF_RANGE, state.inchesError());
         assertNull(state.result());
     }
 

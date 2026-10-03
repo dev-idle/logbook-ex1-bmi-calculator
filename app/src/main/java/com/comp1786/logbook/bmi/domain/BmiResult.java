@@ -19,7 +19,7 @@ public record BmiResult(
      * place so that it is still within the healthy category.
      */
     public double healthyWeightMinimum(WeightUnit unit) {
-        return Rounding.up(unit.fromKilograms(healthyWeightMinimumKilograms), 1);
+        return Rounding.up(unit.fromBaseUnit(healthyWeightMinimumKilograms), 1);
     }
 
     /**
@@ -27,6 +27,6 @@ public record BmiResult(
      * place so that it is still within the healthy category.
      */
     public double healthyWeightMaximum(WeightUnit unit) {
-        return Rounding.down(unit.fromKilograms(healthyWeightMaximumKilograms), 1);
+        return Rounding.down(unit.fromBaseUnit(healthyWeightMaximumKilograms), 1);
     }
 }

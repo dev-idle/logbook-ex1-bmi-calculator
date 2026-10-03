@@ -12,20 +12,20 @@ public class WeightUnitTest {
 
     @Test
     public void kilogramsConvertToThemselves() {
-        assertEquals(70.0, WeightUnit.KILOGRAMS.toKilograms(70.0), DELTA);
-        assertEquals(70.0, WeightUnit.KILOGRAMS.fromKilograms(70.0), DELTA);
+        assertEquals(70.0, WeightUnit.KILOGRAMS.toBaseUnit(70.0), DELTA);
+        assertEquals(70.0, WeightUnit.KILOGRAMS.fromBaseUnit(70.0), DELTA);
     }
 
     @Test
     public void poundsUseTheExactInternationalDefinition() {
-        assertEquals(0.45359237, WeightUnit.POUNDS.toKilograms(1.0), DELTA);
-        assertEquals(1.0, WeightUnit.POUNDS.fromKilograms(0.45359237), DELTA);
+        assertEquals(0.45359237, WeightUnit.POUNDS.toBaseUnit(1.0), DELTA);
+        assertEquals(1.0, WeightUnit.POUNDS.fromBaseUnit(0.45359237), DELTA);
     }
 
     @Test
     public void conversionRoundTripPreservesTheValue() {
-        double kilograms = WeightUnit.POUNDS.toKilograms(154.3);
-        assertEquals(154.3, WeightUnit.POUNDS.fromKilograms(kilograms), DELTA);
+        double kilograms = WeightUnit.POUNDS.toBaseUnit(154.3);
+        assertEquals(154.3, WeightUnit.POUNDS.fromBaseUnit(kilograms), DELTA);
     }
 
     @Test

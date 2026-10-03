@@ -14,64 +14,55 @@ public final class MeasurementValidator {
     private MeasurementValidator() {
     }
 
-    /** Validates a weight entered in {@code unit}. */
-    public static FieldResult validateWeight(String text, WeightUnit unit) {
-        FieldResult result = parseRequired(text);
-        if (result.isValid() && !unit.accepts(result.value())) {
-            return FieldResult.invalid(InputError.OUT_OF_RANGE);
-        }
-        return result;
-    }
-
     /**
-     * Validates a height entered in {@code unit}.
+     * Validates a measurement entered in {@code unit}.
      *
-     * @param primaryText the centimeters field, or the feet field for feet and inches
-     * @param inchesText  the inches field; ignored for centimeters and optional otherwise,
-     *                    so "6" feet with no inches means 6 ft 0 in
+     * @param primaryText the single field, or the whole field of a compound unit (e.g. feet)
+     * @param partText    the part field of a compound unit (e.g. inches); ignored for simple
+     *                    units, and optional otherwise, so "6" feet alone means 6 ft 0 in
      */
-    public static HeightResult validateHeight(
-            HeightUnit unit, String primaryText, String inchesText) {
-        return switch (unit) {
-            case CENTIMETERS -> validateCentimeters(primaryText);
-            case FEET_AND_INCHES -> validateFeetAndInches(primaryText, inchesText);
-        };
+    public static MeasurementResult validate(
+            MeasurementUnit unit, String primaryText, String partText) {
+        return unit.isCompound()
+                ? validateCompound(unit, primaryText, partText)
+                : validateSimple(unit, primaryText);
     }
 
-    private static HeightResult validateCentimeters(String text) {
+    private static MeasurementResult validateSimple(MeasurementUnit unit, String text) {
         FieldResult result = parseRequired(text);
         if (!result.isValid()) {
-            return HeightResult.invalid(result.error(), null);
+            return MeasurementResult.invalid(result.error(), null);
         }
-        if (!HeightUnit.CENTIMETERS.accepts(result.value())) {
-            return HeightResult.invalid(InputError.OUT_OF_RANGE, null);
+        if (!unit.accepts(result.value())) {
+            return MeasurementResult.invalid(InputError.OUT_OF_RANGE, null);
         }
-        return HeightResult.valid(result.value());
+        return MeasurementResult.valid(result.value());
     }
 
-    private static HeightResult validateFeetAndInches(String feetText, String inchesText) {
-        FieldResult feet = parseRequired(feetText);
-        if (feet.isValid() && feet.value() != Math.rint(feet.value())) {
-            feet = FieldResult.invalid(InputError.NOT_A_WHOLE_NUMBER);
+    private static MeasurementResult validateCompound(
+            MeasurementUnit unit, String wholeText, String partText) {
+        FieldResult whole = parseRequired(wholeText);
+        if (whole.isValid() && whole.value() != Math.rint(whole.value())) {
+            whole = FieldResult.invalid(InputError.NOT_A_WHOLE_NUMBER);
         }
 
-        FieldResult inches = NumberInput.isBlank(inchesText)
+        FieldResult part = NumberInput.isBlank(partText)
                 ? FieldResult.valid(0.0)
-                : parse(inchesText);
-        if (inches.isValid() && inches.value() >= UnitConversions.INCHES_PER_FOOT) {
-            inches = FieldResult.invalid(InputError.INCHES_OUT_OF_RANGE);
+                : parse(partText);
+        if (part.isValid() && part.value() >= unit.partsPerWhole()) {
+            part = FieldResult.invalid(InputError.PART_OUT_OF_RANGE);
         }
 
-        if (!feet.isValid() || !inches.isValid()) {
-            return HeightResult.invalid(feet.error(), inches.error());
+        if (!whole.isValid() || !part.isValid()) {
+            return MeasurementResult.invalid(whole.error(), part.error());
         }
 
-        double totalInches = feet.value() * UnitConversions.INCHES_PER_FOOT + inches.value();
-        if (!HeightUnit.FEET_AND_INCHES.accepts(totalInches)) {
-            // The combined height is too small or too large; the feet field carries the message.
-            return HeightResult.invalid(InputError.OUT_OF_RANGE, null);
+        double total = whole.value() * unit.partsPerWhole() + part.value();
+        if (!unit.accepts(total)) {
+            // The combined value is out of range; the whole field carries the message.
+            return MeasurementResult.invalid(InputError.OUT_OF_RANGE, null);
         }
-        return HeightResult.valid(totalInches);
+        return MeasurementResult.valid(total);
     }
 
     private static FieldResult parseRequired(String text) {

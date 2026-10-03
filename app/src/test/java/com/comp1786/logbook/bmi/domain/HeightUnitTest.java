@@ -12,14 +12,14 @@ public class HeightUnitTest {
 
     @Test
     public void centimetersConvertToMeters() {
-        assertEquals(1.75, HeightUnit.CENTIMETERS.toMeters(175.0), DELTA);
-        assertEquals(175.0, HeightUnit.CENTIMETERS.fromMeters(1.75), DELTA);
+        assertEquals(1.75, HeightUnit.CENTIMETERS.toBaseUnit(175.0), DELTA);
+        assertEquals(175.0, HeightUnit.CENTIMETERS.fromBaseUnit(1.75), DELTA);
     }
 
     @Test
     public void inchesUseTheExactInternationalDefinition() {
-        assertEquals(0.0254, HeightUnit.FEET_AND_INCHES.toMeters(1.0), DELTA);
-        assertEquals(70.0, HeightUnit.FEET_AND_INCHES.fromMeters(1.778), DELTA);
+        assertEquals(0.0254, HeightUnit.FEET_AND_INCHES.toBaseUnit(1.0), DELTA);
+        assertEquals(70.0, HeightUnit.FEET_AND_INCHES.fromBaseUnit(1.778), DELTA);
     }
 
     @Test

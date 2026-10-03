@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.comp1786.logbook.bmi.R;
 import com.comp1786.logbook.bmi.domain.BmiCategory;
-import com.comp1786.logbook.bmi.domain.FeetAndInches;
+import com.comp1786.logbook.bmi.domain.CompoundQuantity;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.InputError;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
@@ -107,7 +107,7 @@ final class MeasurementText {
         if (error == null) {
             return null;
         }
-        return resources.getString(error == InputError.INCHES_OUT_OF_RANGE
+        return resources.getString(error == InputError.PART_OUT_OF_RANGE
                 ? R.string.error_inches_out_of_range
                 : R.string.error_not_a_number);
     }
@@ -132,8 +132,9 @@ final class MeasurementText {
     }
 
     private String feetAndInches(double totalInches) {
-        FeetAndInches height = FeetAndInches.fromTotalInches(totalInches);
+        CompoundQuantity height = CompoundQuantity.fromTotal(
+                totalInches, HeightUnit.FEET_AND_INCHES.partsPerWhole());
         return resources.getString(
-                R.string.feet_and_inches_value, height.feet(), number(height.inches()));
+                R.string.feet_and_inches_value, height.whole(), number(height.part()));
     }
 }

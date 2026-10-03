@@ -29,7 +29,7 @@ import com.comp1786.logbook.bmi.domain.BmiCategory;
 import com.comp1786.logbook.bmi.domain.BmiResult;
 import com.comp1786.logbook.bmi.domain.HeightUnit;
 import com.comp1786.logbook.bmi.domain.MeasurementConverter;
-import com.comp1786.logbook.bmi.domain.MeasurementConverter.HeightText;
+import com.comp1786.logbook.bmi.domain.MeasurementConverter.FieldText;
 import com.comp1786.logbook.bmi.domain.WeightUnit;
 
 import java.util.EnumMap;
@@ -170,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         binding.weightInput.setText(MeasurementConverter
-                .convertWeight(textOf(binding.weightInput), previous, unit)
+                .convert(textOf(binding.weightInput), "", previous, unit)
+                .map(FieldText::primary)
                 .orElse(""));
         viewModel.selectWeightUnit(unit);
     }
@@ -180,14 +181,14 @@ public class MainActivity extends AppCompatActivity {
         if (unit == previous) {
             return;
         }
-        HeightText converted = MeasurementConverter
-                .convertHeight(heightText(previous), textOf(binding.inchesInput), previous, unit)
-                .orElse(new HeightText("", ""));
+        FieldText converted = MeasurementConverter
+                .convert(heightText(previous), textOf(binding.inchesInput), previous, unit)
+                .orElse(new FieldText("", ""));
         if (unit == HeightUnit.CENTIMETERS) {
             binding.centimetersInput.setText(converted.primary());
         } else {
             binding.feetInput.setText(converted.primary());
-            binding.inchesInput.setText(converted.inches());
+            binding.inchesInput.setText(converted.part());
         }
         viewModel.selectHeightUnit(unit);
     }
