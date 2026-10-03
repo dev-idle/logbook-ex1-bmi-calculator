@@ -85,6 +85,12 @@ to two decimal places.
 Children and teens aged 2 to 19 are assessed with sex-specific BMI-for-age percentiles, because
 they are still growing, so these categories do not apply to them.
 
+Other standards were considered. The WHO applies the same cut-offs to adults from age 18, and
+Vietnam's Ministry of Health (Decision 2892/QD-BYT, 2022) uses the WHO cut-offs for Asian
+populations, where 23 to 24.9 is overweight and 25 or more is obesity, because health risks rise
+at lower BMI in Asian populations. The app follows a single source, the CDC, so that its
+categories, age scope and wording stay consistent with each other.
+
 ## Technology
 
 | Item | Version |
@@ -143,6 +149,12 @@ Android Studio's bundled JDK can be used by setting `JAVA_HOME` to its `jbr` fol
   https://www.cdc.gov/bmi/child-teen-calculator/bmi-categories.html
 - World Health Organization (2000) *Obesity: Preventing and Managing the Global Epidemic*. WHO
   Technical Report Series 894. Geneva: WHO.
+- World Health Organization, *Obesity and overweight* (fact sheet; adults are 18 and over):
+  https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight
+- WHO Expert Consultation (2004) Appropriate body-mass index for Asian populations and its
+  implications for policy and intervention strategies. *The Lancet*, 363(9403), pp. 157-163.
+- Vietnam Ministry of Health (2022) Decision 2892/QD-BYT, *Guidelines for the diagnosis and
+  treatment of obesity*, Table 4.1.
 - Guinness World Records: *Tallest man ever*, *Shortest man ever* and *Heaviest man ever*:
   https://www.guinnessworldrecords.com/world-records/tallest-man-ever,
   https://www.guinnessworldrecords.com/world-records/67521-shortest-man-ever,
