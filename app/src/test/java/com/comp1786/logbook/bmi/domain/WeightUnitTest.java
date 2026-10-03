@@ -50,7 +50,7 @@ public class WeightUnitTest {
         assertFalse(WeightUnit.KILOGRAMS.accepts(9.9));
         assertFalse(WeightUnit.KILOGRAMS.accepts(400.1));
         assertTrue(WeightUnit.POUNDS.accepts(22.0));
-        assertTrue(WeightUnit.POUNDS.accepts(880.0));
-        assertFalse(WeightUnit.POUNDS.accepts(880.1));
+        assertTrue(WeightUnit.POUNDS.accepts(881.8));
+        assertFalse(WeightUnit.POUNDS.accepts(881.9));
     }
 }

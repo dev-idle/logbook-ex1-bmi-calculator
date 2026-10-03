@@ -17,12 +17,13 @@ public final class MeasurementConverter {
      * Converts {@code input} between two units of the same kind; the type bound stops weight
      * and height units being mixed.
      *
-     * @return the converted input, or empty if the typed text is not a number
+     * @return the converted input, or empty if the typed text is not an accepted number; an
+     *     out-of-range value is a mistake to fix and may not fit the new unit's fields
      */
     public static <U extends Enum<U> & MeasurementUnit> Optional<MeasurementInput> convert(
             MeasurementInput input, U from, U to) {
         OptionalDouble value = read(input, from);
-        if (!value.isPresent()) {
+        if (!value.isPresent() || !from.accepts(value.getAsDouble())) {
             return Optional.empty();
         }
         double converted = to.fromBaseUnit(from.toBaseUnit(value.getAsDouble()));

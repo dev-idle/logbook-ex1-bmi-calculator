@@ -17,9 +17,9 @@ public class HeightUnitTest {
     }
 
     @Test
-    public void metersAreTheBaseUnitAndKeepTwoDecimals() {
+    public void metersAreTheBaseUnitAndKeepMillimeters() {
         assertEquals(1.75, HeightUnit.METERS.toBaseUnit(1.75), DELTA);
-        assertEquals(2, HeightUnit.METERS.fractionDigits());
+        assertEquals(3, HeightUnit.METERS.fractionDigits());
         assertEquals(1, HeightUnit.CENTIMETERS.fractionDigits());
     }
 
@@ -40,8 +40,9 @@ public class HeightUnitTest {
         assertTrue(HeightUnit.CENTIMETERS.accepts(250.0));
         assertFalse(HeightUnit.CENTIMETERS.accepts(49.9));
         assertFalse(HeightUnit.CENTIMETERS.accepts(250.1));
-        assertTrue(HeightUnit.FEET_AND_INCHES.accepts(20.0));
-        assertTrue(HeightUnit.FEET_AND_INCHES.accepts(98.0));
-        assertFalse(HeightUnit.FEET_AND_INCHES.accepts(19.9));
+        assertTrue(HeightUnit.FEET_AND_INCHES.accepts(19.7));
+        assertTrue(HeightUnit.FEET_AND_INCHES.accepts(98.4));
+        assertFalse(HeightUnit.FEET_AND_INCHES.accepts(19.6));
+        assertFalse(HeightUnit.FEET_AND_INCHES.accepts(98.5));
     }
 }

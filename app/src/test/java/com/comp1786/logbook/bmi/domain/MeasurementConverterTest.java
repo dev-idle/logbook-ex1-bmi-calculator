@@ -2,6 +2,7 @@ package com.comp1786.logbook.bmi.domain;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -67,19 +68,33 @@ public class MeasurementConverterTest {
     }
 
     @Test
-    public void keepsTwoDecimalPlacesForMeters() {
-        // One decimal place would turn 175 cm into 1.8 m, losing 5 cm.
+    public void keepsMillimetersForMeters() {
         assertEquals("1.75",
                 convert("175", "", HeightUnit.CENTIMETERS, HeightUnit.METERS).primary());
-        assertEquals("175",
-                convert("1.75", "", HeightUnit.METERS, HeightUnit.CENTIMETERS).primary());
+        assertEquals("1.755",
+                convert("175.5", "", HeightUnit.CENTIMETERS, HeightUnit.METERS).primary());
+        assertEquals("175.5",
+                convert("1.755", "", HeightUnit.METERS, HeightUnit.CENTIMETERS).primary());
     }
 
     @Test
     public void convertsFeetAndInchesToMeters() {
-        // 5 ft 9 in = 69 in = 1.7526 m.
-        assertEquals("1.75",
+        // 5 ft 9 in = 69 in = 1.7526 m; two decimals would round it to 1.75 m and raise the BMI.
+        assertEquals("1.753",
                 convert("5", "9", HeightUnit.FEET_AND_INCHES, HeightUnit.METERS).primary());
+    }
+
+    @Test
+    public void leavesAValueOutsideTheAcceptedRange() {
+        // 700 kg is 110 st 3.2 lb, which a two-digit stones field could not hold.
+        assertFalse(tryConvert("700", "", WeightUnit.KILOGRAMS, WeightUnit.STONES_AND_POUNDS)
+                .isPresent());
+    }
+
+    @Test
+    public void acceptedLimitsStayAcceptedInEveryUnit() {
+        assertLimitsConvert(WeightUnit.values());
+        assertLimitsConvert(HeightUnit.values());
     }
 
     @Test
@@ -99,6 +114,29 @@ public class MeasurementConverterTest {
         String pounds = convert("70", "", WeightUnit.KILOGRAMS, WeightUnit.POUNDS).primary();
 
         assertEquals("70", convert(pounds, "", WeightUnit.POUNDS, WeightUnit.KILOGRAMS).primary());
+    }
+
+    private static <U extends Enum<U> & MeasurementUnit> void assertLimitsConvert(U[] units) {
+        for (U from : units) {
+            for (double limit : new double[] {from.minimum(), from.maximum()}) {
+                MeasurementInput input = inputOf(limit, from);
+                for (U to : units) {
+                    MeasurementInput converted =
+                            MeasurementConverter.convert(input, from, to).orElseThrow();
+                    assertTrue(from + " " + limit + " as " + to,
+                            MeasurementValidator.validate(to, converted).isValid());
+                }
+            }
+        }
+    }
+
+    private static MeasurementInput inputOf(double value, MeasurementUnit unit) {
+        if (!unit.isCompound()) {
+            return MeasurementInput.of(String.valueOf(value));
+        }
+        CompoundQuantity quantity = CompoundQuantity.fromTotal(value, unit.partsPerWhole());
+        return new MeasurementInput(
+                String.valueOf(quantity.whole()), String.valueOf(quantity.part()));
     }
 
     private static <U extends Enum<U> & MeasurementUnit> MeasurementInput convert(

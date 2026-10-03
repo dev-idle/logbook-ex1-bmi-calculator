@@ -52,7 +52,7 @@ final class MeasurementText {
         return resources.getString(symbolRes(unit));
     }
 
-    /** The accepted range, e.g. "10 to 400 kg" or "1 ft 8 in to 8 ft 2 in". */
+    /** The accepted range, e.g. "10 to 400 kg" or "1 ft 7.7 in to 8 ft 2.4 in". */
     String range(MeasurementUnit unit) {
         if (unit.isCompound()) {
             return resources.getString(R.string.range,
