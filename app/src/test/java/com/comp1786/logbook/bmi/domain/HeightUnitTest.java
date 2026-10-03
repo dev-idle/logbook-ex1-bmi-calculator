@@ -37,12 +37,12 @@ public class HeightUnitTest {
     @Test
     public void rangeIsInclusiveAtBothEnds() {
         assertTrue(HeightUnit.CENTIMETERS.accepts(50.0));
-        assertTrue(HeightUnit.CENTIMETERS.accepts(250.0));
+        assertTrue(HeightUnit.CENTIMETERS.accepts(280.0));
         assertFalse(HeightUnit.CENTIMETERS.accepts(49.9));
-        assertFalse(HeightUnit.CENTIMETERS.accepts(250.1));
+        assertFalse(HeightUnit.CENTIMETERS.accepts(280.1));
         assertTrue(HeightUnit.FEET_AND_INCHES.accepts(19.7));
-        assertTrue(HeightUnit.FEET_AND_INCHES.accepts(98.4));
+        assertTrue(HeightUnit.FEET_AND_INCHES.accepts(110.2));
         assertFalse(HeightUnit.FEET_AND_INCHES.accepts(19.6));
-        assertFalse(HeightUnit.FEET_AND_INCHES.accepts(98.5));
+        assertFalse(HeightUnit.FEET_AND_INCHES.accepts(110.3));
     }
 }

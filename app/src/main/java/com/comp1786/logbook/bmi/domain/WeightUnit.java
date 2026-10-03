@@ -1,6 +1,9 @@
 package com.comp1786.logbook.bmi.domain;
 
-/** Weight units. The ranges fit any adult but catch typing mistakes such as 700 kg. */
+/**
+ * Weight units. The range is tighter than the extremes on record, because a missing or extra
+ * digit, such as 7 kg or 700 kg for 70 kg, is a common typing mistake.
+ */
 public enum WeightUnit implements MeasurementUnit {
 
     KILOGRAMS(UnitScale.simple(1.0, 10.0, 400.0)),

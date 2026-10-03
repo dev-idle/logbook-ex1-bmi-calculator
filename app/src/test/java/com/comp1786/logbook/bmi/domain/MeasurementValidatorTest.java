@@ -116,7 +116,7 @@ public class MeasurementValidatorTest {
 
     @Test
     public void reportsACombinedValueOutsideTheRangeOnTheWholeField() {
-        MeasurementResult result = validate(HeightUnit.FEET_AND_INCHES, "9", "0");
+        MeasurementResult result = validate(HeightUnit.FEET_AND_INCHES, "9", "3");
 
         assertEquals(InputError.OUT_OF_RANGE, result.primaryError());
         assertNull(result.partError());

@@ -34,7 +34,7 @@
     <string name="clear">Clear</string>
 
     <!--
-        Accepted ranges, e.g. "10 to 400 kg" or "1 ft 7.7 in to 8 ft 2.4 in". A number and its
+        Accepted ranges, e.g. "10 to 400 kg" or "1 ft 7.7 in to 9 ft 2.2 in". A number and its
         unit are joined by a no-break space (\u00A0) so a line never breaks between them.
     -->
     <string name="range_with_unit">%1$s to %2$s\u00A0%3$s</string>
