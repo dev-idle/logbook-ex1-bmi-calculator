@@ -31,6 +31,8 @@ feedback.
 - The adaptive launcher icon, a person on a scale beside a height arrow, has a monochrome layer
   for Android 13 themed icons.
 - The layout works in portrait and landscape, in light and dark mode, and on tablets.
+- Errors and the result survive rotation and the system ending the app in the background, as the
+  view model keeps them in a `SavedStateHandle`.
 - Screen readers announce the result as one sentence, and the unit buttons are read as full
   words.
 - Validation messages follow Shneiderman's guidelines for error messages: precise, positive, and
@@ -55,7 +57,8 @@ The limits balance including real adults against catching typing mistakes:
   because a missing or extra digit, such as 7 kg or 700 kg for 70 kg, is a common mistake.
 
 The imperial limits are the metric limits converted, so switching units never turns an accepted
-value into an error. A value outside the range is cleared, not converted, when the unit changes.
+value into an error. A converted value is rounded to the new unit's precision (0.1, or 0.001 m),
+and a value outside the range is cleared, not converted.
 
 ## BMI categories
 
@@ -81,9 +84,10 @@ places, so a value just below a bound is not shown as the bound: 150 lb at 5 ft 
 shown value never rounds up across a category bound, so 24.996 shows as 24.99. The healthy weight
 range uses the same bounds, so its ends agree with the category shown.
 
-The CDC's imperial formula multiplies by 703, a rounded factor; the app converts pounds and
-inches to kilograms and meters with the exact definitions instead, which gives the same result
-to two decimal places.
+The CDC's U.S. formula multiplies by 703, which rounds the exact factor of 703.0696. The app
+converts pounds and inches with the exact definitions instead, so its BMI is about 0.01% higher
+than the 703 shortcut gives, which can change the second decimal place: for 150 lb at 5 ft 5 in
+the two give 24.961 and 24.959, both shown as 24.96.
 
 Children and teens are assessed with sex-specific BMI-for-age centiles instead, because they are
 still growing, so these categories do not apply to them.
@@ -104,7 +108,7 @@ categories, ranges and wording applies throughout.
 | `compileSdk` / `targetSdk` / `minSdk` | 37 / 37 / 33 (Android 13) |
 | UI | Android Views, Material Components 1.14.0, View Binding |
 | Colors | Material 3 scheme generated from the seed #1E6FB8 with material-color-utilities |
-| Architecture | ViewModel and LiveData (Lifecycle 2.11.0) |
+| Architecture | ViewModel, SavedStateHandle and LiveData (Lifecycle 2.11.0) |
 | Tests | JUnit 4.13.2, AndroidX Test, Espresso 3.7.0 |
 
 ## Project structure
@@ -115,7 +119,8 @@ app/src/main/java/com/comp1786/logbook/bmi/
 │             Weight and height units share one MeasurementUnit interface, and compound units
 │             (stones and pounds, feet and inches) share one CompoundQuantity type.
 ├── data/     Remembers the selected units (SharedPreferences)
-└── ui/       Calculator screen, its view model and state, and the About dialog
+└── ui/       Calculator screen, its view model and state, the unit selector, the category
+              gauge, and the About dialog
 ```
 
 ## Build and run
@@ -138,7 +143,7 @@ Android Studio's bundled JDK can be used by setting `JAVA_HOME` to its `jbr` fol
 ## Tests
 
 ```bash
-./gradlew testDebugUnitTest            # 81 unit tests for the domain, view model and gauge
+./gradlew testDebugUnitTest            # 83 unit tests for the domain, view model and gauge
 ./gradlew connectedDebugAndroidTest    # Espresso tests; needs a running emulator or device
 ./gradlew lintDebug                    # Android Lint
 ```
@@ -156,8 +161,6 @@ Android Studio's bundled JDK can be used by setting `JAVA_HOME` to its `jbr` fol
   https://www.cdc.gov/growth-chart-training/hcp/using-bmi/calculating-bmi.html
 - CDC, *Child and Teen BMI Categories*:
   https://www.cdc.gov/bmi/child-teen-calculator/bmi-categories.html
-- World Health Organization (2000) *Obesity: Preventing and Managing the Global Epidemic*. WHO
-  Technical Report Series 894. Geneva: WHO.
 - World Health Organization, *Obesity and overweight* (adult cut-offs; BMI-for-age from 5 to 19):
   https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight
 - WHO Expert Consultation (2004) Appropriate body-mass index for Asian populations and its
@@ -168,6 +171,9 @@ Android Studio's bundled JDK can be used by setting `JAVA_HOME` to its `jbr` fol
   https://www.guinnessworldrecords.com/world-records/tallest-man-ever,
   https://www.guinnessworldrecords.com/world-records/67521-shortest-man-ever,
   https://www.guinnessworldrecords.com/world-records/heaviest-man
+- Android Developers, *Create ViewModels with dependencies* and *Save UI states*:
+  https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-factories,
+  https://developer.android.com/topic/libraries/architecture/saving-states
 - Android Developers, *Display content edge-to-edge in views*:
   https://developer.android.com/develop/ui/views/layout/edge-to-edge
 - Android Developers, *Back up user data with Auto Backup*:
