@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BMI Calculator</string>
+
+    <!-- WHO Technical Report Series 894, Table 2.1 -->
+    <string name="category_underweight">Underweight</string>
+    <string name="category_normal_range">Normal range</string>
+    <string name="category_preobese">Preobese</string>
+    <string name="category_obese_class_1">Obese class I</string>
+    <string name="category_obese_class_2">Obese class II</string>
+    <string name="category_obese_class_3">Obese class III</string>
 </resources>
