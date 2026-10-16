@@ -1,5 +1,24 @@
 <resources>
     <string name="app_name">BMI Calculator</string>
+    <string name="app_scope">For adults aged 20 and over</string>
+
+    <string name="label_units">Units</string>
+    <string name="label_weight">Weight</string>
+    <string name="label_height">Height</string>
+    <string name="label_pounds">Pounds</string>
+    <string name="label_inches">Inches</string>
+    <string name="button_calculate">Calculate BMI</string>
+
+    <string name="result_title">Your BMI</string>
+    <string name="result_normal_range_title">Normal range for your height</string>
+    <string name="result_normal_range">%1$s to %2$s</string>
+
+    <string name="error_weight_required">Enter your weight</string>
+    <string name="error_height_required">Enter your height</string>
+    <string name="error_not_a_number">Enter a number</string>
+    <string name="error_not_a_whole_number">Enter a whole number</string>
+    <string name="error_part_too_large">Enter less than %1$s</string>
+    <string name="error_out_of_range">Enter %1$s to %2$s</string>
 
     <!-- WHO Technical Report Series 894, Table 2.1 -->
     <string name="category_underweight">Underweight</string>
@@ -8,6 +27,12 @@
     <string name="category_obese_class_1">Obese class I</string>
     <string name="category_obese_class_2">Obese class II</string>
     <string name="category_obese_class_3">Obese class III</string>
+
+    <string name="scale_18_5" translatable="false">18.5</string>
+    <string name="scale_25" translatable="false">25</string>
+    <string name="scale_30" translatable="false">30</string>
+    <string name="scale_35" translatable="false">35</string>
+    <string name="scale_40" translatable="false">40</string>
 
     <string name="unit_system_metric">Metric (kg, cm)</string>
     <string name="unit_system_us">US (lb, ft in)</string>
@@ -19,4 +44,8 @@
     <string name="unit_cm" translatable="false">cm</string>
     <string name="unit_ft" translatable="false">ft</string>
     <string name="unit_in" translatable="false">in</string>
+
+    <!-- Examples: "70 kg", "11 st 0.3 lb". Non-breaking spaces keep a value on one line. -->
+    <string name="measurement_single">%1$s\u00A0%2$s</string>
+    <string name="measurement_compound">%1$s\u00A0%2$s\u00A0%3$s\u00A0%4$s</string>
 </resources>
