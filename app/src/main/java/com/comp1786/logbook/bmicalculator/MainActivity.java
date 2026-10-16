@@ -1,22 +1,29 @@
 package com.comp1786.logbook.bmicalculator;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -26,6 +33,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -63,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
     private UnitSystem unitSystem;
+    private AlertDialog aboutDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +131,33 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState.getBoolean(STATE_RESULT_SHOWN)) {
             calculate();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (aboutDialog != null) {
+            aboutDialog.dismiss();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_reset) {
+            reset();
+            return true;
+        } else if (id == R.id.action_about) {
+            showAboutDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void bindViews() {
@@ -265,6 +301,37 @@ public class MainActivity extends AppCompatActivity {
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
                 .hide(WindowInsetsCompat.Type.ime());
         scrollView.post(() -> scrollView.smoothScrollTo(0, resultCard.getBottom()));
+    }
+
+    private void reset() {
+        weightInput.setText(null);
+        weightPartInput.setText(null);
+        heightInput.setText(null);
+        heightPartInput.setText(null);
+        clearError(weightLayout);
+        clearError(weightPartLayout);
+        clearError(heightLayout);
+        clearError(heightPartLayout);
+        resultCard.setVisibility(View.GONE);
+        scrollView.smoothScrollTo(0, 0);
+    }
+
+    private void showAboutDialog() {
+        aboutDialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.about_title)
+                .setMessage(R.string.about_message)
+                .setNeutralButton(R.string.about_open_source, (dialog, which) -> openSource())
+                .setPositiveButton(R.string.about_close, null)
+                .show();
+    }
+
+    private void openSource() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.about_source_url)));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private float scalePosition(BigDecimal bmi) {

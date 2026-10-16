@@ -9,6 +9,16 @@
     <string name="label_inches">Inches</string>
     <string name="button_calculate">Calculate BMI</string>
 
+    <string name="menu_reset">Reset</string>
+    <string name="menu_about">About BMI</string>
+
+    <string name="about_title">About BMI</string>
+    <string name="about_message">BMI is your weight in kilograms divided by your height in meters squared. The categories follow the WHO classification of adults (Technical Report Series 894, Table 2.1).\n\nBMI is a screening measure, not a diagnosis. It cannot tell muscle from fat.\n\nThis calculator is for adults aged 20 and over. WHO assesses children and teenagers aged 5 to 19 with BMI-for-age charts instead. The NHS advises against using an adult BMI calculator if you are pregnant, have an eating disorder or have a condition that affects your height.\n\nPeople of South Asian, Chinese, other Asian, Middle Eastern, Black African or African-Caribbean background can face health risks at a lower BMI.</string>
+    <string name="about_open_source">WHO fact sheet</string>
+    <string name="about_close">Close</string>
+    <string name="about_source_url" translatable="false">https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight</string>
+    <string name="error_no_browser">No app can open this link</string>
+
     <string name="result_title">Your BMI</string>
     <string name="result_normal_range_title">Normal range for your height</string>
     <string name="result_normal_range">%1$s to %2$s</string>
