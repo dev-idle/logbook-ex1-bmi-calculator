@@ -8,4 +8,15 @@
     <string name="category_obese_class_1">Obese class I</string>
     <string name="category_obese_class_2">Obese class II</string>
     <string name="category_obese_class_3">Obese class III</string>
+
+    <string name="unit_system_metric">Metric (kg, cm)</string>
+    <string name="unit_system_us">US (lb, ft in)</string>
+    <string name="unit_system_uk">UK (st lb, ft in)</string>
+
+    <string name="unit_kg" translatable="false">kg</string>
+    <string name="unit_lb" translatable="false">lb</string>
+    <string name="unit_st" translatable="false">st</string>
+    <string name="unit_cm" translatable="false">cm</string>
+    <string name="unit_ft" translatable="false">ft</string>
+    <string name="unit_in" translatable="false">in</string>
 </resources>
