@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:orientation="vertical"
     tools:parentTag="android.widget.LinearLayout">
@@ -18,7 +19,6 @@
             android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +31,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/label_weight">
+            android:hint="@string/label_weight"
+            app:expandedHintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/weight_input"
@@ -51,7 +52,8 @@
             android:layout_marginStart="@dimen/space_medium"
             android:layout_weight="1"
             android:hint="@string/label_pounds"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:expandedHintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/weight_part_input"
@@ -65,7 +67,6 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,7 +79,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/label_height">
+            android:hint="@string/label_height"
+            app:expandedHintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/height_input"
@@ -98,7 +100,8 @@
             android:layout_marginStart="@dimen/space_medium"
             android:layout_weight="1"
             android:hint="@string/label_inches"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:expandedHintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/height_part_input"
