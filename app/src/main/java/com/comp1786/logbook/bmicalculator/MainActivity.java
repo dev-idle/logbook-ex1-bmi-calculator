@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_WEIGHT_UNIT = "weight_unit";
     private static final String KEY_HEIGHT_UNIT = "height_unit";
     private static final String STATE_RESULT_SHOWN = "result_shown";
+    private static final String STATE_ABOUT_SHOWN = "about_shown";
 
     private static final String DECIMAL_DIGITS = "0123456789.,";
     private static final String WHOLE_DIGITS = "0123456789";
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_RESULT_SHOWN, resultCard.getVisibility() == View.VISIBLE);
+        outState.putBoolean(STATE_ABOUT_SHOWN, aboutDialog != null && aboutDialog.isShowing());
     }
 
     @Override
@@ -139,6 +141,9 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.getBoolean(STATE_RESULT_SHOWN)) {
             calculate();
+        }
+        if (savedInstanceState.getBoolean(STATE_ABOUT_SHOWN)) {
+            showAboutDialog();
         }
     }
 
