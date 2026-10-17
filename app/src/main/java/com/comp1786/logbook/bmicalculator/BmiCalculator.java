@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 public final class BmiCalculator {
 
     /** Decimal places used in WHO Table 2.1. */
-    public static final int BMI_SCALE = 2;
+    private static final int BMI_SCALE = 2;
 
     // A BMI this far below a bound still rounds up to it, e.g. 24.995 to 25.00.
     private static final BigDecimal ROUNDING_MARGIN = new BigDecimal("0.005");

@@ -52,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String STATE_RESULT_SHOWN = "result_shown";
     private static final String STATE_ABOUT_SHOWN = "about_shown";
 
-    private static final String DECIMAL_DIGITS = "0123456789.,";
-    private static final String WHOLE_DIGITS = "0123456789";
-
     // BMI range of the scale bar in content_result.xml.
     private static final BigDecimal SCALE_MIN = new BigDecimal("15");
     private static final BigDecimal SCALE_SPAN = new BigDecimal("30");
@@ -395,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
         private final String preferenceKey;
         @StringRes
         private final int requiredMessage;
-        private final int lastFieldAction;
+        private final int singleFieldAction;
         private MeasurementUnit unit;
 
         MeasurementField(ChipGroup unitGroup, TextInputLayout wholeLayout,
@@ -408,10 +405,10 @@ public class MainActivity extends AppCompatActivity {
             this.partInput = partLayout.getEditText();
             this.preferenceKey = preferenceKey;
             this.requiredMessage = requiredMessage;
-            // Weight moves on to height; height is the last field and calculates.
-            this.lastFieldAction = wholeInput.getImeOptions() & EditorInfo.IME_MASK_ACTION;
+            // From the layout: weight moves on to height, and height calculates.
+            this.singleFieldAction = wholeInput.getImeOptions() & EditorInfo.IME_MASK_ACTION;
 
-            unit = MeasurementUnit.valueOf(preferences.getString(preferenceKey, defaultUnit.name()));
+            unit = savedUnit(defaultUnit);
             unitGroup.check(unitGroup.findViewWithTag(unit.name()).getId());
             applyUnit();
             unitGroup.setOnCheckedStateChangeListener((group, checkedIds) -> changeUnit(
@@ -452,6 +449,12 @@ public class MainActivity extends AppCompatActivity {
             partInput.setOnEditorActionListener(listener);
         }
 
+        /** Returns the unit chosen last time, or the default if none was saved for this field. */
+        private MeasurementUnit savedUnit(MeasurementUnit defaultUnit) {
+            String name = preferences.getString(preferenceKey, defaultUnit.name());
+            return unitGroup.findViewWithTag(name) != null ? MeasurementUnit.valueOf(name) : defaultUnit;
+        }
+
         private void changeUnit(MeasurementUnit newUnit) {
             if (newUnit == unit) {
                 return;
@@ -481,10 +484,11 @@ public class MainActivity extends AppCompatActivity {
             wholeLayout.setSuffixText(getString(unit.getWholeUnitRes()));
             // Stones and feet are whole numbers.
             boolean decimal = !unit.isCompound();
-            wholeInput.setKeyListener(DigitsKeyListener.getInstance(decimal ? DECIMAL_DIGITS : WHOLE_DIGITS));
+            wholeInput.setKeyListener(DigitsKeyListener.getInstance(
+                    getString(decimal ? R.string.digits_decimal : R.string.digits_whole)));
             wholeInput.setRawInputType(InputType.TYPE_CLASS_NUMBER
                     | (decimal ? InputType.TYPE_NUMBER_FLAG_DECIMAL : 0));
-            int action = unit.isCompound() ? EditorInfo.IME_ACTION_NEXT : lastFieldAction;
+            int action = unit.isCompound() ? EditorInfo.IME_ACTION_NEXT : singleFieldAction;
             wholeInput.setImeOptions(action | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
             partLayout.setVisibility(unit.isCompound() ? View.VISIBLE : View.GONE);
@@ -513,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** Clears a field's error and hides the result once the user edits the field. */
-    private class InputWatcher implements TextWatcher {
+    private final class InputWatcher implements TextWatcher {
 
         private final TextInputLayout layout;
         private String textBefore = "";

@@ -71,6 +71,10 @@
     <string name="unit_name_meters">Meters</string>
     <string name="unit_name_feet_and_inches">Feet and inches</string>
 
+    <!-- Characters accepted while typing; "," for keyboards with a decimal comma -->
+    <string name="digits_decimal" translatable="false">0123456789.,</string>
+    <string name="digits_whole" translatable="false">0123456789</string>
+
     <!-- Examples: "70 kg", "11 st 0.3 lb". Non-breaking spaces keep a value on one line. -->
     <string name="measurement_single">%1$s&#160;%2$s</string>
     <string name="measurement_compound">%1$s&#160;%2$s&#160;%3$s&#160;%4$s</string>
