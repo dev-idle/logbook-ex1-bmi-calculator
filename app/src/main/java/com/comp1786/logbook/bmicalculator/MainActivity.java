@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -209,8 +210,9 @@ public class MainActivity extends AppCompatActivity {
     private void applyUnitSystem() {
         applyScale(unitSystem.getWeight(), weightLayout, weightInput, weightPartLayout);
         applyScale(unitSystem.getHeight(), heightLayout, heightInput, heightPartLayout);
-        heightInput.setImeOptions(unitSystem.getHeight().isCompound()
-                ? EditorInfo.IME_ACTION_NEXT : EditorInfo.IME_ACTION_DONE);
+        int action = unitSystem.getHeight().isCompound()
+                ? EditorInfo.IME_ACTION_NEXT : EditorInfo.IME_ACTION_DONE;
+        heightInput.setImeOptions(action | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
     }
 
     private void applyScale(UnitSystem.Scale scale, TextInputLayout wholeLayout,
@@ -300,7 +302,9 @@ public class MainActivity extends AppCompatActivity {
         resultCard.setVisibility(View.VISIBLE);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
                 .hide(WindowInsetsCompat.Type.ime());
-        scrollView.post(() -> scrollView.smoothScrollTo(0, resultCard.getBottom()));
+        // Scrolls only as far as needed to show the card, if at all.
+        resultCard.post(() -> resultCard.requestRectangleOnScreen(
+                new Rect(0, 0, resultCard.getWidth(), resultCard.getHeight()), false));
     }
 
     private void reset() {

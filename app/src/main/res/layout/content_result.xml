@@ -10,7 +10,7 @@
         style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_large"
+        android:layout_marginTop="@dimen/result_card_margin_top"
         android:visibility="gone"
         app:cardBackgroundColor="?attr/colorSurfaceContainer"
         tools:visibility="visible">
