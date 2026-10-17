@@ -257,10 +257,15 @@ public class MainActivity extends AppCompatActivity {
             return getString(R.string.result_summary_normal);
         } else if (category == BmiCategory.UNDERWEIGHT) {
             return getString(R.string.result_summary_below,
-                    formatValue(weight.unit, minimum.subtract(weightAmount)));
+                    formatValue(weight.unit, roundUp(minimum.subtract(weightAmount))));
         }
         return getString(R.string.result_summary_above,
-                formatValue(weight.unit, weightAmount.subtract(maximum)));
+                formatValue(weight.unit, roundUp(weightAmount.subtract(maximum))));
+    }
+
+    /** Rounds a gap up to the weight unit's precision so it never shows as zero. */
+    private BigDecimal roundUp(BigDecimal difference) {
+        return difference.setScale(weight.unit.getDecimals(), RoundingMode.UP);
     }
 
     private void moveScaleMarker(BigDecimal bmi) {
