@@ -20,6 +20,17 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
+    <style name="Widget.BMICalculator.YouTag" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/space_small</item>
+        <item name="android:background">@drawable/bg_you_tag</item>
+        <item name="android:paddingStart">@dimen/you_tag_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/you_tag_padding_horizontal</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelSmall</item>
+        <item name="android:textColor">?attr/colorSurface</item>
+    </style>
+
     <style name="Widget.BMICalculator.ScaleTick" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

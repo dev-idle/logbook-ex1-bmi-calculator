@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:accessibilityLiveRegion="polite"
-            android:clipChildren="false"
+            android:clipToPadding="false"
             android:padding="@dimen/card_padding">
 
             <TextView
@@ -40,7 +40,18 @@
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/result_title"
-                tools:text="22.86" />
+                tools:text="27.76" />
+
+            <TextView
+                android:id="@+id/bmi_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_small"
+                android:text="@string/result_bmi_unit"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintBaseline_toBaselineOf="@id/bmi_value"
+                app:layout_constraintStart_toEndOf="@id/bmi_value" />
 
             <TextView
                 android:id="@+id/category_label"
@@ -50,14 +61,89 @@
                 app:layout_constraintBottom_toBottomOf="@id/bmi_value"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/bmi_value"
-                tools:text="@string/category_normal_range" />
+                tools:text="@string/category_preobese" />
+
+            <TextView
+                android:id="@+id/summary_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bmi_value"
+                tools:text="You are 8.5 kg above the normal range for your height." />
+
+            <LinearLayout
+                android:id="@+id/caution_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_medium"
+                android:background="@drawable/bg_caution"
+                android:orientation="horizontal"
+                android:padding="@dimen/space_medium"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/summary_text"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="@dimen/caution_icon_size"
+                    android:layout_height="@dimen/caution_icon_size"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_warning"
+                    app:tint="?attr/colorOnErrorContainer" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_medium"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/result_caution_title"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:textColor="?attr/colorOnErrorContainer" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_tiny"
+                        android:text="@string/result_caution"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnErrorContainer" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/scale_marker_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.425" />
+
+            <!-- Can extend into the card padding when the BMI is at either end of the scale. -->
+            <ImageView
+                android:id="@+id/scale_marker"
+                android:layout_width="@dimen/scale_marker_width"
+                android:layout_height="@dimen/scale_marker_height"
+                android:layout_marginTop="@dimen/space_large"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_scale_marker"
+                app:layout_constraintEnd_toEndOf="@id/scale_marker_guide"
+                app:layout_constraintStart_toStartOf="@id/scale_marker_guide"
+                app:layout_constraintTop_toBottomOf="@id/caution_box" />
 
             <!-- Segment weights follow the WHO bounds on a scale from BMI 15 to 45. -->
             <LinearLayout
                 android:id="@+id/scale_bar"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/scale_bar_height"
-                android:layout_marginTop="@dimen/space_large"
+                android:layout_marginTop="@dimen/space_tiny"
                 android:background="@drawable/bg_scale_bar"
                 android:clipToOutline="true"
                 android:importantForAccessibility="no"
@@ -65,7 +151,7 @@
                 android:weightSum="30"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bmi_value">
+                app:layout_constraintTop_toBottomOf="@id/scale_marker">
 
                 <View
                     android:layout_width="0dp"
@@ -103,24 +189,6 @@
                     android:layout_weight="5"
                     android:background="@color/category_obese_class_3" />
             </LinearLayout>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/scale_marker_guide"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.262" />
-
-            <View
-                android:id="@+id/scale_marker"
-                android:layout_width="@dimen/scale_marker_width"
-                android:layout_height="@dimen/scale_marker_height"
-                android:background="@drawable/bg_scale_marker"
-                android:importantForAccessibility="no"
-                app:layout_constraintBottom_toBottomOf="@id/scale_bar"
-                app:layout_constraintEnd_toEndOf="@id/scale_marker_guide"
-                app:layout_constraintStart_toStartOf="@id/scale_marker_guide"
-                app:layout_constraintTop_toTopOf="@id/scale_bar" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guide_18_5"
@@ -198,22 +266,46 @@
                 app:layout_constraintStart_toStartOf="@id/guide_40"
                 app:layout_constraintTop_toBottomOf="@id/scale_bar" />
 
+            <!-- Rows are added from BmiCategory in MainActivity. -->
+            <LinearLayout
+                android:id="@+id/category_table"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scale_tick_40" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/normal_range_divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/category_table" />
+
             <TextView
                 android:id="@+id/normal_range_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/screen_padding"
+                android:layout_marginTop="@dimen/space_medium"
+                android:paddingStart="@dimen/space_medium"
+                android:paddingEnd="@dimen/space_medium"
                 android:text="@string/result_normal_range_title"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scale_tick_40" />
+                app:layout_constraintTop_toBottomOf="@id/normal_range_divider" />
 
             <TextView
                 android:id="@+id/normal_range_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/space_medium"
+                android:paddingEnd="@dimen/space_medium"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"

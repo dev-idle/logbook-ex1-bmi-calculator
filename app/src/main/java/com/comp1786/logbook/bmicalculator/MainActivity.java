@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,11 +13,13 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,13 +57,19 @@ public class MainActivity extends AppCompatActivity {
     // BMI range of the scale bar in content_result.xml.
     private static final BigDecimal SCALE_MIN = new BigDecimal("15");
     private static final BigDecimal SCALE_SPAN = new BigDecimal("30");
+    // Smallest BMI step at two decimal places.
+    private static final BigDecimal BMI_STEP = new BigDecimal("0.01");
 
     private NestedScrollView scrollView;
     private MaterialCardView resultCard;
     private TextView bmiValueText;
     private TextView categoryLabel;
+    private TextView summaryText;
     private Guideline scaleMarkerGuide;
+    private LinearLayout categoryTable;
     private TextView normalRangeText;
+    private View cautionBox;
+    private View[] categoryRows;
 
     private SharedPreferences preferences;
     private MeasurementField weight;
@@ -81,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         bindViews();
         setSupportActionBar(findViewById(R.id.toolbar));
+        buildCategoryTable();
 
         preferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
         weight = new MeasurementField(findViewById(R.id.weight_unit_group),
@@ -159,8 +169,39 @@ public class MainActivity extends AppCompatActivity {
         resultCard = findViewById(R.id.result_card);
         bmiValueText = findViewById(R.id.bmi_value);
         categoryLabel = findViewById(R.id.category_label);
+        summaryText = findViewById(R.id.summary_text);
         scaleMarkerGuide = findViewById(R.id.scale_marker_guide);
+        categoryTable = findViewById(R.id.category_table);
         normalRangeText = findViewById(R.id.normal_range_text);
+        cautionBox = findViewById(R.id.caution_box);
+    }
+
+    private void buildCategoryTable() {
+        LayoutInflater inflater = getLayoutInflater();
+        BmiCategory[] categories = BmiCategory.values();
+        categoryRows = new View[categories.length];
+        for (int i = 0; i < categories.length; i++) {
+            View row = inflater.inflate(R.layout.item_bmi_category, categoryTable, false);
+            row.findViewById(R.id.category_dot).setBackgroundTintList(
+                    ColorStateList.valueOf(getColor(categories[i].getColorRes())));
+            ((TextView) row.findViewById(R.id.category_name)).setText(categories[i].getLabelRes());
+            ((TextView) row.findViewById(R.id.category_range)).setText(rangeText(categories, i));
+            categoryTable.addView(row);
+            categoryRows[i] = row;
+        }
+    }
+
+    private String rangeText(BmiCategory[] categories, int index) {
+        if (index == 0) {
+            return getString(R.string.category_range_below,
+                    categories[1].getLowerBound().toPlainString());
+        }
+        String lower = categories[index].getLowerBound().toPlainString();
+        if (index == categories.length - 1) {
+            return getString(R.string.category_range_or_more, lower);
+        }
+        String upper = categories[index + 1].getLowerBound().subtract(BMI_STEP).toPlainString();
+        return getString(R.string.category_range_between, lower, upper);
     }
 
     private void calculate() {
@@ -176,12 +217,13 @@ public class MainActivity extends AppCompatActivity {
             resultCard.setVisibility(View.GONE);
             height.focusError(heightResult);
         } else {
-            showResult(weightResult.getAmount(), height.unit.toBase(heightResult.getAmount()));
+            showResult(weightResult.getAmount(), heightResult.getAmount());
         }
     }
 
-    private void showResult(BigDecimal weightAmount, BigDecimal meters) {
+    private void showResult(BigDecimal weightAmount, BigDecimal heightAmount) {
         MeasurementUnit weightUnit = weight.unit;
+        BigDecimal meters = height.unit.toBase(heightAmount);
         BigDecimal bmi = BmiCalculator.calculate(weightUnit.toBase(weightAmount), meters);
         BmiCategory category = BmiCategory.of(bmi);
         BigDecimal minimum = weightUnit.fromBase(
@@ -192,9 +234,14 @@ public class MainActivity extends AppCompatActivity {
         categoryLabel.setText(category.getLabelRes());
         categoryLabel.setBackgroundTintList(
                 ColorStateList.valueOf(getColor(category.getContainerColorRes())));
-        scaleMarkerGuide.setGuidelinePercent(scalePosition(bmi));
+        summaryText.setText(summary(category, weightAmount, minimum, maximum));
+        boolean withinNhsRange = weightUnit.isWithinNhsRange(weightAmount)
+                && height.unit.isWithinNhsRange(heightAmount);
+        cautionBox.setVisibility(withinNhsRange ? View.GONE : View.VISIBLE);
+        moveScaleMarker(bmi);
+        highlightCategory(category);
         normalRangeText.setText(getString(R.string.result_normal_range,
-                format(weightUnit, minimum), format(weightUnit, maximum)));
+                formatValue(weightUnit, minimum), formatValue(weightUnit, maximum)));
 
         resultCard.setVisibility(View.VISIBLE);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
@@ -204,10 +251,33 @@ public class MainActivity extends AppCompatActivity {
                 new Rect(0, 0, resultCard.getWidth(), resultCard.getHeight()), false));
     }
 
-    private float scalePosition(BigDecimal bmi) {
+    private String summary(BmiCategory category, BigDecimal weightAmount,
+                           BigDecimal minimum, BigDecimal maximum) {
+        if (category == BmiCategory.NORMAL_RANGE) {
+            return getString(R.string.result_summary_normal);
+        } else if (category == BmiCategory.UNDERWEIGHT) {
+            return getString(R.string.result_summary_below,
+                    formatValue(weight.unit, minimum.subtract(weightAmount)));
+        }
+        return getString(R.string.result_summary_above,
+                formatValue(weight.unit, weightAmount.subtract(maximum)));
+    }
+
+    private void moveScaleMarker(BigDecimal bmi) {
         float position = bmi.subtract(SCALE_MIN)
                 .divide(SCALE_SPAN, 4, RoundingMode.HALF_UP).floatValue();
-        return Math.max(0f, Math.min(1f, position));
+        position = Math.max(0f, Math.min(1f, position));
+        scaleMarkerGuide.setGuidelinePercent(position);
+    }
+
+    private void highlightCategory(BmiCategory current) {
+        for (BmiCategory category : BmiCategory.values()) {
+            boolean selected = category == current;
+            View row = categoryRows[category.ordinal()];
+            row.setBackgroundTintList(ColorStateList.valueOf(
+                    selected ? getColor(category.getContainerColorRes()) : Color.TRANSPARENT));
+            row.findViewById(R.id.category_you).setVisibility(selected ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void reset() {
@@ -235,7 +305,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String format(MeasurementUnit unit, BigDecimal amount) {
+    /** Formats a limit without trailing zeros, such as "5 kg" or "4 ft 7 in". */
+    private String formatLimit(MeasurementUnit unit, BigDecimal amount) {
         BigDecimal whole = unit.wholeOf(amount);
         BigDecimal part = unit.partOf(amount);
         String wholeUnit = getString(unit.getWholeUnitRes());
@@ -247,6 +318,22 @@ public class MainActivity extends AppCompatActivity {
             return getString(R.string.measurement_single, plain(part), partUnit);
         }
         return getString(R.string.measurement_compound, plain(whole), wholeUnit, plain(part), partUnit);
+    }
+
+    /** Formats a weight at the unit's precision so values line up, such as "73.0 kg". */
+    private String formatValue(MeasurementUnit unit, BigDecimal amount) {
+        BigDecimal value = amount.setScale(unit.getDecimals(), RoundingMode.HALF_UP);
+        String wholeUnit = getString(unit.getWholeUnitRes());
+        if (!unit.isCompound()) {
+            return getString(R.string.measurement_single, value.toPlainString(), wholeUnit);
+        }
+        BigDecimal whole = unit.wholeOf(value);
+        String part = unit.partOf(value).setScale(unit.getDecimals(), RoundingMode.HALF_UP).toPlainString();
+        String partUnit = getString(unit.getPartUnitRes());
+        if (whole.signum() == 0) {
+            return getString(R.string.measurement_single, part, partUnit);
+        }
+        return getString(R.string.measurement_compound, plain(whole), wholeUnit, part, partUnit);
     }
 
     private static String plain(BigDecimal value) {
@@ -376,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
                 case OUT_OF_RANGE:
                 default:
                     return getString(R.string.error_out_of_range,
-                            format(unit, unit.getMinimum()), format(unit, unit.getMaximum()));
+                            formatLimit(unit, unit.getMinimum()), formatLimit(unit, unit.getMaximum()));
             }
         }
     }

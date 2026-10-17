@@ -72,16 +72,16 @@
     <color name="md_theme_dark_surfaceContainerHighest">#32353A</color>
 
     <!-- BMI categories -->
-    <color name="category_underweight">#2789D1</color>
+    <color name="category_underweight">#4A90D9</color>
     <color name="category_underweight_container">#D9EAFF</color>
-    <color name="category_normal_range">#399550</color>
+    <color name="category_normal_range">#3FA45B</color>
     <color name="category_normal_range_container">#D1F0D0</color>
-    <color name="category_preobese">#A37F00</color>
+    <color name="category_preobese">#E9B21C</color>
     <color name="category_preobese_container">#FEE6B0</color>
-    <color name="category_obese_class_1">#C56D18</color>
+    <color name="category_obese_class_1">#EE8A2E</color>
     <color name="category_obese_class_1_container">#FFE3D0</color>
-    <color name="category_obese_class_2">#CE663F</color>
+    <color name="category_obese_class_2">#E2603A</color>
     <color name="category_obese_class_2_container">#FFE2D9</color>
-    <color name="category_obese_class_3">#D0625B</color>
+    <color name="category_obese_class_3">#C8433B</color>
     <color name="category_obese_class_3_container">#FFE2DF</color>
 </resources>

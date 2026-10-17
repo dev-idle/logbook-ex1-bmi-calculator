@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_category_row"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/category_row_height"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/space_medium"
+    android:paddingEnd="@dimen/space_medium">
+
+    <View
+        android:id="@+id/category_dot"
+        android:layout_width="@dimen/category_dot_size"
+        android:layout_height="@dimen/category_dot_size"
+        android:background="@drawable/bg_category_dot" />
+
+    <TextView
+        android:id="@+id/category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_small"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="@string/category_preobese" />
+
+    <TextView
+        android:id="@+id/category_you"
+        style="@style/Widget.BMICalculator.YouTag"
+        android:text="@string/result_you"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/category_range"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_small"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="25.00-29.99" />
+</LinearLayout>

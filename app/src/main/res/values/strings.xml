@@ -19,6 +19,13 @@
     <string name="error_no_browser">No app can open this link</string>
 
     <string name="result_title">Your BMI</string>
+    <string name="result_bmi_unit" translatable="false">kg/m&#178;</string>
+    <string name="result_summary_normal">Your weight is in the normal range for your height.</string>
+    <string name="result_summary_above">You are %1$s above the normal range for your height.</string>
+    <string name="result_summary_below">You are %1$s below the normal range for your height.</string>
+    <string name="result_you">You</string>
+    <string name="result_caution_title">Outside the NHS calculator range</string>
+    <string name="result_caution">If your weight and height are correct, BMI categories may not apply to you. Ask a health professional for advice.</string>
     <string name="result_normal_range_title">Normal range for your height</string>
     <string name="result_normal_range">%1$s to %2$s</string>
 
@@ -36,6 +43,9 @@
     <string name="category_obese_class_1">Obese class I</string>
     <string name="category_obese_class_2">Obese class II</string>
     <string name="category_obese_class_3">Obese class III</string>
+    <string name="category_range_below">below %1$s</string>
+    <string name="category_range_between">%1$s&#8211;%2$s</string>
+    <string name="category_range_or_more">%1$s or more</string>
 
     <string name="scale_18_5" translatable="false">18.5</string>
     <string name="scale_25" translatable="false">25</string>
@@ -54,6 +64,6 @@
     <string name="unit_ft_in" translatable="false">ft in</string>
 
     <!-- Examples: "70 kg", "11 st 0.3 lb". Non-breaking spaces keep a value on one line. -->
-    <string name="measurement_single">%1$s\u00A0%2$s</string>
-    <string name="measurement_compound">%1$s\u00A0%2$s\u00A0%3$s\u00A0%4$s</string>
+    <string name="measurement_single">%1$s&#160;%2$s</string>
+    <string name="measurement_compound">%1$s&#160;%2$s&#160;%3$s&#160;%4$s</string>
 </resources>

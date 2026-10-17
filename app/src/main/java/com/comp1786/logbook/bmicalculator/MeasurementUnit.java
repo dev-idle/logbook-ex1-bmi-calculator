@@ -14,19 +14,20 @@ public enum MeasurementUnit {
 
     // Exact factors: 1 lb = 0.45359237 kg, 1 in = 0.0254 m (NIST SP 811;
     // UK Weights and Measures Act 1985, Schedule 1).
-    // Limits cover every adult recorded by Guinness World Records.
+    // Accepted limits cover every adult recorded by Guinness World Records. The NHS
+    // adult BMI calculator accepts only 4 st to 50 st and 4 ft 7 in to 8 ft.
     KILOGRAMS("1", 0, 1, R.string.unit_kg, 0,
-            "5", "650"),
+            "5", "650", "25.4", "317.5"),
     POUNDS("0.45359237", 0, 1, R.string.unit_lb, 0,
-            "11", "1433"),
+            "11", "1433", "56", "700"),
     STONES_AND_POUNDS("0.45359237", 14, 1, R.string.unit_st, R.string.unit_lb,
-            "11", "1433"),
+            "11", "1433", "56", "700"),
     CENTIMETERS("0.01", 0, 1, R.string.unit_cm, 0,
-            "50", "280"),
+            "50", "280", "139.7", "243.8"),
     METERS("1", 0, 3, R.string.unit_m, 0,
-            "0.5", "2.8"),
+            "0.5", "2.8", "1.397", "2.438"),
     FEET_AND_INCHES("0.0254", 12, 1, R.string.unit_ft, R.string.unit_in,
-            "19.7", "110.2");
+            "19.7", "110.2", "55", "96");
 
     private final BigDecimal baseUnitsPerAmount;
     private final int partsPerWhole;
@@ -37,10 +38,12 @@ public enum MeasurementUnit {
     private final int partUnitRes;
     private final BigDecimal minimum;
     private final BigDecimal maximum;
+    private final BigDecimal nhsMinimum;
+    private final BigDecimal nhsMaximum;
 
     MeasurementUnit(String baseUnitsPerAmount, int partsPerWhole, int decimals,
                     @StringRes int wholeUnitRes, @StringRes int partUnitRes,
-                    String minimum, String maximum) {
+                    String minimum, String maximum, String nhsMinimum, String nhsMaximum) {
         this.baseUnitsPerAmount = new BigDecimal(baseUnitsPerAmount);
         this.partsPerWhole = partsPerWhole;
         this.decimals = decimals;
@@ -48,6 +51,8 @@ public enum MeasurementUnit {
         this.partUnitRes = partUnitRes;
         this.minimum = new BigDecimal(minimum);
         this.maximum = new BigDecimal(maximum);
+        this.nhsMinimum = new BigDecimal(nhsMinimum);
+        this.nhsMaximum = new BigDecimal(nhsMaximum);
     }
 
     /** Returns true when the value is entered in two fields, such as feet and inches. */
@@ -57,6 +62,11 @@ public enum MeasurementUnit {
 
     public int getPartsPerWhole() {
         return partsPerWhole;
+    }
+
+    /** Returns the number of decimal places used to show an amount in this unit. */
+    public int getDecimals() {
+        return decimals;
     }
 
     @StringRes
@@ -75,6 +85,11 @@ public enum MeasurementUnit {
 
     public BigDecimal getMaximum() {
         return maximum;
+    }
+
+    /** Returns true when the NHS adult BMI calculator would also accept the amount. */
+    public boolean isWithinNhsRange(BigDecimal amount) {
+        return amount.compareTo(nhsMinimum) >= 0 && amount.compareTo(nhsMaximum) <= 0;
     }
 
     /** Returns the amount for a whole value and its part, e.g. 11 st 0.3 lb as 154.3 lb. */
