@@ -32,36 +32,50 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/bmi_value"
+            <LinearLayout
+                android:id="@+id/bmi_value_row"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.BMICalculator.BmiValue"
-                android:textColor="?attr/colorOnSurface"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/result_title"
-                tools:text="27.76" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/bmi_unit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_small"
-                android:text="@string/result_bmi_unit"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                app:layout_constraintBaseline_toBaselineOf="@id/bmi_value"
-                app:layout_constraintStart_toEndOf="@id/bmi_value" />
+                <TextView
+                    android:id="@+id/bmi_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.BMICalculator.BmiValue"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="27.76" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_small"
+                    android:text="@string/result_bmi_unit"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/category_label"
                 style="@style/Widget.BMICalculator.CategoryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/bmi_value"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/bmi_value"
                 tools:text="@string/category_preobese" />
+
+            <!-- Moves the category label below the BMI when both do not fit on one line. -->
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/bmi_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="bmi_value_row,category_label"
+                app:flow_horizontalBias="0"
+                app:flow_horizontalStyle="spread_inside"
+                app:flow_verticalAlign="center"
+                app:flow_verticalGap="@dimen/space_small"
+                app:flow_wrapMode="chain"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/result_title" />
 
             <TextView
                 android:id="@+id/summary_text"
@@ -71,7 +85,7 @@
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bmi_value"
+                app:layout_constraintTop_toBottomOf="@id/bmi_header"
                 tools:text="You are 8.5 kg above the normal range for your height." />
 
             <LinearLayout
