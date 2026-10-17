@@ -369,6 +369,11 @@ public class MainActivity extends AppCompatActivity {
         return input.getText() == null ? "" : input.getText().toString();
     }
 
+    private static void setTextAtEnd(EditText input, CharSequence text) {
+        input.setText(text);
+        input.setSelection(input.length());
+    }
+
     private static void clearError(TextInputLayout layout) {
         layout.setError(null);
         layout.setErrorEnabled(false);
@@ -448,18 +453,22 @@ public class MainActivity extends AppCompatActivity {
             }
             MeasurementValidator.Result current = validate();
             BigDecimal base = current.isValid() ? unit.toBase(current.getAmount()) : null;
+            boolean sameFields = unit.isCompound() == newUnit.isCompound();
 
             unit = newUnit;
             preferences.edit().putString(preferenceKey, newUnit.name()).apply();
             applyUnit();
             // Converted values are rounded, so the result is recalculated on the next Calculate.
-            if (base == null) {
-                clear();
-            } else {
+            if (base != null) {
                 BigDecimal amount = unit.fromBase(base, RoundingMode.HALF_UP);
-                wholeInput.setText(plain(unit.wholeOf(amount)));
-                partInput.setText(unit.isCompound() ? plain(unit.partOf(amount)) : null);
+                setTextAtEnd(wholeInput, plain(unit.wholeOf(amount)));
+                setTextAtEnd(partInput, unit.isCompound() ? plain(unit.partOf(amount)) : "");
+            } else if (!sameFields) {
+                clear();
             }
+            // Otherwise the text stays as typed, in case it was entered in the wrong unit.
+            clearError(wholeLayout);
+            clearError(partLayout);
             resultCard.setVisibility(View.GONE);
         }
 
