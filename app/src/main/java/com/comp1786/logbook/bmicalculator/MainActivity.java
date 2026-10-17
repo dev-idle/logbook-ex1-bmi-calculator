@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
             partInput.setOnEditorActionListener(listener);
         }
 
-        /** Returns the unit chosen last time, or the default if none was saved for this field. */
+        /** Returns the saved unit, or the default when nothing valid for this field is saved. */
         private MeasurementUnit savedUnit(MeasurementUnit defaultUnit) {
             String name = preferences.getString(preferenceKey, defaultUnit.name());
             return unitGroup.findViewWithTag(name) != null
@@ -474,7 +474,6 @@ public class MainActivity extends AppCompatActivity {
             unit = newUnit;
             preferences.edit().putString(preferenceKey, newUnit.name()).apply();
             applyUnit();
-            // Converted values are rounded, so the result is recalculated on the next Calculate.
             if (base != null) {
                 BigDecimal amount = unit.fromBase(base, RoundingMode.HALF_UP);
                 setTextAtEnd(wholeInput, plain(unit.wholeOf(amount)));
@@ -485,6 +484,7 @@ public class MainActivity extends AppCompatActivity {
             // Otherwise the text stays as typed, in case it was entered in the wrong unit.
             clearError(wholeLayout);
             clearError(partLayout);
+            // Converted values are rounded, so the result is hidden until the next Calculate.
             resultCard.setVisibility(View.GONE);
         }
 

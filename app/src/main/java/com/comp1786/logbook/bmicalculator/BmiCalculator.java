@@ -11,7 +11,7 @@ public final class BmiCalculator {
     /** Decimal places used in WHO Table 2.1. */
     private static final int BMI_SCALE = 2;
 
-    // A BMI this far below a bound still rounds up to it, e.g. 24.995 to 25.00.
+    // A BMI this far below a bound still rounds up to it, such as 24.995 to 25.00.
     private static final BigDecimal ROUNDING_MARGIN = new BigDecimal("0.005");
 
     private BmiCalculator() {
@@ -35,7 +35,7 @@ public final class BmiCalculator {
         return minimumBmi.multiply(meters.multiply(meters));
     }
 
-    /** Returns the weight in kg at which BMI reaches 25.00; normal weights are below it. */
+    /** Returns the weight in kg where the rounded BMI reaches 25.00, above the normal range. */
     public static BigDecimal normalRangeLimit(BigDecimal meters) {
         BigDecimal limitBmi = BmiCategory.PREOBESE.getLowerBound().subtract(ROUNDING_MARGIN);
         return limitBmi.multiply(meters.multiply(meters));

@@ -92,7 +92,7 @@ public enum MeasurementUnit {
         return amount.compareTo(nhsMinimum) >= 0 && amount.compareTo(nhsMaximum) <= 0;
     }
 
-    /** Returns the amount for a whole value and its part, e.g. 11 st 0.3 lb as 154.3 lb. */
+    /** Returns a whole value and its part as one amount: 11 st 0.3 lb becomes 154.3 lb. */
     public BigDecimal combine(BigDecimal whole, BigDecimal part) {
         return isCompound() ? whole.multiply(BigDecimal.valueOf(partsPerWhole)).add(part) : whole;
     }
