@@ -2,7 +2,6 @@
     <string name="app_name">BMI Calculator</string>
     <string name="app_scope">For adults aged 20 and over</string>
 
-    <string name="label_units">Units</string>
     <string name="label_weight">Weight</string>
     <string name="label_height">Height</string>
     <string name="label_pounds">Pounds</string>
@@ -44,16 +43,15 @@
     <string name="scale_35" translatable="false">35</string>
     <string name="scale_40" translatable="false">40</string>
 
-    <string name="unit_system_metric">Metric (kg, cm)</string>
-    <string name="unit_system_us">US (lb, ft in)</string>
-    <string name="unit_system_uk">UK (st lb, ft in)</string>
-
     <string name="unit_kg" translatable="false">kg</string>
     <string name="unit_lb" translatable="false">lb</string>
     <string name="unit_st" translatable="false">st</string>
+    <string name="unit_st_lb" translatable="false">st lb</string>
     <string name="unit_cm" translatable="false">cm</string>
+    <string name="unit_m" translatable="false">m</string>
     <string name="unit_ft" translatable="false">ft</string>
     <string name="unit_in" translatable="false">in</string>
+    <string name="unit_ft_in" translatable="false">ft in</string>
 
     <!-- Examples: "70 kg", "11 st 0.3 lb". Non-breaking spaces keep a value on one line. -->
     <string name="measurement_single">%1$s\u00A0%2$s</string>

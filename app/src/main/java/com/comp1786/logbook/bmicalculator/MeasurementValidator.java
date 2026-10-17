@@ -22,7 +22,7 @@ public final class MeasurementValidator {
     /**
      * Validates a measurement. An empty part field counts as zero, so "5 ft" is accepted.
      */
-    public static Result validate(UnitSystem.Scale scale, String wholeText, String partText) {
+    public static Result validate(MeasurementUnit unit, String wholeText, String partText) {
         String whole = wholeText.trim();
         if (whole.isEmpty()) {
             return Result.invalid(Error.EMPTY, false);
@@ -33,7 +33,7 @@ public final class MeasurementValidator {
         }
 
         BigDecimal amount = wholeValue;
-        if (scale.isCompound()) {
+        if (unit.isCompound()) {
             if (wholeValue.stripTrailingZeros().scale() > 0) {
                 return Result.invalid(Error.NOT_A_WHOLE_NUMBER, false);
             }
@@ -44,14 +44,14 @@ public final class MeasurementValidator {
                 if (partValue == null) {
                     return Result.invalid(Error.NOT_A_NUMBER, true);
                 }
-                if (partValue.compareTo(BigDecimal.valueOf(scale.getPartsPerWhole())) >= 0) {
+                if (partValue.compareTo(BigDecimal.valueOf(unit.getPartsPerWhole())) >= 0) {
                     return Result.invalid(Error.PART_TOO_LARGE, true);
                 }
             }
-            amount = scale.combine(wholeValue, partValue);
+            amount = unit.combine(wholeValue, partValue);
         }
 
-        if (amount.compareTo(scale.getMinimum()) < 0 || amount.compareTo(scale.getMaximum()) > 0) {
+        if (amount.compareTo(unit.getMinimum()) < 0 || amount.compareTo(unit.getMaximum()) > 0) {
             return Result.invalid(Error.OUT_OF_RANGE, false);
         }
         return Result.valid(amount);
@@ -89,7 +89,7 @@ public final class MeasurementValidator {
             return error == null;
         }
 
-        /** Returns the amount in the smallest unit of the scale, or null when invalid. */
+        /** Returns the amount in the smallest unit, or null when invalid. */
         public BigDecimal getAmount() {
             return amount;
         }

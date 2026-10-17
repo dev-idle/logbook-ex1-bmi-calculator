@@ -5,6 +5,11 @@
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
     </style>
 
+    <style name="Widget.BMICalculator.UnitChip" parent="Widget.Material3.Chip.Filter">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="Widget.BMICalculator.CategoryLabel" parent="">
         <item name="android:background">@drawable/bg_category_label</item>
         <item name="android:paddingStart">@dimen/category_label_padding_horizontal</item>

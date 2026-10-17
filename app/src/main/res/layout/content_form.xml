@@ -5,24 +5,37 @@
     tools:orientation="vertical"
     tools:parentTag="android.widget.LinearLayout">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/unit_system_layout"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+    <!-- Each chip tag is the name of a MeasurementUnit constant. -->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/weight_unit_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/label_units">
+        app:selectionRequired="true"
+        app:singleSelection="true">
 
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/unit_system_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none" />
-    </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_kilograms"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:tag="KILOGRAMS"
+            android:text="@string/unit_kg" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_pounds"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:tag="POUNDS"
+            android:text="@string/unit_lb" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_stones_and_pounds"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:tag="STONES_AND_POUNDS"
+            android:text="@string/unit_st_lb" />
+    </com.google.android.material.chip.ChipGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/screen_padding"
+        android:layout_marginTop="@dimen/space_small"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -67,10 +80,37 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/height_unit_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_large"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_centimeters"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:tag="CENTIMETERS"
+            android:text="@string/unit_cm" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_meters"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:tag="METERS"
+            android:text="@string/unit_m" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_feet_and_inches"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:tag="FEET_AND_INCHES"
+            android:text="@string/unit_ft_in" />
+    </com.google.android.material.chip.ChipGroup>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/screen_padding"
+        android:layout_marginTop="@dimen/space_small"
         android:baselineAligned="false"
         android:orientation="horizontal">
 

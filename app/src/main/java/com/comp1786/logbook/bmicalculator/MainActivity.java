@@ -34,8 +34,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.math.BigDecimal;
@@ -44,7 +44,8 @@ import java.math.RoundingMode;
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFERENCES_NAME = "settings";
-    private static final String KEY_UNIT_SYSTEM = "unit_system";
+    private static final String KEY_WEIGHT_UNIT = "weight_unit";
+    private static final String KEY_HEIGHT_UNIT = "height_unit";
     private static final String STATE_RESULT_SHOWN = "result_shown";
 
     private static final String DECIMAL_DIGITS = "0123456789.,";
@@ -55,15 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private static final BigDecimal SCALE_SPAN = new BigDecimal("30");
 
     private NestedScrollView scrollView;
-    private MaterialAutoCompleteTextView unitSystemInput;
-    private TextInputLayout weightLayout;
-    private TextInputLayout weightPartLayout;
-    private TextInputLayout heightLayout;
-    private TextInputLayout heightPartLayout;
-    private EditText weightInput;
-    private EditText weightPartInput;
-    private EditText heightInput;
-    private EditText heightPartInput;
     private MaterialCardView resultCard;
     private TextView bmiValueText;
     private TextView categoryLabel;
@@ -71,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView normalRangeText;
 
     private SharedPreferences preferences;
-    private UnitSystem unitSystem;
+    private MeasurementField weight;
+    private MeasurementField height;
     private AlertDialog aboutDialog;
 
     @Override
@@ -90,10 +83,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
 
         preferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
-        unitSystem = UnitSystem.valueOf(
-                preferences.getString(KEY_UNIT_SYSTEM, UnitSystem.METRIC.name()));
-        setUpUnitSystemMenu();
-        applyUnitSystem();
+        weight = new MeasurementField(findViewById(R.id.weight_unit_group),
+                findViewById(R.id.weight_layout), findViewById(R.id.weight_part_layout),
+                KEY_WEIGHT_UNIT, MeasurementUnit.KILOGRAMS, R.string.error_weight_required);
+        height = new MeasurementField(findViewById(R.id.height_unit_group),
+                findViewById(R.id.height_layout), findViewById(R.id.height_part_layout),
+                KEY_HEIGHT_UNIT, MeasurementUnit.CENTIMETERS, R.string.error_height_required);
 
         findViewById(R.id.calculate_button).setOnClickListener(v -> calculate());
         TextView.OnEditorActionListener calculateOnDone = (v, actionId, event) -> {
@@ -106,18 +101,16 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         };
-        heightInput.setOnEditorActionListener(calculateOnDone);
-        heightPartInput.setOnEditorActionListener(calculateOnDone);
+        height.wholeInput.setOnEditorActionListener(calculateOnDone);
+        height.partInput.setOnEditorActionListener(calculateOnDone);
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Added after the views restore their text, so restoring is not treated as an edit.
-        weightInput.addTextChangedListener(new InputWatcher(weightLayout));
-        weightPartInput.addTextChangedListener(new InputWatcher(weightPartLayout));
-        heightInput.addTextChangedListener(new InputWatcher(heightLayout));
-        heightPartInput.addTextChangedListener(new InputWatcher(heightPartLayout));
+        weight.watchEdits();
+        height.watchEdits();
     }
 
     @Override
@@ -163,15 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindViews() {
         scrollView = findViewById(R.id.scroll_view);
-        unitSystemInput = findViewById(R.id.unit_system_input);
-        weightLayout = findViewById(R.id.weight_layout);
-        weightPartLayout = findViewById(R.id.weight_part_layout);
-        heightLayout = findViewById(R.id.height_layout);
-        heightPartLayout = findViewById(R.id.height_part_layout);
-        weightInput = findViewById(R.id.weight_input);
-        weightPartInput = findViewById(R.id.weight_part_input);
-        heightInput = findViewById(R.id.height_input);
-        heightPartInput = findViewById(R.id.height_part_input);
         resultCard = findViewById(R.id.result_card);
         bmiValueText = findViewById(R.id.bmi_value);
         categoryLabel = findViewById(R.id.category_label);
@@ -179,125 +163,38 @@ public class MainActivity extends AppCompatActivity {
         normalRangeText = findViewById(R.id.normal_range_text);
     }
 
-    private void setUpUnitSystemMenu() {
-        UnitSystem[] systems = UnitSystem.values();
-        String[] labels = new String[systems.length];
-        for (int i = 0; i < systems.length; i++) {
-            labels[i] = getString(systems[i].getLabelRes());
-        }
-        unitSystemInput.setSimpleItems(labels);
-        unitSystemInput.setText(getString(unitSystem.getLabelRes()), false);
-        unitSystemInput.setOnItemClickListener(
-                (parent, view, position, id) -> changeUnitSystem(systems[position]));
-    }
-
-    private void changeUnitSystem(UnitSystem newSystem) {
-        if (newSystem == unitSystem) {
-            return;
-        }
-        BigDecimal kilograms = readBaseValue(unitSystem.getWeight(), weightInput, weightPartInput);
-        BigDecimal meters = readBaseValue(unitSystem.getHeight(), heightInput, heightPartInput);
-
-        unitSystem = newSystem;
-        preferences.edit().putString(KEY_UNIT_SYSTEM, newSystem.name()).apply();
-        applyUnitSystem();
-        // Converted values are rounded, so the result is recalculated on the next Calculate.
-        writeBaseValue(unitSystem.getWeight(), weightInput, weightPartInput, kilograms);
-        writeBaseValue(unitSystem.getHeight(), heightInput, heightPartInput, meters);
-        resultCard.setVisibility(View.GONE);
-    }
-
-    private void applyUnitSystem() {
-        applyScale(unitSystem.getWeight(), weightLayout, weightInput, weightPartLayout);
-        applyScale(unitSystem.getHeight(), heightLayout, heightInput, heightPartLayout);
-        int action = unitSystem.getHeight().isCompound()
-                ? EditorInfo.IME_ACTION_NEXT : EditorInfo.IME_ACTION_DONE;
-        heightInput.setImeOptions(action | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-    }
-
-    private void applyScale(UnitSystem.Scale scale, TextInputLayout wholeLayout,
-                            EditText wholeInput, TextInputLayout partLayout) {
-        wholeLayout.setSuffixText(getString(scale.getWholeUnitRes()));
-        // Stones and feet are whole numbers.
-        boolean decimal = !scale.isCompound();
-        wholeInput.setKeyListener(DigitsKeyListener.getInstance(decimal ? DECIMAL_DIGITS : WHOLE_DIGITS));
-        wholeInput.setRawInputType(InputType.TYPE_CLASS_NUMBER
-                | (decimal ? InputType.TYPE_NUMBER_FLAG_DECIMAL : 0));
-
-        partLayout.setVisibility(scale.isCompound() ? View.VISIBLE : View.GONE);
-        if (scale.isCompound()) {
-            partLayout.setSuffixText(getString(scale.getPartUnitRes()));
-        }
-    }
-
     private void calculate() {
-        MeasurementValidator.Result weight = MeasurementValidator.validate(
-                unitSystem.getWeight(), textOf(weightInput), textOf(weightPartInput));
-        MeasurementValidator.Result height = MeasurementValidator.validate(
-                unitSystem.getHeight(), textOf(heightInput), textOf(heightPartInput));
-        showError(weight, unitSystem.getWeight(), weightLayout, weightPartLayout,
-                R.string.error_weight_required);
-        showError(height, unitSystem.getHeight(), heightLayout, heightPartLayout,
-                R.string.error_height_required);
+        MeasurementValidator.Result weightResult = weight.validate();
+        MeasurementValidator.Result heightResult = height.validate();
+        weight.showError(weightResult);
+        height.showError(heightResult);
 
-        if (!weight.isValid()) {
+        if (!weightResult.isValid()) {
             resultCard.setVisibility(View.GONE);
-            (weight.isErrorInPart() ? weightPartInput : weightInput).requestFocus();
-        } else if (!height.isValid()) {
+            weight.focusError(weightResult);
+        } else if (!heightResult.isValid()) {
             resultCard.setVisibility(View.GONE);
-            (height.isErrorInPart() ? heightPartInput : heightInput).requestFocus();
+            height.focusError(heightResult);
         } else {
-            showResult(unitSystem.getWeight().toBase(weight.getAmount()),
-                    unitSystem.getHeight().toBase(height.getAmount()));
+            showResult(weightResult.getAmount(), height.unit.toBase(heightResult.getAmount()));
         }
     }
 
-    private void showError(MeasurementValidator.Result result, UnitSystem.Scale scale,
-                           TextInputLayout wholeLayout, TextInputLayout partLayout,
-                           @StringRes int requiredMessage) {
-        clearError(wholeLayout);
-        clearError(partLayout);
-        if (!result.isValid()) {
-            TextInputLayout layout = result.isErrorInPart() ? partLayout : wholeLayout;
-            layout.setError(errorMessage(result.getError(), scale, requiredMessage));
-        }
-    }
-
-    private String errorMessage(MeasurementValidator.Error error, UnitSystem.Scale scale,
-                                @StringRes int requiredMessage) {
-        switch (error) {
-            case EMPTY:
-                return getString(requiredMessage);
-            case NOT_A_NUMBER:
-                return getString(R.string.error_not_a_number);
-            case NOT_A_WHOLE_NUMBER:
-                return getString(R.string.error_not_a_whole_number);
-            case PART_TOO_LARGE:
-                return getString(R.string.error_part_too_large, getString(R.string.measurement_single,
-                        String.valueOf(scale.getPartsPerWhole()), getString(scale.getPartUnitRes())));
-            case OUT_OF_RANGE:
-            default:
-                return getString(R.string.error_out_of_range,
-                        format(scale, scale.getMinimum()), format(scale, scale.getMaximum()));
-        }
-    }
-
-    private void showResult(BigDecimal kilograms, BigDecimal meters) {
-        BigDecimal bmi = BmiCalculator.calculate(kilograms, meters);
+    private void showResult(BigDecimal weightAmount, BigDecimal meters) {
+        MeasurementUnit weightUnit = weight.unit;
+        BigDecimal bmi = BmiCalculator.calculate(weightUnit.toBase(weightAmount), meters);
         BmiCategory category = BmiCategory.of(bmi);
+        BigDecimal minimum = weightUnit.fromBase(
+                BmiCalculator.normalRangeMinimum(meters), RoundingMode.CEILING);
+        BigDecimal maximum = weightUnit.fromBaseBelow(BmiCalculator.normalRangeLimit(meters));
 
         bmiValueText.setText(bmi.toPlainString());
         categoryLabel.setText(category.getLabelRes());
         categoryLabel.setBackgroundTintList(
                 ColorStateList.valueOf(getColor(category.getContainerColorRes())));
         scaleMarkerGuide.setGuidelinePercent(scalePosition(bmi));
-
-        UnitSystem.Scale weightScale = unitSystem.getWeight();
-        BigDecimal minimum = weightScale.fromBase(
-                BmiCalculator.normalRangeMinimum(meters), RoundingMode.CEILING);
-        BigDecimal maximum = weightScale.fromBaseBelow(BmiCalculator.normalRangeLimit(meters));
         normalRangeText.setText(getString(R.string.result_normal_range,
-                format(weightScale, minimum), format(weightScale, maximum)));
+                format(weightUnit, minimum), format(weightUnit, maximum)));
 
         resultCard.setVisibility(View.VISIBLE);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
@@ -307,15 +204,15 @@ public class MainActivity extends AppCompatActivity {
                 new Rect(0, 0, resultCard.getWidth(), resultCard.getHeight()), false));
     }
 
+    private float scalePosition(BigDecimal bmi) {
+        float position = bmi.subtract(SCALE_MIN)
+                .divide(SCALE_SPAN, 4, RoundingMode.HALF_UP).floatValue();
+        return Math.max(0f, Math.min(1f, position));
+    }
+
     private void reset() {
-        weightInput.setText(null);
-        weightPartInput.setText(null);
-        heightInput.setText(null);
-        heightPartInput.setText(null);
-        clearError(weightLayout);
-        clearError(weightPartLayout);
-        clearError(heightLayout);
-        clearError(heightPartLayout);
+        weight.clear();
+        height.clear();
         resultCard.setVisibility(View.GONE);
         scrollView.smoothScrollTo(0, 0);
     }
@@ -338,40 +235,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private float scalePosition(BigDecimal bmi) {
-        float position = bmi.subtract(SCALE_MIN)
-                .divide(SCALE_SPAN, 4, RoundingMode.HALF_UP).floatValue();
-        return Math.max(0f, Math.min(1f, position));
-    }
-
-    /** Returns the value in kilograms or meters, or null when the fields are not valid. */
-    @Nullable
-    private BigDecimal readBaseValue(UnitSystem.Scale scale, EditText wholeInput, EditText partInput) {
-        MeasurementValidator.Result result =
-                MeasurementValidator.validate(scale, textOf(wholeInput), textOf(partInput));
-        return result.isValid() ? scale.toBase(result.getAmount()) : null;
-    }
-
-    private void writeBaseValue(UnitSystem.Scale scale, EditText wholeInput, EditText partInput,
-                                @Nullable BigDecimal base) {
-        if (base == null) {
-            wholeInput.setText(null);
-            partInput.setText(null);
-            return;
+    private String format(MeasurementUnit unit, BigDecimal amount) {
+        BigDecimal whole = unit.wholeOf(amount);
+        BigDecimal part = unit.partOf(amount);
+        String wholeUnit = getString(unit.getWholeUnitRes());
+        if (!unit.isCompound() || part.signum() == 0) {
+            return getString(R.string.measurement_single, plain(whole), wholeUnit);
         }
-        BigDecimal amount = scale.fromBase(base, RoundingMode.HALF_UP);
-        wholeInput.setText(plain(scale.wholeOf(amount)));
-        partInput.setText(scale.isCompound() ? plain(scale.partOf(amount)) : null);
-    }
-
-    private String format(UnitSystem.Scale scale, BigDecimal amount) {
-        String whole = plain(scale.wholeOf(amount));
-        String wholeUnit = getString(scale.getWholeUnitRes());
-        if (!scale.isCompound()) {
-            return getString(R.string.measurement_single, whole, wholeUnit);
+        String partUnit = getString(unit.getPartUnitRes());
+        if (whole.signum() == 0) {
+            return getString(R.string.measurement_single, plain(part), partUnit);
         }
-        return getString(R.string.measurement_compound, whole, wholeUnit,
-                plain(scale.partOf(amount)), getString(scale.getPartUnitRes()));
+        return getString(R.string.measurement_compound, plain(whole), wholeUnit, plain(part), partUnit);
     }
 
     private static String plain(BigDecimal value) {
@@ -385,6 +260,125 @@ public class MainActivity extends AppCompatActivity {
     private static void clearError(TextInputLayout layout) {
         layout.setError(null);
         layout.setErrorEnabled(false);
+    }
+
+    /** The unit chips and input fields of one measurement, weight or height. */
+    private final class MeasurementField {
+
+        private final ChipGroup unitGroup;
+        private final TextInputLayout wholeLayout;
+        private final TextInputLayout partLayout;
+        private final EditText wholeInput;
+        private final EditText partInput;
+        private final String preferenceKey;
+        @StringRes
+        private final int requiredMessage;
+        private final int lastFieldAction;
+        private MeasurementUnit unit;
+
+        MeasurementField(ChipGroup unitGroup, TextInputLayout wholeLayout,
+                         TextInputLayout partLayout, String preferenceKey,
+                         MeasurementUnit defaultUnit, @StringRes int requiredMessage) {
+            this.unitGroup = unitGroup;
+            this.wholeLayout = wholeLayout;
+            this.partLayout = partLayout;
+            this.wholeInput = wholeLayout.getEditText();
+            this.partInput = partLayout.getEditText();
+            this.preferenceKey = preferenceKey;
+            this.requiredMessage = requiredMessage;
+            // Weight moves on to height; height is the last field and calculates.
+            this.lastFieldAction = wholeInput.getImeOptions() & EditorInfo.IME_MASK_ACTION;
+
+            unit = MeasurementUnit.valueOf(preferences.getString(preferenceKey, defaultUnit.name()));
+            unitGroup.check(unitGroup.findViewWithTag(unit.name()).getId());
+            applyUnit();
+            unitGroup.setOnCheckedStateChangeListener((group, checkedIds) -> changeUnit(
+                    MeasurementUnit.valueOf((String) group.findViewById(group.getCheckedChipId()).getTag())));
+        }
+
+        MeasurementValidator.Result validate() {
+            return MeasurementValidator.validate(unit, textOf(wholeInput), textOf(partInput));
+        }
+
+        void showError(MeasurementValidator.Result result) {
+            clearError(wholeLayout);
+            clearError(partLayout);
+            if (!result.isValid()) {
+                TextInputLayout layout = result.isErrorInPart() ? partLayout : wholeLayout;
+                layout.setError(errorMessage(result.getError()));
+            }
+        }
+
+        void focusError(MeasurementValidator.Result result) {
+            (result.isErrorInPart() ? partInput : wholeInput).requestFocus();
+        }
+
+        void clear() {
+            wholeInput.setText(null);
+            partInput.setText(null);
+            clearError(wholeLayout);
+            clearError(partLayout);
+        }
+
+        void watchEdits() {
+            wholeInput.addTextChangedListener(new InputWatcher(wholeLayout));
+            partInput.addTextChangedListener(new InputWatcher(partLayout));
+        }
+
+        private void changeUnit(MeasurementUnit newUnit) {
+            if (newUnit == unit) {
+                return;
+            }
+            MeasurementValidator.Result current = validate();
+            BigDecimal base = current.isValid() ? unit.toBase(current.getAmount()) : null;
+
+            unit = newUnit;
+            preferences.edit().putString(preferenceKey, newUnit.name()).apply();
+            applyUnit();
+            // Converted values are rounded, so the result is recalculated on the next Calculate.
+            if (base == null) {
+                clear();
+            } else {
+                BigDecimal amount = unit.fromBase(base, RoundingMode.HALF_UP);
+                wholeInput.setText(plain(unit.wholeOf(amount)));
+                partInput.setText(unit.isCompound() ? plain(unit.partOf(amount)) : null);
+            }
+            resultCard.setVisibility(View.GONE);
+        }
+
+        private void applyUnit() {
+            wholeLayout.setSuffixText(getString(unit.getWholeUnitRes()));
+            // Stones and feet are whole numbers.
+            boolean decimal = !unit.isCompound();
+            wholeInput.setKeyListener(DigitsKeyListener.getInstance(decimal ? DECIMAL_DIGITS : WHOLE_DIGITS));
+            wholeInput.setRawInputType(InputType.TYPE_CLASS_NUMBER
+                    | (decimal ? InputType.TYPE_NUMBER_FLAG_DECIMAL : 0));
+            int action = unit.isCompound() ? EditorInfo.IME_ACTION_NEXT : lastFieldAction;
+            wholeInput.setImeOptions(action | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+
+            partLayout.setVisibility(unit.isCompound() ? View.VISIBLE : View.GONE);
+            if (unit.isCompound()) {
+                partLayout.setSuffixText(getString(unit.getPartUnitRes()));
+            }
+        }
+
+        private String errorMessage(MeasurementValidator.Error error) {
+            switch (error) {
+                case EMPTY:
+                    return getString(requiredMessage);
+                case NOT_A_NUMBER:
+                    return getString(R.string.error_not_a_number);
+                case NOT_A_WHOLE_NUMBER:
+                    return getString(R.string.error_not_a_whole_number);
+                case PART_TOO_LARGE:
+                    return getString(R.string.error_part_too_large, getString(R.string.measurement_single,
+                            String.valueOf(unit.getPartsPerWhole()), getString(unit.getPartUnitRes())));
+                case OUT_OF_RANGE:
+                default:
+                    return getString(R.string.error_out_of_range,
+                            format(unit, unit.getMinimum()), format(unit, unit.getMaximum()));
+            }
+        }
     }
 
     /** Clears a field's error and hides the result once the user edits the field. */
