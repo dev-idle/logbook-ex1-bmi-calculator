@@ -16,18 +16,21 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_kilograms"
             style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_kilograms"
             android:tag="KILOGRAMS"
             android:text="@string/unit_kg" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_pounds"
             style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_pounds"
             android:tag="POUNDS"
             android:text="@string/unit_lb" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_stones_and_pounds"
             style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_stones_and_pounds"
             android:tag="STONES_AND_POUNDS"
             android:text="@string/unit_st_lb" />
     </com.google.android.material.chip.ChipGroup>
@@ -93,18 +96,21 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_centimeters"
             style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_centimeters"
             android:tag="CENTIMETERS"
             android:text="@string/unit_cm" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_meters"
             style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_meters"
             android:tag="METERS"
             android:text="@string/unit_m" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_feet_and_inches"
             style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_feet_and_inches"
             android:tag="FEET_AND_INCHES"
             android:text="@string/unit_ft_in" />
     </com.google.android.material.chip.ChipGroup>

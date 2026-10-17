@@ -63,6 +63,14 @@
     <string name="unit_in" translatable="false">in</string>
     <string name="unit_ft_in" translatable="false">ft in</string>
 
+    <!-- Spoken names of the unit chips -->
+    <string name="unit_name_kilograms">Kilograms</string>
+    <string name="unit_name_pounds">Pounds</string>
+    <string name="unit_name_stones_and_pounds">Stones and pounds</string>
+    <string name="unit_name_centimeters">Centimeters</string>
+    <string name="unit_name_meters">Meters</string>
+    <string name="unit_name_feet_and_inches">Feet and inches</string>
+
     <!-- Examples: "70 kg", "11 st 0.3 lb". Non-breaking spaces keep a value on one line. -->
     <string name="measurement_single">%1$s&#160;%2$s</string>
     <string name="measurement_compound">%1$s&#160;%2$s&#160;%3$s&#160;%4$s</string>
