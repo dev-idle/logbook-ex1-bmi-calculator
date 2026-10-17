@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <!-- Each chip tag is the name of a MeasurementUnit constant. -->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/weight_unit_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_kilograms"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_kilograms"
+            android:tag="KILOGRAMS"
+            android:text="@string/unit_kg" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_pounds"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_pounds"
+            android:tag="POUNDS"
+            android:text="@string/unit_lb" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_stones_and_pounds"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_stones_and_pounds"
+            android:tag="STONES_AND_POUNDS"
+            android:text="@string/unit_st_lb" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_small"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/weight_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/label_weight"
+            app:errorIconDrawable="@drawable/ic_error_outline"
+            app:expandedHintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/weight_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="@string/digits_decimal"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:maxLength="6" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/weight_part_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_medium"
+            android:layout_weight="1"
+            android:hint="@string/label_pounds"
+            android:visibility="gone"
+            app:errorIconDrawable="@drawable/ic_error_outline"
+            app:expandedHintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/weight_part_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="@string/digits_decimal"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:maxLength="4" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/height_unit_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_large"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_centimeters"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_centimeters"
+            android:tag="CENTIMETERS"
+            android:text="@string/unit_cm" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_meters"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_meters"
+            android:tag="METERS"
+            android:text="@string/unit_m" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_feet_and_inches"
+            style="@style/Widget.BMICalculator.UnitChip"
+            android:contentDescription="@string/unit_name_feet_and_inches"
+            android:tag="FEET_AND_INCHES"
+            android:text="@string/unit_ft_in" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_small"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/height_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/label_height"
+            app:errorIconDrawable="@drawable/ic_error_outline"
+            app:expandedHintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/height_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="@string/digits_decimal"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:maxLength="6" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/height_part_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_medium"
+            android:layout_weight="1"
+            android:hint="@string/label_inches"
+            android:visibility="gone"
+            app:errorIconDrawable="@drawable/ic_error_outline"
+            app:expandedHintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/height_part_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="@string/digits_decimal"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:maxLength="4" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/calculate_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_large"
+        android:text="@string/button_calculate" />
+</merge>

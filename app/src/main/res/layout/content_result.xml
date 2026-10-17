@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/result_card"
+        style="@style/Widget.Material3.CardView.Filled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/result_card_margin_top"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:accessibilityLiveRegion="polite"
+            android:clipToPadding="false"
+            android:padding="@dimen/card_padding">
+
+            <TextView
+                android:id="@+id/result_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/result_title"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/bmi_value_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/bmi_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.BMICalculator.BmiValue"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="27.76" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_small"
+                    android:text="@string/result_bmi_unit"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/category_label"
+                style="@style/Widget.BMICalculator.CategoryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/category_preobese" />
+
+            <!-- Moves the category label below the BMI when both do not fit on one line. -->
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/bmi_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="bmi_value_row,category_label"
+                app:flow_horizontalBias="0"
+                app:flow_horizontalStyle="spread_inside"
+                app:flow_verticalAlign="center"
+                app:flow_verticalGap="@dimen/space_small"
+                app:flow_wrapMode="chain"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/result_title" />
+
+            <TextView
+                android:id="@+id/summary_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bmi_header"
+                tools:text="You are 8.5 kg above the normal range for your height." />
+
+            <LinearLayout
+                android:id="@+id/caution_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_medium"
+                android:background="@drawable/bg_caution"
+                android:orientation="horizontal"
+                android:padding="@dimen/space_medium"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/summary_text"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="@dimen/caution_icon_size"
+                    android:layout_height="@dimen/caution_icon_size"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_warning"
+                    app:tint="@color/caution" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_medium"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/result_caution_title"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_tiny"
+                        android:text="@string/result_caution"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/scale_marker_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.425" />
+
+            <!-- Can extend into the card padding when the BMI is at either end of the scale. -->
+            <ImageView
+                android:id="@+id/scale_marker"
+                android:layout_width="@dimen/scale_marker_width"
+                android:layout_height="@dimen/scale_marker_height"
+                android:layout_marginTop="@dimen/space_large"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_scale_marker"
+                app:layout_constraintEnd_toEndOf="@id/scale_marker_guide"
+                app:layout_constraintStart_toStartOf="@id/scale_marker_guide"
+                app:layout_constraintTop_toBottomOf="@id/caution_box" />
+
+            <!-- Segment weights follow the WHO bounds on a scale from BMI 15 to 45. -->
+            <LinearLayout
+                android:id="@+id/scale_bar"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/scale_bar_height"
+                android:layout_marginTop="@dimen/space_tiny"
+                android:background="@drawable/bg_scale_bar"
+                android:clipToOutline="true"
+                android:importantForAccessibility="no"
+                android:orientation="horizontal"
+                android:weightSum="30"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scale_marker">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
+                    android:background="@color/category_underweight" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6.5"
+                    android:background="@color/category_normal_range" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@color/category_preobese" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@color/category_obese_class_1" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@color/category_obese_class_2" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@color/category_obese_class_3" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_18_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.1167" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.3333" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_35"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.6667" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.8333" />
+
+            <TextView
+                style="@style/Widget.BMICalculator.ScaleTick"
+                android:importantForAccessibility="no"
+                android:text="@string/scale_18_5"
+                app:layout_constraintEnd_toEndOf="@id/guide_18_5"
+                app:layout_constraintStart_toStartOf="@id/guide_18_5"
+                app:layout_constraintTop_toBottomOf="@id/scale_bar" />
+
+            <TextView
+                style="@style/Widget.BMICalculator.ScaleTick"
+                android:importantForAccessibility="no"
+                android:text="@string/scale_25"
+                app:layout_constraintEnd_toEndOf="@id/guide_25"
+                app:layout_constraintStart_toStartOf="@id/guide_25"
+                app:layout_constraintTop_toBottomOf="@id/scale_bar" />
+
+            <TextView
+                style="@style/Widget.BMICalculator.ScaleTick"
+                android:importantForAccessibility="no"
+                android:text="@string/scale_30"
+                app:layout_constraintEnd_toEndOf="@id/guide_30"
+                app:layout_constraintStart_toStartOf="@id/guide_30"
+                app:layout_constraintTop_toBottomOf="@id/scale_bar" />
+
+            <TextView
+                style="@style/Widget.BMICalculator.ScaleTick"
+                android:importantForAccessibility="no"
+                android:text="@string/scale_35"
+                app:layout_constraintEnd_toEndOf="@id/guide_35"
+                app:layout_constraintStart_toStartOf="@id/guide_35"
+                app:layout_constraintTop_toBottomOf="@id/scale_bar" />
+
+            <TextView
+                android:id="@+id/scale_tick_40"
+                style="@style/Widget.BMICalculator.ScaleTick"
+                android:importantForAccessibility="no"
+                android:text="@string/scale_40"
+                app:layout_constraintEnd_toEndOf="@id/guide_40"
+                app:layout_constraintStart_toStartOf="@id/guide_40"
+                app:layout_constraintTop_toBottomOf="@id/scale_bar" />
+
+            <!-- Rows are added from BmiCategory in MainActivity. -->
+            <LinearLayout
+                android:id="@+id/category_table"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scale_tick_40" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/normal_range_divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/category_table" />
+
+            <TextView
+                android:id="@+id/normal_range_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_medium"
+                android:paddingStart="@dimen/space_medium"
+                android:paddingEnd="@dimen/space_medium"
+                android:text="@string/result_normal_range_title"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/normal_range_divider" />
+
+            <TextView
+                android:id="@+id/normal_range_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/space_medium"
+                android:paddingEnd="@dimen/space_medium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/normal_range_title"
+                tools:text="56.7 kg to 76.5 kg" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</merge>

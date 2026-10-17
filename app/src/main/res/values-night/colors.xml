@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BMI categories -->
+    <color name="category_underweight">#6DB6FA</color>
+    <color name="category_underweight_container">#24496A</color>
+    <color name="category_normal_range">#71C27E</color>
+    <color name="category_normal_range_container">#274F2E</color>
+    <color name="category_preobese">#E6BA3A</color>
+    <color name="category_preobese_container">#584408</color>
+    <color name="category_obese_class_1">#F79B4D</color>
+    <color name="category_obese_class_1_container">#683C16</color>
+    <color name="category_obese_class_2">#FF946E</color>
+    <color name="category_obese_class_2_container">#6C3926</color>
+    <color name="category_obese_class_3">#FF928A</color>
+    <color name="category_obese_class_3_container">#6D3733</color>
+
+    <!-- Caution icon and outline, 3:1 or more against the card -->
+    <color name="caution">#FABD02</color>
+</resources>

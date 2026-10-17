@@ -1,3 +1,81 @@
 <resources>
     <string name="app_name">BMI Calculator</string>
+    <string name="app_scope">For adults aged 20 and over</string>
+
+    <string name="label_weight">Weight</string>
+    <string name="label_height">Height</string>
+    <string name="label_pounds">Pounds</string>
+    <string name="label_inches">Inches</string>
+    <string name="button_calculate">Calculate BMI</string>
+
+    <string name="menu_reset">Reset</string>
+    <string name="menu_about">About BMI</string>
+
+    <string name="about_title">About BMI</string>
+    <string name="about_message">BMI is your weight in kilograms divided by your height in meters squared. The categories follow the WHO classification of adults (Technical Report Series 894, Table 2.1).\n\nBMI is a screening measure, not a diagnosis. It cannot tell muscle from fat.\n\nThis calculator is for adults aged 20 and over. WHO assesses children and teenagers aged 5 to 19 with BMI-for-age charts instead. The NHS advises against using an adult BMI calculator if you are pregnant, have an eating disorder or have a condition that affects your height.\n\nPeople of South Asian, Chinese, other Asian, Middle Eastern, Black African or African-Caribbean background can face health risks at a lower BMI.</string>
+    <string name="about_open_source">WHO fact sheet</string>
+    <string name="about_close">Close</string>
+    <string name="about_source_url" translatable="false">https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight</string>
+    <string name="error_no_browser">No app can open this link</string>
+
+    <string name="result_title">Your BMI</string>
+    <string name="result_bmi_unit" translatable="false">kg/m&#178;</string>
+    <string name="result_summary_normal">Your weight is in the normal range for your height.</string>
+    <string name="result_summary_above">You are %1$s above the normal range for your height.</string>
+    <string name="result_summary_below">You are %1$s below the normal range for your height.</string>
+    <string name="result_you">You</string>
+    <string name="result_caution_title">Outside the NHS calculator range</string>
+    <string name="result_caution">If your weight and height are correct, BMI categories may not apply to you. Ask a health professional for advice.</string>
+    <string name="result_normal_range_title">Normal range for your height</string>
+    <string name="result_normal_range">%1$s to %2$s</string>
+
+    <string name="error_weight_required">Enter your weight</string>
+    <string name="error_height_required">Enter your height</string>
+    <string name="error_not_a_number">Enter a number</string>
+    <string name="error_not_a_whole_number">Enter a whole number</string>
+    <string name="error_part_too_large">Enter less than %1$s</string>
+    <string name="error_out_of_range">Enter %1$s to %2$s</string>
+
+    <!-- WHO Technical Report Series 894, Table 2.1 -->
+    <string name="category_underweight">Underweight</string>
+    <string name="category_normal_range">Normal range</string>
+    <string name="category_preobese">Preobese</string>
+    <string name="category_obese_class_1">Obese class I</string>
+    <string name="category_obese_class_2">Obese class II</string>
+    <string name="category_obese_class_3">Obese class III</string>
+    <string name="category_range_below">below %1$s</string>
+    <string name="category_range_between">%1$s&#8211;%2$s</string>
+    <string name="category_range_or_more">%1$s or more</string>
+
+    <string name="scale_18_5" translatable="false">18.5</string>
+    <string name="scale_25" translatable="false">25</string>
+    <string name="scale_30" translatable="false">30</string>
+    <string name="scale_35" translatable="false">35</string>
+    <string name="scale_40" translatable="false">40</string>
+
+    <string name="unit_kg" translatable="false">kg</string>
+    <string name="unit_lb" translatable="false">lb</string>
+    <string name="unit_st" translatable="false">st</string>
+    <string name="unit_st_lb" translatable="false">st lb</string>
+    <string name="unit_cm" translatable="false">cm</string>
+    <string name="unit_m" translatable="false">m</string>
+    <string name="unit_ft" translatable="false">ft</string>
+    <string name="unit_in" translatable="false">in</string>
+    <string name="unit_ft_in" translatable="false">ft in</string>
+
+    <!-- Spoken names of the unit chips -->
+    <string name="unit_name_kilograms">Kilograms</string>
+    <string name="unit_name_pounds">Pounds</string>
+    <string name="unit_name_stones_and_pounds">Stones and pounds</string>
+    <string name="unit_name_centimeters">Centimeters</string>
+    <string name="unit_name_meters">Meters</string>
+    <string name="unit_name_feet_and_inches">Feet and inches</string>
+
+    <!-- Characters accepted while typing; "," for keyboards with a decimal comma -->
+    <string name="digits_decimal" translatable="false">0123456789.,</string>
+    <string name="digits_whole" translatable="false">0123456789</string>
+
+    <!-- Examples: "70 kg", "11 st 0.3 lb". Non-breaking spaces keep a value on one line. -->
+    <string name="measurement_single">%1$s&#160;%2$s</string>
+    <string name="measurement_compound">%1$s&#160;%2$s&#160;%3$s&#160;%4$s</string>
 </resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The result sits beside the form, so it aligns with the top of the form. -->
+    <dimen name="result_card_margin_top">0dp</dimen>
+</resources>

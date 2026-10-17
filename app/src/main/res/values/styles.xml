@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.BMICalculator.Button" parent="Widget.Material3.Button">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+    </style>
+
+    <style name="Widget.BMICalculator.UnitChip" parent="Widget.Material3.Chip.Filter">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Widget.BMICalculator.CategoryLabel" parent="">
+        <item name="android:background">@drawable/bg_category_label</item>
+        <item name="android:paddingStart">@dimen/category_label_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/category_label_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/category_label_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/category_label_padding_vertical</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.BMICalculator.YouTag" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/space_small</item>
+        <item name="android:background">@drawable/bg_you_tag</item>
+        <item name="android:paddingStart">@dimen/you_tag_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/you_tag_padding_horizontal</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelSmall</item>
+        <item name="android:textColor">?attr/colorSurface</item>
+    </style>
+
+    <style name="Widget.BMICalculator.ScaleTick" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/space_small</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelSmall</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="TextAppearance.BMICalculator.BmiValue" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:fontFeatureSettings">tnum</item>
+    </style>
+</resources>
