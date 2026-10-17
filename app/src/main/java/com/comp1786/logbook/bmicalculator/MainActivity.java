@@ -101,18 +101,23 @@ public class MainActivity extends AppCompatActivity {
                 KEY_HEIGHT_UNIT, MeasurementUnit.CENTIMETERS, R.string.error_height_required);
 
         findViewById(R.id.calculate_button).setOnClickListener(v -> calculate());
-        TextView.OnEditorActionListener calculateOnDone = (v, actionId, event) -> {
-            boolean enterPressed = event != null
-                    && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                    && event.getAction() == KeyEvent.ACTION_DOWN;
-            if (actionId == EditorInfo.IME_ACTION_DONE || enterPressed) {
-                calculate();
-                return true;
+        TextView.OnEditorActionListener editorAction = (v, actionId, event) -> {
+            boolean enterKey = event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER;
+            if (actionId != EditorInfo.IME_ACTION_DONE && !enterKey) {
+                return false;
             }
-            return false;
+            // A hardware Enter key acts once, like the field's keyboard action.
+            if (event == null || event.getAction() == KeyEvent.ACTION_DOWN) {
+                if ((v.getImeOptions() & EditorInfo.IME_MASK_ACTION) == EditorInfo.IME_ACTION_DONE) {
+                    calculate();
+                } else {
+                    focusNextInput(v);
+                }
+            }
+            return true;
         };
-        height.wholeInput.setOnEditorActionListener(calculateOnDone);
-        height.partInput.setOnEditorActionListener(calculateOnDone);
+        weight.setOnEditorActionListener(editorAction);
+        height.setOnEditorActionListener(editorAction);
     }
 
     @Override
@@ -292,6 +297,21 @@ public class MainActivity extends AppCompatActivity {
         scrollView.smoothScrollTo(0, 0);
     }
 
+    /** Moves to the next visible field, like the keyboard's Next, without stopping at the chips. */
+    private void focusNextInput(View current) {
+        EditText[] inputs = {weight.wholeInput, weight.partInput, height.wholeInput, height.partInput};
+        boolean passedCurrent = false;
+        for (EditText input : inputs) {
+            if (passedCurrent && input.isShown()) {
+                input.requestFocus();
+                return;
+            }
+            if (input == current) {
+                passedCurrent = true;
+            }
+        }
+    }
+
     private void showAboutDialog() {
         aboutDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.about_title)
@@ -415,6 +435,11 @@ public class MainActivity extends AppCompatActivity {
         void watchEdits() {
             wholeInput.addTextChangedListener(new InputWatcher(wholeLayout));
             partInput.addTextChangedListener(new InputWatcher(partLayout));
+        }
+
+        void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
+            wholeInput.setOnEditorActionListener(listener);
+            partInput.setOnEditorActionListener(listener);
         }
 
         private void changeUnit(MeasurementUnit newUnit) {
