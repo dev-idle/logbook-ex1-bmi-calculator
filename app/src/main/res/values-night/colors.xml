@@ -13,4 +13,7 @@
     <color name="category_obese_class_2_container">#6C3926</color>
     <color name="category_obese_class_3">#FF928A</color>
     <color name="category_obese_class_3_container">#6D3733</color>
+
+    <!-- Caution icon and outline, 3:1 or more against the card -->
+    <color name="caution">#FABD02</color>
 </resources>
