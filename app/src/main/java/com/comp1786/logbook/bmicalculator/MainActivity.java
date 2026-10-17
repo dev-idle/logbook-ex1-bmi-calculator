@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
             }
             // A hardware Enter key acts once, like the field's keyboard action.
             if (event == null || event.getAction() == KeyEvent.ACTION_DOWN) {
-                if ((v.getImeOptions() & EditorInfo.IME_MASK_ACTION) == EditorInfo.IME_ACTION_DONE) {
+                int action = v.getImeOptions() & EditorInfo.IME_MASK_ACTION;
+                if (action == EditorInfo.IME_ACTION_DONE) {
                     calculate();
                 } else {
                     focusNextInput(v);
@@ -301,7 +302,8 @@ public class MainActivity extends AppCompatActivity {
 
     /** Moves to the next visible field, like the keyboard's Next, without stopping at the chips. */
     private void focusNextInput(View current) {
-        EditText[] inputs = {weight.wholeInput, weight.partInput, height.wholeInput, height.partInput};
+        EditText[] inputs = {
+                weight.wholeInput, weight.partInput, height.wholeInput, height.partInput};
         boolean passedCurrent = false;
         for (EditText input : inputs) {
             if (passedCurrent && input.isShown()) {
@@ -324,7 +326,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openSource() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.about_source_url)));
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(getString(R.string.about_source_url)));
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -344,7 +347,8 @@ public class MainActivity extends AppCompatActivity {
         if (whole.signum() == 0) {
             return getString(R.string.measurement_single, plain(part), partUnit);
         }
-        return getString(R.string.measurement_compound, plain(whole), wholeUnit, plain(part), partUnit);
+        return getString(R.string.measurement_compound,
+                plain(whole), wholeUnit, plain(part), partUnit);
     }
 
     /** Formats a weight at the unit's precision so values line up, such as "73.0 kg". */
@@ -355,7 +359,8 @@ public class MainActivity extends AppCompatActivity {
             return getString(R.string.measurement_single, value.toPlainString(), wholeUnit);
         }
         BigDecimal whole = unit.wholeOf(value);
-        String part = unit.partOf(value).setScale(unit.getDecimals(), RoundingMode.HALF_UP).toPlainString();
+        String part = unit.partOf(value)
+                .setScale(unit.getDecimals(), RoundingMode.HALF_UP).toPlainString();
         String partUnit = getString(unit.getPartUnitRes());
         if (whole.signum() == 0) {
             return getString(R.string.measurement_single, part, partUnit);
@@ -411,8 +416,10 @@ public class MainActivity extends AppCompatActivity {
             unit = savedUnit(defaultUnit);
             unitGroup.check(unitGroup.findViewWithTag(unit.name()).getId());
             applyUnit();
-            unitGroup.setOnCheckedStateChangeListener((group, checkedIds) -> changeUnit(
-                    MeasurementUnit.valueOf((String) group.findViewById(group.getCheckedChipId()).getTag())));
+            unitGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+                View chip = group.findViewById(group.getCheckedChipId());
+                changeUnit(MeasurementUnit.valueOf((String) chip.getTag()));
+            });
         }
 
         MeasurementValidator.Result validate() {
@@ -452,7 +459,8 @@ public class MainActivity extends AppCompatActivity {
         /** Returns the unit chosen last time, or the default if none was saved for this field. */
         private MeasurementUnit savedUnit(MeasurementUnit defaultUnit) {
             String name = preferences.getString(preferenceKey, defaultUnit.name());
-            return unitGroup.findViewWithTag(name) != null ? MeasurementUnit.valueOf(name) : defaultUnit;
+            return unitGroup.findViewWithTag(name) != null
+                    ? MeasurementUnit.valueOf(name) : defaultUnit;
         }
 
         private void changeUnit(MeasurementUnit newUnit) {
@@ -506,12 +514,15 @@ public class MainActivity extends AppCompatActivity {
                 case NOT_A_WHOLE_NUMBER:
                     return getString(R.string.error_not_a_whole_number);
                 case PART_TOO_LARGE:
-                    return getString(R.string.error_part_too_large, getString(R.string.measurement_single,
-                            String.valueOf(unit.getPartsPerWhole()), getString(unit.getPartUnitRes())));
+                    return getString(R.string.error_part_too_large,
+                            getString(R.string.measurement_single,
+                                    String.valueOf(unit.getPartsPerWhole()),
+                                    getString(unit.getPartUnitRes())));
                 case OUT_OF_RANGE:
                 default:
                     return getString(R.string.error_out_of_range,
-                            formatLimit(unit, unit.getMinimum()), formatLimit(unit, unit.getMaximum()));
+                            formatLimit(unit, unit.getMinimum()),
+                            formatLimit(unit, unit.getMaximum()));
             }
         }
     }
