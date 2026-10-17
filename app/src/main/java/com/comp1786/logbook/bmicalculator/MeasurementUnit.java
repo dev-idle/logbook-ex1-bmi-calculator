@@ -99,7 +99,8 @@ public enum MeasurementUnit {
 
     /** Returns the whole-unit field value of an amount. */
     public BigDecimal wholeOf(BigDecimal amount) {
-        return isCompound() ? amount.divideToIntegralValue(BigDecimal.valueOf(partsPerWhole)) : amount;
+        return isCompound()
+                ? amount.divideToIntegralValue(BigDecimal.valueOf(partsPerWhole)) : amount;
     }
 
     /** Returns the part field value of an amount, or zero for a single-field unit. */
