@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
             // Otherwise the text stays as typed, in case it was entered in the wrong unit.
             clearError(wholeLayout);
             clearError(partLayout);
-            // Converted values are rounded, so the result is hidden until the next Calculate.
+            // The fields no longer match the result, so it is hidden until the next Calculate.
             resultCard.setVisibility(View.GONE);
         }
 

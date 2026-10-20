@@ -38,9 +38,10 @@ value [2]:
 These categories are for adults aged 20 and older [3]. WHO assesses children
 and teenagers aged 5 to 19 with BMI-for-age instead [1].
 
-Unit conversion is exact: 1 lb = 0.45359237 kg, 1 in = 0.0254 m and
-1 st = 14 lb [4][5]. All calculations use `BigDecimal`, so no floating-point
-rounding is introduced.
+The conversion factors are exact: 1 lb = 0.45359237 kg, 1 in = 0.0254 m and
+1 st = 14 lb [4][5]. The BMI is calculated from the entered values with
+`BigDecimal`, so no floating-point error is introduced. A value converted when
+the unit changes is rounded to the precision of the new unit.
 
 ## Input limits
 

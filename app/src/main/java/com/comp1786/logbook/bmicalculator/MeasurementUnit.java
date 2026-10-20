@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Units for weight in kg or height in m, entered as one value or as a whole unit plus a part.
+ * Weight and height units, entered as one value or as a whole unit plus a part.
  */
 public enum MeasurementUnit {
 
