@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -498,6 +499,8 @@ public class MainActivity extends AppCompatActivity {
                     | (decimal ? InputType.TYPE_NUMBER_FLAG_DECIMAL : 0));
             int action = unit.isCompound() ? EditorInfo.IME_ACTION_NEXT : singleFieldAction;
             wholeInput.setImeOptions(action | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            // The keyboard picks up the new type and action only when it restarts.
+            getSystemService(InputMethodManager.class).restartInput(wholeInput);
 
             partLayout.setVisibility(unit.isCompound() ? View.VISIBLE : View.GONE);
             if (unit.isCompound()) {
