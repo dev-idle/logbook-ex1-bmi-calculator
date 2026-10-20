@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     // BMI range of the scale bar in content_result.xml.
     private static final BigDecimal SCALE_MIN = new BigDecimal("15");
     private static final BigDecimal SCALE_SPAN = new BigDecimal("30");
+    private static final int SCALE_POSITION_DECIMALS = 4;
     // Smallest BMI step at two decimal places.
     private static final BigDecimal BMI_STEP = new BigDecimal("0.01");
 
@@ -290,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void moveScaleMarker(BigDecimal bmi) {
         float position = bmi.subtract(SCALE_MIN)
-                .divide(SCALE_SPAN, 4, RoundingMode.HALF_UP).floatValue();
+                .divide(SCALE_SPAN, SCALE_POSITION_DECIMALS, RoundingMode.HALF_UP).floatValue();
         position = Math.max(0f, Math.min(1f, position));
         scaleMarkerGuide.setGuidelinePercent(position);
     }
@@ -443,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
             clearError(partLayout);
             if (!result.isValid()) {
                 TextInputLayout layout = result.isErrorInPart() ? partLayout : wholeLayout;
-                layout.setError(errorMessage(result.getError()));
+                layout.setError(errorMessage(result.getReason()));
             }
         }
 
@@ -520,8 +521,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private String errorMessage(MeasurementValidator.Error error) {
-            switch (error) {
+        private String errorMessage(MeasurementValidator.Reason reason) {
+            switch (reason) {
                 case EMPTY:
                     return getString(requiredMessage);
                 case NOT_A_NUMBER:
