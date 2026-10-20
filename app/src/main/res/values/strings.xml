@@ -13,7 +13,7 @@
 
     <string name="about_title">About BMI</string>
     <string name="about_message">BMI is your weight in kilograms divided by your height in meters squared. The categories follow the WHO classification of adults (Technical Report Series 894, Table 2.1).\n\nBMI is a screening measure, not a diagnosis. It cannot tell muscle from fat.\n\nThis calculator is for adults aged 20 and over. WHO assesses children and teenagers aged 5 to 19 with BMI-for-age charts instead. The NHS advises against using an adult BMI calculator if you are pregnant, have an eating disorder or have a condition that affects your height.\n\nPeople of South Asian, Chinese, other Asian, Middle Eastern, Black African or African-Caribbean background can face health risks at a lower BMI.</string>
-    <string name="about_open_source">WHO fact sheet</string>
+    <string name="about_fact_sheet">WHO fact sheet</string>
     <string name="about_close">Close</string>
     <string name="about_source_url" translatable="false">https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight</string>
     <string name="error_no_browser">No app can open this link</string>
@@ -75,7 +75,7 @@
     <string name="digits_decimal" translatable="false">0123456789.,</string>
     <string name="digits_whole" translatable="false">0123456789</string>
 
-    <!-- Examples: "70 kg", "11 st 0.3 lb". Non-breaking spaces keep a value on one line. -->
+    <!-- Values with units, such as "11 st 0.3 lb", joined by non-breaking spaces -->
     <string name="measurement_single">%1$s&#160;%2$s</string>
     <string name="measurement_compound">%1$s&#160;%2$s&#160;%3$s&#160;%4$s</string>
 </resources>

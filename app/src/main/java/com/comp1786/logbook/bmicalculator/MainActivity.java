@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +45,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Takes weight and height in the chosen units and shows the BMI with its WHO category.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFERENCES_NAME = "settings";
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     // BMI range of the scale bar in content_result.xml.
     private static final BigDecimal SCALE_MIN = new BigDecimal("15");
     private static final BigDecimal SCALE_SPAN = new BigDecimal("30");
+    private static final int SCALE_POSITION_DECIMALS = 4;
     // Smallest BMI step at two decimal places.
     private static final BigDecimal BMI_STEP = new BigDecimal("0.01");
 
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.height_layout), findViewById(R.id.height_part_layout),
                 KEY_HEIGHT_UNIT, MeasurementUnit.CENTIMETERS, R.string.error_height_required);
 
-        findViewById(R.id.calculate_button).setOnClickListener(v -> calculate());
+        findViewById(R.id.calculate_button).setOnClickListener(v -> calculate(true));
         TextView.OnEditorActionListener editorAction = (v, actionId, event) -> {
             boolean enterKey = event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER;
             if (actionId != EditorInfo.IME_ACTION_DONE && !enterKey) {
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             if (event == null || event.getAction() == KeyEvent.ACTION_DOWN) {
                 int action = v.getImeOptions() & EditorInfo.IME_MASK_ACTION;
                 if (action == EditorInfo.IME_ACTION_DONE) {
-                    calculate();
+                    calculate(true);
                 } else {
                     focusNextInput(v);
                 }
@@ -138,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.getBoolean(STATE_RESULT_SHOWN)) {
-            calculate();
+            // Shown in place, so the restored scroll position and keyboard stay as they were.
+            calculate(false);
         }
         if (savedInstanceState.getBoolean(STATE_ABOUT_SHOWN)) {
             showAboutDialog();
@@ -212,7 +218,8 @@ public class MainActivity extends AppCompatActivity {
         return getString(R.string.category_range_between, lower, upper);
     }
 
-    private void calculate() {
+    /** Validates both fields and shows the result, bringing it into view if asked to. */
+    private void calculate(boolean reveal) {
         MeasurementValidator.Result weightResult = weight.validate();
         MeasurementValidator.Result heightResult = height.validate();
         weight.showError(weightResult);
@@ -226,6 +233,9 @@ public class MainActivity extends AppCompatActivity {
             height.focusError(heightResult);
         } else {
             showResult(weightResult.getAmount(), heightResult.getAmount());
+            if (reveal) {
+                revealResult();
+            }
         }
     }
 
@@ -252,9 +262,12 @@ public class MainActivity extends AppCompatActivity {
                 formatValue(weightUnit, minimum), formatValue(weightUnit, maximum)));
 
         resultCard.setVisibility(View.VISIBLE);
+    }
+
+    /** Hides the keyboard and scrolls only as far as needed to show the result, if at all. */
+    private void revealResult() {
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
                 .hide(WindowInsetsCompat.Type.ime());
-        // Scrolls only as far as needed to show the card, if at all.
         resultCard.post(() -> resultCard.requestRectangleOnScreen(
                 new Rect(0, 0, resultCard.getWidth(), resultCard.getHeight()), false));
     }
@@ -278,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void moveScaleMarker(BigDecimal bmi) {
         float position = bmi.subtract(SCALE_MIN)
-                .divide(SCALE_SPAN, 4, RoundingMode.HALF_UP).floatValue();
+                .divide(SCALE_SPAN, SCALE_POSITION_DECIMALS, RoundingMode.HALF_UP).floatValue();
         position = Math.max(0f, Math.min(1f, position));
         scaleMarkerGuide.setGuidelinePercent(position);
     }
@@ -320,12 +333,12 @@ public class MainActivity extends AppCompatActivity {
         aboutDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.about_title)
                 .setMessage(R.string.about_message)
-                .setNeutralButton(R.string.about_open_source, (dialog, which) -> openSource())
+                .setNeutralButton(R.string.about_fact_sheet, (dialog, which) -> openFactSheet())
                 .setPositiveButton(R.string.about_close, null)
                 .show();
     }
 
-    private void openSource() {
+    private void openFactSheet() {
         Intent intent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(getString(R.string.about_source_url)));
         try {
@@ -335,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Formats a limit without trailing zeros, such as "5 kg" or "4 ft 7 in". */
+    /** Formats a limit without trailing zeros, such as "5 kg" or "1 ft 7.7 in". */
     private String formatLimit(MeasurementUnit unit, BigDecimal amount) {
         BigDecimal whole = unit.wholeOf(amount);
         BigDecimal part = unit.partOf(amount);
@@ -431,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
             clearError(partLayout);
             if (!result.isValid()) {
                 TextInputLayout layout = result.isErrorInPart() ? partLayout : wholeLayout;
-                layout.setError(errorMessage(result.getError()));
+                layout.setError(errorMessage(result.getReason()));
             }
         }
 
@@ -447,8 +460,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         void watchEdits() {
-            wholeInput.addTextChangedListener(new InputWatcher(wholeLayout));
-            partInput.addTextChangedListener(new InputWatcher(partLayout));
+            // Both fields make up one value, so an edit to either clears the errors on both.
+            wholeInput.addTextChangedListener(new InputWatcher(wholeLayout, partLayout));
+            partInput.addTextChangedListener(new InputWatcher(wholeLayout, partLayout));
         }
 
         void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
@@ -484,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
             // Otherwise the text stays as typed, in case it was entered in the wrong unit.
             clearError(wholeLayout);
             clearError(partLayout);
-            // Converted values are rounded, so the result is hidden until the next Calculate.
+            // The fields no longer match the result, so it is hidden until the next Calculate.
             resultCard.setVisibility(View.GONE);
         }
 
@@ -498,6 +512,8 @@ public class MainActivity extends AppCompatActivity {
                     | (decimal ? InputType.TYPE_NUMBER_FLAG_DECIMAL : 0));
             int action = unit.isCompound() ? EditorInfo.IME_ACTION_NEXT : singleFieldAction;
             wholeInput.setImeOptions(action | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            // The keyboard picks up the new type and action only when it restarts.
+            getSystemService(InputMethodManager.class).restartInput(wholeInput);
 
             partLayout.setVisibility(unit.isCompound() ? View.VISIBLE : View.GONE);
             if (unit.isCompound()) {
@@ -505,8 +521,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private String errorMessage(MeasurementValidator.Error error) {
-            switch (error) {
+        private String errorMessage(MeasurementValidator.Reason reason) {
+            switch (reason) {
                 case EMPTY:
                     return getString(requiredMessage);
                 case NOT_A_NUMBER:
@@ -527,14 +543,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Clears a field's error and hides the result once the user edits the field. */
+    /** Clears the errors of a measurement and hides the result once the user edits it. */
     private final class InputWatcher implements TextWatcher {
 
-        private final TextInputLayout layout;
+        private final TextInputLayout[] layouts;
         private String textBefore = "";
 
-        InputWatcher(TextInputLayout layout) {
-            this.layout = layout;
+        InputWatcher(TextInputLayout... layouts) {
+            this.layouts = layouts;
         }
 
         @Override
@@ -552,7 +568,9 @@ public class MainActivity extends AppCompatActivity {
             if (s.toString().equals(textBefore)) {
                 return;
             }
-            clearError(layout);
+            for (TextInputLayout layout : layouts) {
+                clearError(layout);
+            }
             resultCard.setVisibility(View.GONE);
         }
     }

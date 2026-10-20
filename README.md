@@ -7,7 +7,7 @@ categories.
 ## Features
 
 - Weight in kg, lb or st lb and height in cm, m or ft in, chosen separately.
-  The app remembers each choice and converts the entered value when the unit
+  The app remembers each choice and converts a valid entry when the unit
   changes.
 - Inline validation errors for empty, invalid and out-of-range input.
 - Result card with:
@@ -38,15 +38,16 @@ value [2]:
 These categories are for adults aged 20 and older [3]. WHO assesses children
 and teenagers aged 5 to 19 with BMI-for-age instead [1].
 
-Unit conversion is exact: 1 lb = 0.45359237 kg, 1 in = 0.0254 m and
-1 st = 14 lb [4][5]. All calculations use `BigDecimal`, so no floating-point
-rounding is introduced.
+The conversion factors are exact: 1 lb = 0.45359237 kg, 1 in = 0.0254 m and
+1 st = 14 lb [4][5]. The BMI is calculated from the entered values with
+`BigDecimal`, so no floating-point error is introduced. A value converted when
+the unit changes is rounded to the precision of the new unit.
 
 ## Input limits
 
-- Accepted: 5–650 kg and 50–280 cm, with the same limits in every unit. They
-  cover the shortest, tallest and heaviest adults recorded by Guinness World
-  Records [6][7][8][9].
+- Accepted: 5–650 kg and 50–280 cm, rounded to the precision of each unit.
+  They cover the shortest, tallest and heaviest adults recorded by Guinness
+  World Records [6][7][8][9].
 - Caution: outside 25.4–317.5 kg (4–50 st) or 139.7–243.8 cm
   (4 ft 7 in – 8 ft), the range of the NHS adult calculator [10].
 
@@ -73,6 +74,8 @@ from the command line:
 | `MeasurementUnit.java`      | Units, exact conversion factors and limits      |
 | `MeasurementValidator.java` | Input validation                                |
 
+Icons such as Info and Refresh are from Material Symbols and Icons [11].
+
 ## Sources
 
 1. WHO. Obesity and overweight. Fact sheet.
@@ -96,3 +99,4 @@ from the command line:
    https://www.guinnessworldrecords.com/world-records/heaviest-man
 10. NHS. BMI calculator for adults.
     https://www.nhs.uk/health-assessment-tools/calculate-your-body-mass-index/calculate-bmi-for-adults
+11. Google. Material Symbols and Icons. https://fonts.google.com/icons

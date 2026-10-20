@@ -36,7 +36,8 @@
                 android:id="@+id/bmi_value_row"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:screenReaderFocusable="true">
 
                 <TextView
                     android:id="@+id/bmi_value"
@@ -205,35 +206,35 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_18_5"
+                android:id="@+id/scale_guide_18_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.1167" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_25"
+                android:id="@+id/scale_guide_25"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.3333" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_30"
+                android:id="@+id/scale_guide_30"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_35"
+                android:id="@+id/scale_guide_35"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.6667" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_40"
+                android:id="@+id/scale_guide_40"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -243,32 +244,32 @@
                 style="@style/Widget.BMICalculator.ScaleTick"
                 android:importantForAccessibility="no"
                 android:text="@string/scale_18_5"
-                app:layout_constraintEnd_toEndOf="@id/guide_18_5"
-                app:layout_constraintStart_toStartOf="@id/guide_18_5"
+                app:layout_constraintEnd_toEndOf="@id/scale_guide_18_5"
+                app:layout_constraintStart_toStartOf="@id/scale_guide_18_5"
                 app:layout_constraintTop_toBottomOf="@id/scale_bar" />
 
             <TextView
                 style="@style/Widget.BMICalculator.ScaleTick"
                 android:importantForAccessibility="no"
                 android:text="@string/scale_25"
-                app:layout_constraintEnd_toEndOf="@id/guide_25"
-                app:layout_constraintStart_toStartOf="@id/guide_25"
+                app:layout_constraintEnd_toEndOf="@id/scale_guide_25"
+                app:layout_constraintStart_toStartOf="@id/scale_guide_25"
                 app:layout_constraintTop_toBottomOf="@id/scale_bar" />
 
             <TextView
                 style="@style/Widget.BMICalculator.ScaleTick"
                 android:importantForAccessibility="no"
                 android:text="@string/scale_30"
-                app:layout_constraintEnd_toEndOf="@id/guide_30"
-                app:layout_constraintStart_toStartOf="@id/guide_30"
+                app:layout_constraintEnd_toEndOf="@id/scale_guide_30"
+                app:layout_constraintStart_toStartOf="@id/scale_guide_30"
                 app:layout_constraintTop_toBottomOf="@id/scale_bar" />
 
             <TextView
                 style="@style/Widget.BMICalculator.ScaleTick"
                 android:importantForAccessibility="no"
                 android:text="@string/scale_35"
-                app:layout_constraintEnd_toEndOf="@id/guide_35"
-                app:layout_constraintStart_toStartOf="@id/guide_35"
+                app:layout_constraintEnd_toEndOf="@id/scale_guide_35"
+                app:layout_constraintStart_toStartOf="@id/scale_guide_35"
                 app:layout_constraintTop_toBottomOf="@id/scale_bar" />
 
             <TextView
@@ -276,8 +277,8 @@
                 style="@style/Widget.BMICalculator.ScaleTick"
                 android:importantForAccessibility="no"
                 android:text="@string/scale_40"
-                app:layout_constraintEnd_toEndOf="@id/guide_40"
-                app:layout_constraintStart_toStartOf="@id/guide_40"
+                app:layout_constraintEnd_toEndOf="@id/scale_guide_40"
+                app:layout_constraintStart_toStartOf="@id/scale_guide_40"
                 app:layout_constraintTop_toBottomOf="@id/scale_bar" />
 
             <!-- Rows are added from BmiCategory in MainActivity. -->
