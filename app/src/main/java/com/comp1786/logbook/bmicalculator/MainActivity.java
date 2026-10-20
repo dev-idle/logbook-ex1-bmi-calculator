@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.height_layout), findViewById(R.id.height_part_layout),
                 KEY_HEIGHT_UNIT, MeasurementUnit.CENTIMETERS, R.string.error_height_required);
 
-        findViewById(R.id.calculate_button).setOnClickListener(v -> calculate());
+        findViewById(R.id.calculate_button).setOnClickListener(v -> calculate(true));
         TextView.OnEditorActionListener editorAction = (v, actionId, event) -> {
             boolean enterKey = event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER;
             if (actionId != EditorInfo.IME_ACTION_DONE && !enterKey) {
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             if (event == null || event.getAction() == KeyEvent.ACTION_DOWN) {
                 int action = v.getImeOptions() & EditorInfo.IME_MASK_ACTION;
                 if (action == EditorInfo.IME_ACTION_DONE) {
-                    calculate();
+                    calculate(true);
                 } else {
                     focusNextInput(v);
                 }
@@ -142,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.getBoolean(STATE_RESULT_SHOWN)) {
-            calculate();
+            // Shown in place, so the restored scroll position and keyboard stay as they were.
+            calculate(false);
         }
         if (savedInstanceState.getBoolean(STATE_ABOUT_SHOWN)) {
             showAboutDialog();
@@ -216,7 +217,8 @@ public class MainActivity extends AppCompatActivity {
         return getString(R.string.category_range_between, lower, upper);
     }
 
-    private void calculate() {
+    /** Validates both fields and shows the result, bringing it into view if asked to. */
+    private void calculate(boolean reveal) {
         MeasurementValidator.Result weightResult = weight.validate();
         MeasurementValidator.Result heightResult = height.validate();
         weight.showError(weightResult);
@@ -230,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
             height.focusError(heightResult);
         } else {
             showResult(weightResult.getAmount(), heightResult.getAmount());
+            if (reveal) {
+                revealResult();
+            }
         }
     }
 
@@ -256,9 +261,12 @@ public class MainActivity extends AppCompatActivity {
                 formatValue(weightUnit, minimum), formatValue(weightUnit, maximum)));
 
         resultCard.setVisibility(View.VISIBLE);
+    }
+
+    /** Hides the keyboard and scrolls only as far as needed to show the result, if at all. */
+    private void revealResult() {
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
                 .hide(WindowInsetsCompat.Type.ime());
-        // Scrolls only as far as needed to show the card, if at all.
         resultCard.post(() -> resultCard.requestRectangleOnScreen(
                 new Rect(0, 0, resultCard.getWidth(), resultCard.getHeight()), false));
     }
