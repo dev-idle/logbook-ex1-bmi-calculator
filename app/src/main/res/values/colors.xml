@@ -85,6 +85,6 @@
     <color name="category_obese_class_3">#C8433B</color>
     <color name="category_obese_class_3_container">#FFE2DF</color>
 
-    <!-- Caution icon and outline, 3:1 or more against the card -->
+    <!-- Caution icon, 3:1 or more against the card -->
     <color name="caution">#A77D00</color>
 </resources>

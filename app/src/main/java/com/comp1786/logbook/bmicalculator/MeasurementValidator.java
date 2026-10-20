@@ -19,9 +19,7 @@ public final class MeasurementValidator {
     private MeasurementValidator() {
     }
 
-    /**
-     * Validates a measurement. An empty part field counts as zero, so "5 ft" is accepted.
-     */
+    /** Validates a measurement, counting an empty part field as zero, so "5 ft" is accepted. */
     public static Result validate(MeasurementUnit unit, String wholeText, String partText) {
         String whole = wholeText.trim();
         if (whole.isEmpty()) {

@@ -45,6 +45,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Takes weight and height in the chosen units and shows the BMI with its WHO category.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFERENCES_NAME = "settings";
@@ -336,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Formats a limit without trailing zeros, such as "5 kg" or "4 ft 7 in". */
+    /** Formats a limit without trailing zeros, such as "5 kg" or "1 ft 7.7 in". */
     private String formatLimit(MeasurementUnit unit, BigDecimal amount) {
         BigDecimal whole = unit.wholeOf(amount);
         BigDecimal part = unit.partOf(amount);

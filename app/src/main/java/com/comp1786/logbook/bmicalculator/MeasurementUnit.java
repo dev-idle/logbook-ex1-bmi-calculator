@@ -6,16 +6,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Units for entering weight (base unit kg) or height (base unit m).
- * A unit is entered either as one value (70 kg) or as a whole unit plus a part
- * (11 st 0.3 lb); amounts are counted in the smallest unit.
+ * Units for weight in kg or height in m, entered as one value or as a whole unit plus a part.
  */
 public enum MeasurementUnit {
 
-    // Exact factors: 1 lb = 0.45359237 kg, 1 in = 0.0254 m (NIST SP 811;
-    // UK Weights and Measures Act 1985, Schedule 1).
-    // Accepted limits cover every adult recorded by Guinness World Records. The NHS
-    // adult BMI calculator accepts only 4 st to 50 st and 4 ft 7 in to 8 ft.
+    // Exact factors from NIST SP 811 and the Weights and Measures Act 1985.
+    // Accepted limits cover all adults in Guinness World Records; caution limits follow the NHS.
     KILOGRAMS("1", 0, 1, R.string.unit_kg, 0,
             "5", "650", "25.4", "317.5"),
     POUNDS("0.45359237", 0, 1, R.string.unit_lb, 0,
