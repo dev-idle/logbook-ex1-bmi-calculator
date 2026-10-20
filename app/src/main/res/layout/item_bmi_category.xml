@@ -8,7 +8,8 @@
     android:minHeight="@dimen/category_row_height"
     android:orientation="horizontal"
     android:paddingStart="@dimen/space_medium"
-    android:paddingEnd="@dimen/space_medium">
+    android:paddingEnd="@dimen/space_medium"
+    android:screenReaderFocusable="true">
 
     <View
         android:id="@+id/category_dot"
