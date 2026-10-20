@@ -448,8 +448,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         void watchEdits() {
-            wholeInput.addTextChangedListener(new InputWatcher(wholeLayout));
-            partInput.addTextChangedListener(new InputWatcher(partLayout));
+            // Both fields make up one value, so an edit to either clears the errors on both.
+            wholeInput.addTextChangedListener(new InputWatcher(wholeLayout, partLayout));
+            partInput.addTextChangedListener(new InputWatcher(wholeLayout, partLayout));
         }
 
         void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
@@ -530,14 +531,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Clears a field's error and hides the result once the user edits the field. */
+    /** Clears the errors of a measurement and hides the result once the user edits it. */
     private final class InputWatcher implements TextWatcher {
 
-        private final TextInputLayout layout;
+        private final TextInputLayout[] layouts;
         private String textBefore = "";
 
-        InputWatcher(TextInputLayout layout) {
-            this.layout = layout;
+        InputWatcher(TextInputLayout... layouts) {
+            this.layouts = layouts;
         }
 
         @Override
@@ -555,7 +556,9 @@ public class MainActivity extends AppCompatActivity {
             if (s.toString().equals(textBefore)) {
                 return;
             }
-            clearError(layout);
+            for (TextInputLayout layout : layouts) {
+                clearError(layout);
+            }
             resultCard.setVisibility(View.GONE);
         }
     }
