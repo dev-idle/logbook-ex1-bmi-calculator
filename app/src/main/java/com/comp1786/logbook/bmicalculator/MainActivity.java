@@ -321,12 +321,12 @@ public class MainActivity extends AppCompatActivity {
         aboutDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.about_title)
                 .setMessage(R.string.about_message)
-                .setNeutralButton(R.string.about_open_source, (dialog, which) -> openSource())
+                .setNeutralButton(R.string.about_fact_sheet, (dialog, which) -> openFactSheet())
                 .setPositiveButton(R.string.about_close, null)
                 .show();
     }
 
-    private void openSource() {
+    private void openFactSheet() {
         Intent intent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(getString(R.string.about_source_url)));
         try {
